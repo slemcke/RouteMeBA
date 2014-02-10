@@ -248,6 +248,10 @@ public class Player implements Locatable {
 	public Long getDifficulty() {
 		return inner.getDifficulty();
 	}
+	
+	public void setDifficulty(Long difficulty) {
+		inner.setDifficulty(difficulty);
+	}
 
 	/**
 	 * Adds itself as known neighbour to all nodes within range. Does not add the neighbours within range to its own known neighbours. Result: All neighbours know this node, but this node does not know its neighbours.

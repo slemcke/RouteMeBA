@@ -27,10 +27,16 @@ public class PlayerStatsBinder extends HasTable {
 
 	@UiField
 	TableElement indoorStatsTable;
+	
 
 	public PlayerStatsBinder() {
 		setElement(uiBinder.createAndBindUi(this));
 	}
+	
+	/**
+	 * Show the player stats
+	 */
+
 
 	/**
 	 * fill tables with player stats
@@ -47,7 +53,7 @@ public class PlayerStatsBinder extends HasTable {
 		for (int i = 2; i < indoorLength; i++) {
 			this.indoorStatsTable.deleteRow(-1);
 		}
-
+		
 		for (Messager messagers : result.getMessagers()) {
 			TableRowElement row = this.indoorStatsTable.insertRow(-1);
 			for (int i = 0; i < convertMessagers(result.getMessagers().get(0)).length; i++) {
@@ -55,7 +61,8 @@ public class PlayerStatsBinder extends HasTable {
 				cell.setInnerText(convertMessagers(messagers)[i]);
 			}
 		}
-
+		
+		
 		for (Players node : result.getNodes()) {
 			TableRowElement row = this.mobileStatsTable.insertRow(-1);
 			for (int i = 0; i < convertNodes(result.getNodes().get(0)).length; i++) {
@@ -63,10 +70,11 @@ public class PlayerStatsBinder extends HasTable {
 				cell.setInnerText(convertNodes(node)[i]);
 			}
 		}
+		
 	}
 
-	private String[] convertMessagers(Messager messagers) {
-		return new String[] { messagers.id + "", messagers.name, messagers.score + "" };
+	private String[] convertMessagers(Messager messagers){
+		return new String[] { messagers.id + "", messagers.name, messagers.difficulty + "", messagers.score + "" };
 	}
 
 	private String[] convertNodes(Players node) {
@@ -75,6 +83,8 @@ public class PlayerStatsBinder extends HasTable {
 			lastPositionUpdate = new Date();
 			lastPositionUpdate.setTime(node.getLastPositionUpdate());
 		}
-		return new String[] { node.id + "", node.name, node.getLatitude() + "", node.getLongitude() + "", lastPositionUpdate != null ? lastPositionUpdate.toString() : "-", node.score + "", node.getBattery() + "", node.getBoosterSince() != null ? node.getBoosterSince().toString() : "-" };
+		return new String[] { node.id + "", node.name,node.difficulty + "", node.getLatitude() + "", node.getLongitude() + "", lastPositionUpdate != null ? lastPositionUpdate.toString() : "-", node.score + "", node.getBattery() + "", node.getBoosterSince() != null ? node.getBoosterSince().toString() : "-" };
 	}
+		
+
 }

@@ -13,5 +13,9 @@ public interface MessagerInterface {
 	public abstract Long getScore();
 
 	public abstract void setScore(Long score);
+	
+	public abstract Long getDifficulty();
+
+	public abstract void setDifficulty(Long difficulty);
 
 }

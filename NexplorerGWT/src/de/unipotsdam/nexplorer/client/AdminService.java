@@ -32,4 +32,6 @@ public interface AdminService extends RemoteService {
 	List<Items> getItemStats();
 
 	PlayerStats getPlayerStats() throws PlayerNotFoundException;
+	
+	boolean savePlayerLevel(Long playerId, Long level); 
 }

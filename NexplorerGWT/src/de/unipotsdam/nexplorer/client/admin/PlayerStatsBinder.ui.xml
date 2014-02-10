@@ -1,5 +1,6 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder">	
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:o="urn:import:com.sun.org.apache.xpath.internal.operations">	
 <div>
     <table ui:field="indoorStatsTable" class="ui-accordion ui-widget ui-widget-content ui-corner-all ui-accordion-content-active"
            style="border:1px solid black; text-align:center">
@@ -7,6 +8,7 @@
         <tr>
             <td>ID</td>
             <td>Name</td>
+            <td>Level</td>
             <td>Punktzahl</td>
         </tr>
 <!--         <tr> -->
@@ -22,6 +24,7 @@
         <tr>
             <td>ID</td>
             <td>Name</td>
+            <td>Level</td>
             <td>Breitengrad</td>
             <td>Längengrad</td>
             <td>Letzte Positionsaktualisierung</td>

@@ -54,6 +54,7 @@ public class AdminServiceImpl implements AdminServiceAsync {
 		adminServiceAsync.getPlayerStats(callback);
 		
 	}
+	
 
 	@Override
 	public void startGame(GameStats settings, AsyncCallback<Boolean> callback) {
@@ -84,4 +85,9 @@ public class AdminServiceImpl implements AdminServiceAsync {
 
 
 
+	@Override
+	public void savePlayerLevel(Long playerId, Long level, AsyncCallback<Boolean> callback){
+		adminServiceAsync.savePlayerLevel(playerId, level, callback);
+		
+	}
 }

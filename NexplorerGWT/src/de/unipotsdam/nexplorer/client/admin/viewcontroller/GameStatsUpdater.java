@@ -6,6 +6,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import de.unipotsdam.nexplorer.client.admin.GameStatsBinder;
 import de.unipotsdam.nexplorer.shared.GameStats;
 import de.unipotsdam.nexplorer.shared.GameStatus;
+import de.unipotsdam.nexplorer.shared.PlayerStats;
 
 /**
  * This class is called repeatedly in order to update the game stats

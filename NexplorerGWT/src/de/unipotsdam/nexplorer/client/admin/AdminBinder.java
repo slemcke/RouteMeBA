@@ -38,6 +38,8 @@ public class AdminBinder extends UIObject {
 	@UiField
 	DivElement playerStats;
 	@UiField
+	DivElement levelStats;
+	@UiField
 	DivElement map_canvas;
 	@UiField
 	InputElement timeToPlay;
@@ -90,7 +92,7 @@ public class AdminBinder extends UIObject {
 	 * Show the status of the messages (items)
 	 */
 	private ItemStatsBinder itemStatsBinder;
-
+	private LevelStatsBinder levelStatsBinder;
 	/**
 	 * black magic
 	 */
@@ -112,7 +114,7 @@ public class AdminBinder extends UIObject {
 
 		// wrap canvas
 		this.setMyMapCanvas(new MyMapCanvas1());
-
+		this.levelStatsBinder = new LevelStatsBinder(this);
 		// wrap gamestats
 		this.gameStatsBinder = new GameStatsBinder(this);
 		// wrap playerstats
@@ -218,6 +220,7 @@ public class AdminBinder extends UIObject {
 	public PlayerStatsBinder getPlayerStatsBinder() {
 		return playerStatsBinder;
 	}
+	
 
 	public ItemStatsBinder getItemStatsBinder() {
 		return itemStatsBinder;
@@ -236,6 +239,12 @@ public class AdminBinder extends UIObject {
 	public void showPlayerStats() {
 		playerStats.appendChild(playerStatsBinder.getElement());
 	}
+	
+	public void showLevelStats() {
+		levelStats.appendChild(levelStatsBinder.getElement());
+	}
+	
+	
 
 	/**
 	 * itemstats hinzufügen
@@ -257,6 +266,15 @@ public class AdminBinder extends UIObject {
 	 */
 	public MyMapCanvas1 getMyMapCanvas() {
 		return myMapCanvas;
+	}
+	
+
+	public void setLevelStats(LevelStatsBinder levelStatsBinder) {
+		this.levelStatsBinder = levelStatsBinder;
+	}
+
+	public LevelStatsBinder getLevelStatsBinder() {
+		return levelStatsBinder;
 	}
 
 	public InputElement getPingDuration() {

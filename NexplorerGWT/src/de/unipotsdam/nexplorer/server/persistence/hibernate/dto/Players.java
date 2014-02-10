@@ -451,7 +451,6 @@ public class Players extends Messager implements java.io.Serializable, IsSeriali
 	}
 
 	@Override
-	@JsonIgnore
 	@Column(name = "difficulty")
 	public Long getDifficulty() {
 		return this.difficulty;

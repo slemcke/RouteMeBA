@@ -10,8 +10,9 @@
       <br />
       <br />
       <div ui:field="map_canvas" />
-
-      <div ui:field="playerStats" />
+      <div ui:field="playerStats" />   
+      <br />
+      <div ui:field="levelStats" />
       <br />
       <div ui:field="itemStats" />
       <div id="log"
