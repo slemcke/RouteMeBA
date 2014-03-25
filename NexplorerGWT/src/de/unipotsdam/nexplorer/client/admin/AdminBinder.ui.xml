@@ -13,6 +13,8 @@
 
       <div ui:field="playerStats" />
       <br />
+      <div ui:field="levelStats" />
+      <br />  
       <div ui:field="itemStats" />
       <div id="log"
         class="ui-accordion ui-widget ui-widget-content ui-corner-all ui-accordion-content-active"
@@ -55,6 +57,8 @@
               Assistenz)</option>
             <option value="2">mittel (geringe Anforderungen /
               verringerte Assistenz)</option>
+            <option value="3">erhöht (erhöhte Anforderungen /
+              minimale Assistenz)</option>
           </select>
           <br />
           <label>Routing-Protokoll</label>

@@ -24,4 +24,6 @@ public interface AdminServiceAsync {
 	void getPlayerStats(AsyncCallback<PlayerStats> callback);
 
 	void getDefaultGameStats(AsyncCallback<Settings> callback);
+	
+	void savePlayerLevel(Long playerId, Long level,AsyncCallback<Boolean> callback);
 }

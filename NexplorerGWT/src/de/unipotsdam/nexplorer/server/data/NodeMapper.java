@@ -99,6 +99,7 @@ public class NodeMapper {
 			node.setPacketCount(packetCount);
 			node.setRange(player.getRange());
 			node.setScore(p.getScore());
+			node.setDifficulty(p.getDifficulty());
 		}
 
 		return existing.get(p.getId());

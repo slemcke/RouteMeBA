@@ -65,9 +65,10 @@ public class PlayerStatsBinder extends HasTable {
 		}
 	}
 
-	private String[] convertMessagers(Messager messagers) {
-		return new String[] { messagers.id + "", messagers.name, messagers.score + "" };
-	}
+	private String[] convertMessagers(Messager messagers){
+		return new String[] { messagers.id + "", messagers.name, messagers.difficulty + "", messagers.score + "" };
+ 	}
+
 
 	private String[] convertNodes(Players node) {
 		Date lastPositionUpdate = null;
@@ -75,6 +76,7 @@ public class PlayerStatsBinder extends HasTable {
 			lastPositionUpdate = new Date();
 			lastPositionUpdate.setTime(node.getLastPositionUpdate());
 		}
-		return new String[] { node.id + "", node.name, node.getLatitude() + "", node.getLongitude() + "", lastPositionUpdate != null ? lastPositionUpdate.toString() : "-", node.score + "", node.getBattery() + "", node.getBoosterSince() != null ? node.getBoosterSince().toString() : "-" };
-	}
+	return new String[] { node.id + "", node.name,node.difficulty + "", node.getLatitude() + "", node.getLongitude() + "", lastPositionUpdate != null ? lastPositionUpdate.toString() : "-", node.score + "", node.getBattery() + "", node.getBoosterSince() != null ? node.getBoosterSince().toString() : "-" };
+
+}
 }

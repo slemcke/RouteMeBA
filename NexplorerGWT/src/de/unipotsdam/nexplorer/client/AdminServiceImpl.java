@@ -82,6 +82,9 @@ public class AdminServiceImpl implements AdminServiceAsync {
 		
 	}
 
-
+	@Override
+	public void savePlayerLevel(Long playerId, Long level, AsyncCallback<Boolean> callback){
+		adminServiceAsync.savePlayerLevel(playerId, level, callback);
+	}
 
 }

@@ -11,7 +11,7 @@ import de.unipotsdam.nexplorer.shared.GameStatus;
 
 public class PlayerDummy extends Thread {
 
-	private static String host = "127.0.0.1:8080";
+	private static String host = "127.0.0.1:8888";
 
 	public static void main(String[] args) {
 		String host = PlayerDummy.host;

@@ -64,6 +64,10 @@ public class PlayerInfo implements IsSerializable {
 	public Long getUpdateDisplayTime() {
 		return settings.getUpdateDisplayIntervalTime();
 	}
+	
+	public GameStatus getGameState() {
+		return settings.getGameState();
+	}
 
 	public String getBonusGoal() {
 		if (settings.getBonusGoal() == null) {

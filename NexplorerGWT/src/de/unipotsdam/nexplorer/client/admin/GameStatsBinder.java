@@ -3,7 +3,6 @@ package de.unipotsdam.nexplorer.client.admin;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -11,7 +10,6 @@ import com.google.gwt.uibinder.client.UiField;
 
 import de.unipotsdam.nexplorer.client.util.HasTable;
 import de.unipotsdam.nexplorer.shared.GameStats;
-import de.unipotsdam.nexplorer.shared.GameStatus;
 
 public class GameStatsBinder extends HasTable {
 

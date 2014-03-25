@@ -524,4 +524,29 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 		long end = System.currentTimeMillis();
 		performance.trace("updateNeighbours took {}ms", end - begin);
 	}
+	
+	public boolean savePlayerLevel(Long playerId, Long level) {
+		long begin = System.currentTimeMillis();
+
+		Unit unit = new Unit();
+		try {
+			DatabaseImpl dbAccess = unit.resolve(DatabaseImpl.class);
+			
+			Player player = dbAccess.getPlayerById(playerId);
+			
+			player.setDifficulty(level);
+			player.save();
+
+		} catch (Exception e) {
+			unit.cancel();
+			System.err.println(e.getMessage());
+		} finally {
+			unit.close();
+		}
+
+		long end = System.currentTimeMillis();
+		performance.trace("updatePlayerLevel took {}ms", end - begin);
+		return true;
+	}
+
 }

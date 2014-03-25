@@ -29,6 +29,8 @@ public class StatsUpdateTimer extends Timer {
 	public void run() {
 		this.adminService.getPlayerStats(new PlayerStatsUpdater<PlayerStats>(
 				adminBinder));
+		this.adminService.getPlayerStats(new LevelStatsUpdater<PlayerStats>(
+				adminBinder));
 		this.adminService
 				.getItemStats(new ItemStatsUpdater<Items>(adminBinder));
 		this.adminService.getGameStats(new GameStatsUpdater<GameStats>(

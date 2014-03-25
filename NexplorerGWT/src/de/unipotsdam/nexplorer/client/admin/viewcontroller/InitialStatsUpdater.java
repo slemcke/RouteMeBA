@@ -49,6 +49,7 @@ public class InitialStatsUpdater<T> implements AsyncCallback<GameStats> {
 			adminBinder.showItemStats();
 			adminBinder.showPlayerStats();
 			adminBinder.startGameForm.removeFromParent();
+			adminBinder.showLevelStats();
 			//shows map with players
 			showCanvas(result);
 		}		
@@ -69,7 +70,7 @@ public class InitialStatsUpdater<T> implements AsyncCallback<GameStats> {
 			adminBinder.getMyMapCanvas().showField(gameStats.getPlayingField());
 			adminBinder.getMyMapCanvas().setVisible(true);
 		} else {
-			GWT.log("kann Canvas nicht ohne Koordinaten zeigne");
+			GWT.log("kann Canvas nicht ohne Koordinaten zeignen");
 		}
 	}
 

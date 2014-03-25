@@ -16,6 +16,7 @@ public class Notify implements RouteClickListener {
 	public void onRouteClick(Route route) {
 		for (RouteClickListener listener : observers) {
 			listener.onRouteClick(route);
+			
 		}
 	}
 

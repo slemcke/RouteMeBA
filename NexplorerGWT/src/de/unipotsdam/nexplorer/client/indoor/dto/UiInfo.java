@@ -1,6 +1,7 @@
 package de.unipotsdam.nexplorer.client.indoor.dto;
 
 import de.unipotsdam.nexplorer.shared.PlayerInfo;
+import de.unipotsdam.nexplorer.shared.GameStatus;
 
 public class UiInfo {
 
@@ -9,11 +10,14 @@ public class UiInfo {
 	private final String hint;
 	private final String bonusGoal;
 	private final Long remainingTime;
+	private final GameStatus gameState;
 
 	public UiInfo(PlayerInfo result) {
 		this.hint = result.getHint();
 		this.bonusGoal = result.getBonusGoal();
 		this.remainingTime = result.getRemainingTime();
+		this.gameState = result.getGameState();
+
 
 		if (result.getPlayer() != null) {
 			this.player = new UiPlayer(result.getPlayer());
@@ -46,5 +50,9 @@ public class UiInfo {
 
 	public Long getRemainingTime() {
 		return this.remainingTime;
+	}
+	
+	public GameStatus getGameState() {
+		return this.gameState;
 	}
 }

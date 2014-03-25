@@ -105,6 +105,8 @@ public class AodvRoutingAlgorithm {
 			player.updateNeighbourhood(routing);
 		} else if (player.getDifficulty() == 2) {
 			player.removeOutdatedNeighbours(routing);
+		} else if (player.getDifficulty() == 3) {
+			player.removeOutdatedNeighbours(routing);
 		}
 	}
 

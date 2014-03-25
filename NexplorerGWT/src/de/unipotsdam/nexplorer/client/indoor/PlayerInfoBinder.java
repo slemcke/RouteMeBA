@@ -8,6 +8,7 @@ import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.dom.client.Node;
 
 import de.unipotsdam.nexplorer.client.IndoorServiceImpl;
 import de.unipotsdam.nexplorer.client.indoor.dto.UiInfo;
@@ -15,6 +16,7 @@ import de.unipotsdam.nexplorer.client.indoor.levels.AvailableNodeUpdater;
 import de.unipotsdam.nexplorer.client.indoor.levels.RouteKeeper;
 import de.unipotsdam.nexplorer.client.indoor.view.messaging.ActiveRouting;
 import de.unipotsdam.nexplorer.client.indoor.view.messaging.LevelOneRouteSelection;
+import de.unipotsdam.nexplorer.client.indoor.view.messaging.LevelThreeRouteSelection;
 import de.unipotsdam.nexplorer.client.indoor.view.messaging.LevelTwoRouteSelection;
 import de.unipotsdam.nexplorer.client.indoor.view.messaging.RoutingLevel;
 import de.unipotsdam.nexplorer.client.indoor.viewcontroller.ButtonSetShown;
@@ -22,6 +24,8 @@ import de.unipotsdam.nexplorer.client.indoor.viewcontroller.IndoorStatsTimer;
 import de.unipotsdam.nexplorer.client.util.HasTable;
 import de.unipotsdam.nexplorer.shared.Aodv;
 import de.unipotsdam.nexplorer.shared.DataPacket;
+import de.unipotsdam.nexplorer.shared.GameStats;
+import de.unipotsdam.nexplorer.shared.GameStatus;
 import de.unipotsdam.nexplorer.shared.TimeManager;
 
 public class PlayerInfoBinder extends HasTable {
@@ -86,7 +90,14 @@ public class PlayerInfoBinder extends HasTable {
 	 */
 	public void updatePlayerInfos(UiInfo info) {
 		// Set level sensitive routing panel if not already set
-		if (level == null) {
+		if (info.getGameState().equals(GameStatus.ISPAUSED) && level != null){
+			if(this.currentRouteView.hasChildNodes()){
+				Node oldChild = this.currentRouteView.getFirstChild();
+				this.currentRouteView.removeChild(oldChild);
+			}
+			level = null;			
+		}
+		if (level == null && info.getGameState().equals(GameStatus.ISRUNNING)) {
 			if (info.getPlayer().getDifficulty() == 1) {
 				level = new LevelOneRouteSelection();
 			} else if (info.getPlayer().getDifficulty() == 2) {
@@ -101,8 +112,24 @@ public class PlayerInfoBinder extends HasTable {
 				this.addStateSwitchListener(new RouteRemover(keeper));
 
 				this.level = level;
+			} else if (info.getPlayer().getDifficulty() == 3) {
+				LevelThreeRouteSelection level = new LevelThreeRouteSelection();
+				level.addClickHandler(new LevelThreeHandler());
+
+				RouteKeeper keeper = new RouteKeeper();
+				keeper.setRouteCount(10);
+				keeper.addRouteListener(level);
+				AvailableNodeUpdater.addListener(keeper);
+
+				this.addStateSwitchListener(new RouteRemover(keeper));
+
+				this.level = level;
 			}
 			this.currentRouteView.appendChild(level.getElement());
+		}
+		
+		if (info.getGameState().equals(GameStatus.NOTSTARTED)){
+			
 		}
 
 		if (info.getPlayer() != null) {

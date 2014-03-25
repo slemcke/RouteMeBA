@@ -159,6 +159,7 @@ public class DatabaseImpl {
 			messager.id = (player.getId());
 			messager.name = player.getName();
 			messager.score = (player.getScore());
+			messager.difficulty = (player.getDifficulty());
 			result.add(messager);
 		}
 

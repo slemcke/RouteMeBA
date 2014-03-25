@@ -2,7 +2,7 @@ package de.unipotsdam.nexplorer.tools.dummyplayer;
 
 public class DummyBatchStarter {
 
-	private static String defaultHost = "127.0.0.1:8080";
+	private static String defaultHost = "127.0.0.1:8888";
 	private static int defaultAiCount = 5;
 
 	public static void main(String[] args) {

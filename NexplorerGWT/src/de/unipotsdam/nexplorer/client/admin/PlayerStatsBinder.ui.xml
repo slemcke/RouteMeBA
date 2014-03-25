@@ -7,6 +7,7 @@
         <tr>
             <td>ID</td>
             <td>Name</td>
+            <td>Level</td>
             <td>Punktzahl</td>
         </tr>
 <!--         <tr> -->
@@ -22,6 +23,7 @@
         <tr>
             <td>ID</td>
             <td>Name</td>
+            <td>Level</td>
             <td>Breitengrad</td>
             <td>Längengrad</td>
             <td>Letzte Positionsaktualisierung</td>
