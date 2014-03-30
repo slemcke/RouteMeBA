@@ -56,7 +56,7 @@ public class LevelTwoRouteSelection extends RoutingLevel implements RouteListene
 		for (Route route : routes) {
 			if (!routesModel.containsKey(route)) {
 				RouteBinder view = new RouteBinder(route);
-				view.setClickHandler(new Notify(clickObservers));
+				view.setClickHandler(new Notify(clickObservers), this);
 				this.routes.appendChild(view.getElement());
 				routesModel.put(route, view);
 			}

@@ -39,7 +39,7 @@ public class AodvDataPackets extends DataPacket implements java.io.Serializable 
 	public AodvDataPackets() {
 	}
 
-	public AodvDataPackets(Players playersByDestinationId, Players playersByOwnerId, Players playersBySourceId, Players playersByCurrentNodeId, Short hopsDone, Byte status, Long processingRound, Byte didReachBonusGoal) {
+	public AodvDataPackets(Players playersByDestinationId, Players playersByOwnerId, Players playersBySourceId, Players playersByCurrentNodeId, Short hopsDone, Byte status, Long processingRound, Byte didReachBonusGoal, Byte type) {
 		setPlayersByDestinationId(playersByDestinationId);
 		setPlayersByOwnerId(playersByOwnerId);
 		setPlayersBySourceId(playersBySourceId);
@@ -48,6 +48,7 @@ public class AodvDataPackets extends DataPacket implements java.io.Serializable 
 		this.status = status;
 		this.processingRound = processingRound;
 		this.didReachBonusGoal = didReachBonusGoal;
+		this.type=type;
 	}
 
 	@Id
@@ -139,6 +140,15 @@ public class AodvDataPackets extends DataPacket implements java.io.Serializable 
 	public void setStatus(Byte status) {
 		this.status = status;
 	}
+	
+	@Column(name = "type")
+	public Byte getType() {
+		return this.type;
+	}
+
+	public void setType(Byte type) {
+		this.type = type;
+	}
 
 	@Column(name = "awarded_score")
 	public Integer getAwardedScore() {
@@ -204,6 +214,8 @@ public class AodvDataPackets extends DataPacket implements java.io.Serializable 
 			return false;
 		} else if (other.status != status) {
 			return false;
+		} else if (other.type != type) {
+				return false;
 		} else if (other.version != version) {
 			return false;
 		}

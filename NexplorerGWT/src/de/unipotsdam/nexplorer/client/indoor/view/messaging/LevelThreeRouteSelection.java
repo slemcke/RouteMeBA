@@ -10,7 +10,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.dom.client.Node;
 
 import de.unipotsdam.nexplorer.client.indoor.levels.PacketKeeper;
-import de.unipotsdam.nexplorer.client.indoor.levels.Route;
 
 import de.unipotsdam.nexplorer.shared.PacketType;
 
@@ -43,10 +42,14 @@ public class LevelThreeRouteSelection extends LevelTwoRouteSelection {
 
 	}
 
-	private void addNewPacket() {
+	public void addNewPacket() {
 		PacketKeeper pk = new PacketKeeper();
 		PacketType newPacket = pk.createRandomPacket();
 		this.packet.setInnerText(newPacket.toString());
+	}
+	
+	public String getPacket(){
+		return this.packet.getInnerText();
 	}
 	
 }

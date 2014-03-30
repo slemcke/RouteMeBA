@@ -6,7 +6,7 @@ public class UiDataPacket {
 
 	private final String sourceNodeId;
 	private final String destinationNodeId;
-	private final Byte status;
+	private Byte status;
 	private final String awardedScore;
 	private final String currentNodeId;
 
@@ -30,6 +30,10 @@ public class UiDataPacket {
 		return this.status;
 	}
 
+	public void setStatus(Byte status) {
+		this.status=status;
+	}
+	
 	public String getAwardedScore() {
 		return this.awardedScore;
 	}

@@ -18,8 +18,8 @@
               Assistenz)</option>
             <option value="2">mittel (geringe Anforderungen /
               verringerte Assistenz)</option>
-            <option value="3">mittel (geringe Anforderungen /
-              verringerte Assistenz)</option>
+            <option value="3">erhöht (erhöhte Anforderungen /
+              minimale Assistenz)</option>
           </select></td>
         <td><div id="buttonContainer">
             <button ui:field="changeButton"

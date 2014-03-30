@@ -41,12 +41,15 @@ public class RouteBinder extends UIObject {
 		DOM.sinkEvents(this.getElement(), Event.ONCLICK | Event.ONMOUSEOVER);
 	}
 
-	public void setClickHandler(final RouteClickListener handler) {
+	public void setClickHandler(final RouteClickListener handler, final RoutingLevel level) {
 		DOM.setEventListener(this.getElement(), new EventListener() {
 
 			@Override
 			public void onBrowserEvent(Event event) {
 				if (event.getTypeInt() == Event.ONCLICK) {
+					if(level instanceof LevelThreeRouteSelection){
+						route.setPacket(((LevelThreeRouteSelection) level).getPacket());
+					}
 					handler.onRouteClick(route);
 				} else if (event.getTypeInt() == Event.ONMOUSEOVER) {
 					handler.onRouteHovered(route);

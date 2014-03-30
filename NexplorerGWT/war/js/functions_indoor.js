@@ -612,6 +612,31 @@ function insertNewMessage() {
 }
 
 /**
+ * 
+ * @param sourceNodeId
+ * @param destinationNodeId
+ */
+function insertNewMessageWithPacket(packetType) {
+    $("#sendMessageButton").attr('disabled', 'disabled');
+    $("#sendMessageButton").unbind("click");
+    if (insertMessageAjax != undefined)
+        insertMessageAjax.abort();
+    insertMessageAjax = $.ajax({
+        url : "../rest/indoor/insert_new_message",
+        type : "POST",
+        data : "ownerId=" + playerId + "&sourceNodeId=" + selectedSourceNode
+        + "&destinationNodeId=" + selectedDestinationNode + "&packetType=" + packetType,
+        success : function(data) {
+            updateDisplay();
+        }
+    })
+}
+
+
+
+
+
+/**
  * update marker positions if game is running put modal if game is paused say
  * thank you if game is over
  */

@@ -4,6 +4,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import de.unipotsdam.nexplorer.shared.MessageDescription;
+import de.unipotsdam.nexplorer.shared.PacketType;
 import de.unipotsdam.nexplorer.shared.PlayerInfo;
 
 public class IndoorServiceImpl implements IndoorServiceAsync{
@@ -17,9 +18,9 @@ public class IndoorServiceImpl implements IndoorServiceAsync{
 	}
 
 	@Override
-	public void insertNewMessage(MessageDescription request,
+	public void insertNewMessage(MessageDescription request, PacketType type,
 			AsyncCallback<Boolean> callback) {
-		indoor.insertNewMessage(request, callback);
+		indoor.insertNewMessage(request, type , callback);
 		
 	}
 

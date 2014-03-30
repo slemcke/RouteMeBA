@@ -41,7 +41,7 @@ public class Link {
 		if (locator.isInRange(src.player(), dest.player()) && dest.hasBattery()) {
 			logger.trace("Datenpaket mit sourceId " + thePacket.inner().getPlayersBySourceId().getId() + " und destinationId " + thePacket.inner().getPlayersByDestinationId().getId() + " an Nachbarn mit ID " + dest.getId() + " senden, Batterie {} reduzieren.", src.getId());
 
-			AodvDataPackets newPacket = new AodvDataPackets(thePacket.inner().getPlayersByDestinationId(), thePacket.inner().getPlayersByOwnerId(), thePacket.inner().getPlayersBySourceId(), thePacket.inner().getPlayersByCurrentNodeId(), thePacket.inner().getHopsDone(), thePacket.inner().getStatus(), thePacket.inner().getProcessingRound(), thePacket.inner().getDidReachBonusGoal());
+			AodvDataPackets newPacket = new AodvDataPackets(thePacket.inner().getPlayersByDestinationId(), thePacket.inner().getPlayersByOwnerId(), thePacket.inner().getPlayersBySourceId(), thePacket.inner().getPlayersByCurrentNodeId(), thePacket.inner().getHopsDone(), thePacket.inner().getStatus(), thePacket.inner().getProcessingRound(), thePacket.inner().getDidReachBonusGoal(), thePacket.inner().getType());
 			src.send(newPacket).toDestination();
 			newPacket.setHopsDone((short) (newPacket.getHopsDone() + 1));
 			newPacket.setProcessingRound(gameSettings.getCurrentDataRound() + 1);

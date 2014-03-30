@@ -32,7 +32,7 @@ public class AodvRoutingAlgorithm {
 		this.settings = null;
 	}
 
-	public Collection<Object> aodvInsertNewMessage(Player src, Player dest, Player owner) throws PlayerDoesNotExistException {
+	public Collection<Object> aodvInsertNewMessage(Player src, Player dest, Player owner, Byte type) throws PlayerDoesNotExistException {
 		Setting gameSettings = getGameSettings();
 		logger.trace("Insert new message from {} to {} (owner {})", src.getId(), dest.getId(), owner.getId());
 		AodvDataPackets newMessage = new AodvDataPackets();
@@ -43,6 +43,9 @@ public class AodvRoutingAlgorithm {
 		newMessage.setProcessingRound(gameSettings.getCurrentDataRound() + 1);
 		newMessage.setHopsDone((short) 0);
 		newMessage.setDidReachBonusGoal((byte) 0);
+		if(type != null){
+			newMessage.setType(type);
+		}
 		return factory.create(src).enqueMessage(newMessage);
 	}
 

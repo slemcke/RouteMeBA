@@ -55,6 +55,7 @@ public class PlayerInfoBinder extends HasTable {
 	private final ActiveRouting activeRouting;
 	private RoutingLevel level;
 	private final List<StateSwitchListener> stateSwitchListeners;
+	boolean test;
 
 	/**
 	 * depending on the state either the message table is shown or the messageStatusTable depending on the Status of the message gameOptions are blended in
@@ -89,6 +90,7 @@ public class PlayerInfoBinder extends HasTable {
 	 * @param info
 	 */
 	public void updatePlayerInfos(UiInfo info) {
+		
 		// Set level sensitive routing panel if not already set
 		if (info.getGameState().equals(GameStatus.ISPAUSED) && level != null){
 			if(this.currentRouteView.hasChildNodes()){
@@ -115,7 +117,9 @@ public class PlayerInfoBinder extends HasTable {
 			} else if (info.getPlayer().getDifficulty() == 3) {
 				LevelThreeRouteSelection level = new LevelThreeRouteSelection();
 				level.addClickHandler(new LevelThreeHandler());
-
+				level.addNewPacket();
+				test = true;
+				
 				RouteKeeper keeper = new RouteKeeper();
 				keeper.setRouteCount(10);
 				keeper.addRouteListener(level);
@@ -141,8 +145,18 @@ public class PlayerInfoBinder extends HasTable {
 			this.activeRouting.setDestinationNode(info.getDataPacketSend().getDestinationNodeId());
 			this.hintMessage.setInnerHTML(statusToHTMLString(info));
 			this.activeRouting.setCurrentNodeId(info.getDataPacketSend().getCurrentNodeId());
+			
 		} else {
 			this.hintMessage.setInnerHTML(getHintMessage(info));
+		}
+		if(level instanceof LevelThreeRouteSelection){
+			
+			if(info.getDataPacketSend().getStatus().equals(Aodv.DATA_PACKET_STATUS_ARRIVED) && test){
+				((LevelThreeRouteSelection)this.level).updatePackets();
+				test=false;
+			} else if (!info.getDataPacketSend().getStatus().equals(Aodv.DATA_PACKET_STATUS_ARRIVED)){
+				test=true;
+			}
 		}
 		this.remainingPlayingTime.setInnerText(TimeManager.convertToReadableTimeSpan(info.getRemainingTime()));
 		this.activeRouting.setBonusGoal(info.getBonusGoal());

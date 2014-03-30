@@ -50,7 +50,7 @@ public class MessageTest {
 		when(factory.create(srcPlayer)).thenReturn(srcNode);
 		Matcher<DataPacket> hasHopCount = new InitialDataPacketMatcher();
 
-		sut.aodvInsertNewMessage(srcPlayer, destPlayer, ownerPlayer);
+		sut.aodvInsertNewMessage(srcPlayer, destPlayer, ownerPlayer, null);
 
 		verify(srcNode).enqueMessage(argThat(hasHopCount));
 	}

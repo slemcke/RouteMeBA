@@ -15,6 +15,7 @@ import de.unipotsdam.nexplorer.server.rest.dto.MarkersJSON;
 import de.unipotsdam.nexplorer.server.rest.dto.OK;
 import de.unipotsdam.nexplorer.shared.DataPacket;
 import de.unipotsdam.nexplorer.shared.MessageDescription;
+import de.unipotsdam.nexplorer.shared.PacketType;
 import de.unipotsdam.nexplorer.shared.PlayerInfo;
 import de.unipotsdam.nexplorer.shared.PlayerNotFoundException;
 
@@ -94,12 +95,17 @@ public class Indoor {
 	@POST
 	@Path("insert_new_message")
 	@Produces("application/json")
-	public OK insertNewMessage(@FormParam("ownerId") String playerId, @FormParam("sourceNodeId") String sourceNodeId, @FormParam("destinationNodeId") String destinationNodeId) throws NumberFormatException, PlayerNotFoundException {
+	public OK insertNewMessage(@FormParam("ownerId") String playerId, @FormParam("sourceNodeId") String sourceNodeId, @FormParam("destinationNodeId") String destinationNodeId, @FormParam("packetType") String type) throws NumberFormatException, PlayerNotFoundException {
 		logger.info("Insert new message from {} to {} (owner {})", sourceNodeId, destinationNodeId, playerId);
 		long owner = Long.parseLong(playerId);
 		long source = Long.parseLong(sourceNodeId);
 		long dest = Long.parseLong(destinationNodeId);
-		indoor.insertNewMessage(new MessageDescription(source, dest, owner));
+		if(type != null){
+			PacketType ptype = PacketType.valueOf(type); 
+			indoor.insertNewMessage(new MessageDescription(source, dest, owner), ptype);
+		}else{
+			indoor.insertNewMessage(new MessageDescription(source, dest, owner), null);
+		}
 		// debugging
 		PlayerInfo playerinfo = indoor.getPlayerInfo(Integer.parseInt(playerId));
 		if (playerinfo.getDataPacketSend() == null) {

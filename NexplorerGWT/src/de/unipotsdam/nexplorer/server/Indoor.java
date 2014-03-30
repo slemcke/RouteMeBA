@@ -25,6 +25,7 @@ import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Players;
 import de.unipotsdam.nexplorer.server.rest.dto.MarkersJSON;
 import de.unipotsdam.nexplorer.shared.DataPacketLocatable;
 import de.unipotsdam.nexplorer.shared.MessageDescription;
+import de.unipotsdam.nexplorer.shared.PacketType;
 import de.unipotsdam.nexplorer.shared.PlayerInfo;
 import de.unipotsdam.nexplorer.shared.PlayerNotFoundException;
 
@@ -76,7 +77,7 @@ public class Indoor extends RemoteServiceServlet implements IndoorService {
 	}
 
 	@Override
-	public boolean insertNewMessage(MessageDescription request) throws PlayerNotFoundException {
+	public boolean insertNewMessage(MessageDescription request, PacketType type) throws PlayerNotFoundException {
 		long begin = System.currentTimeMillis();
 
 		Unit unit = new Unit();
@@ -89,7 +90,12 @@ public class Indoor extends RemoteServiceServlet implements IndoorService {
 
 			AodvRoutingAlgorithm aodv = unit.resolve(AodvRoutingAlgorithm.class);
 			try {
-				Collection<Object> persistables = aodv.aodvInsertNewMessage(src, dest, owner);
+				Collection<Object> persistables;
+				if(type != null){
+					persistables = aodv.aodvInsertNewMessage(src, dest, owner, type.getPriority());
+				} else{
+					persistables = aodv.aodvInsertNewMessage(src, dest, owner, null);
+				}
 				for (Object persistable : persistables) {
 					dbAccess.persistObject(persistable);
 				}

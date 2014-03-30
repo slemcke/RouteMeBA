@@ -4,6 +4,7 @@ public class Route {
 
 	private String source = null;
 	private String destination = null;
+	private String packet = null;
 
 	public Route() {
 	}
@@ -28,6 +29,14 @@ public class Route {
 	public void setDestination(String destination) {
 		this.destination = destination;
 	}
+	
+	public String getPacket() {
+		return packet;
+	}
+
+	public void setPacket(String packet) {
+		this.packet = packet;
+	}
 
 	@Override
 	public int hashCode() {
@@ -45,7 +54,7 @@ public class Route {
 		}
 
 		Route o = (Route) other;
-		return this.getSource().equals(o.getSource()) && this.getDestination().equals(o.getDestination());
+		return this.getSource().equals(o.getSource()) && this.getDestination().equals(o.getDestination()) && this.getPacket().equals(o.getPacket());
 	}
 
 	@Override

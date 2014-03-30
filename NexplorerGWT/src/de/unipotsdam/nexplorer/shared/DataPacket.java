@@ -24,6 +24,8 @@ public class DataPacket implements IsSerializable {
 	@JsonProperty("messageDescription")
 	public MessageDescription messageDescription;
 	private Integer awardedScore;
+	@JsonProperty("type")
+	protected Byte type;
 
 	public DataPacket() {
 		this.messageDescription = new MessageDescription();
@@ -35,6 +37,14 @@ public class DataPacket implements IsSerializable {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+	
+	public Byte getType() {
+		return type;
+	}
+
+	public void setType(Byte type) {
+		this.type = type;
 	}
 
 	public MessageDescription getMessageDescription() {
@@ -50,6 +60,14 @@ public class DataPacket implements IsSerializable {
 		this.playersByCurrentNodeId = playersByCurrentNodeId;
 		this.status = status;
 		this.messageDescription = messageDescription;
+	}
+	
+	protected DataPacket(Long id, Players playersByCurrentNodeId, Byte status, MessageDescription messageDescription, Byte type) {
+		this.id = id;
+		this.playersByCurrentNodeId = playersByCurrentNodeId;
+		this.status = status;
+		this.messageDescription = messageDescription;
+		this.type=type;
 	}
 
 	@JsonIgnore
