@@ -78,7 +78,9 @@ public class AodvRoutingAlgorithm {
 		Setting gameSettings = getGameSettings();
 		logger.trace("------------adovProcessDataPackets Runde " + gameSettings.getCurrentRoutingRound() + " " + new SimpleDateFormat("dd.MM.yyyy HH:m:ss").format(new Date()) + "----------------");
 		for (Player theNode : dbAccess.getAllActiveNodesInRandomOrder()) {
-			factory.create(theNode).aodvProcessDataPackets(gameSettings.getCurrentDataRound());
+			if (theNode.getDifficulty() != 3){
+				factory.create(theNode).aodvProcessDataPackets(gameSettings.getCurrentDataRound());
+			}
 		}
 
 		gameSettings.incCurrentDataRound();

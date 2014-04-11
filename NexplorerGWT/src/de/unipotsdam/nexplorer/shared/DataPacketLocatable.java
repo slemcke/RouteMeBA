@@ -22,8 +22,8 @@ public class DataPacketLocatable extends DataPacket {
 	 * @param playersByCurrentNodeId
 	 * @param status
 	 */
-	public DataPacketLocatable(Messager owner, Long id, Players playersByCurrentNodeId, Byte status, MessageDescription messageDescription) {
-		super(id, playersByCurrentNodeId, status,messageDescription);
+	public DataPacketLocatable(Messager owner, Long id, Players playersByCurrentNodeId, Byte status, MessageDescription messageDescription, Byte type) {
+		super(id, playersByCurrentNodeId, status,messageDescription, type);
 		this.longitude = playersByCurrentNodeId.getLongitude();
 		this.latitude = playersByCurrentNodeId.getLatitude();
 		this.ownerId = owner.id;

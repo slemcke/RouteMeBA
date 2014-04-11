@@ -1,6 +1,8 @@
 package de.unipotsdam.nexplorer.server;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.ws.rs.WebApplicationException;
@@ -11,11 +13,15 @@ import org.apache.logging.log4j.Logger;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.unipotsdam.nexplorer.client.MobileService;
+import de.unipotsdam.nexplorer.client.android.rest.RoutingRequest;
 import de.unipotsdam.nexplorer.client.android.rest.PingRequest;
 import de.unipotsdam.nexplorer.client.android.rest.PingResponse;
+import de.unipotsdam.nexplorer.server.aodv.AodvDataPacket;
 import de.unipotsdam.nexplorer.server.aodv.AodvFactory;
 import de.unipotsdam.nexplorer.server.aodv.AodvNode;
 import de.unipotsdam.nexplorer.server.aodv.AodvRoutingAlgorithm;
+import de.unipotsdam.nexplorer.server.aodv.Link;
+import de.unipotsdam.nexplorer.server.aodv.RoutingTable;
 import de.unipotsdam.nexplorer.server.data.ItemCollector;
 import de.unipotsdam.nexplorer.server.data.NodeMapper;
 import de.unipotsdam.nexplorer.server.data.PlayerDoesNotExistException;
@@ -23,9 +29,13 @@ import de.unipotsdam.nexplorer.server.data.Unit;
 import de.unipotsdam.nexplorer.server.di.LogWrapper;
 import de.unipotsdam.nexplorer.server.persistence.DatabaseImpl;
 import de.unipotsdam.nexplorer.server.persistence.Player;
+import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvDataPackets;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Players;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.PositionBacklog;
 import de.unipotsdam.nexplorer.server.rest.dto.NodeGameSettingsJSON;
+import de.unipotsdam.nexplorer.server.rest.dto.OK;
+import de.unipotsdam.nexplorer.shared.Aodv;
+import de.unipotsdam.nexplorer.shared.DataPacket;
 import de.unipotsdam.nexplorer.shared.Game;
 import de.unipotsdam.nexplorer.shared.GameStats;
 import de.unipotsdam.nexplorer.shared.PlayerLocation;
@@ -170,7 +180,18 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 
 			Players node = mapper.from(p);
 			GameStats stats = new GameStats(dbAccess.getSettings().inner());
-			NodeGameSettingsJSON result = new NodeGameSettingsJSON(stats, node);
+			
+			Player outdoor = dbAccess.getPlayerById(id);
+			List<AodvDataPacket> packets = new LinkedList<AodvDataPacket>();
+			packets.addAll(dbAccess.getAllDataPacketsSortedByDate(outdoor));
+			
+			HashMap<Long, DataPacket> jsonPackets = new HashMap<Long, DataPacket>();
+			for (AodvDataPacket packet : packets) {
+				DataPacket jsonPacket = mapper.toJSON(packet);
+				jsonPackets.put(jsonPacket.getId(), jsonPacket);
+			}
+			
+			NodeGameSettingsJSON result = new NodeGameSettingsJSON(stats, node, jsonPackets);
 			return result;
 		} catch (Exception e) {
 			unit.cancel();
@@ -204,5 +225,27 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 		} finally {
 			unit.close();
 		}
+	}
+	
+	public OK sendPacket(RoutingRequest request){
+		Unit unit = new Unit();
+		try {
+			DatabaseImpl dbAccess = unit.resolve(DatabaseImpl.class);
+			
+			AodvDataPacket packet = dbAccess.getDataPacketById(request.getPacketId());
+			AodvNode currentNode = packet.getCurrentNode();		
+			Player next = dbAccess.getPlayerById(request.getNextHopId());
+			AodvNode nextHop = unit.resolve(AodvFactory.class).create(next);
+			
+			packet.forwardPacket(currentNode, nextHop);
+			
+			return new OK();
+		} catch (Throwable e) {
+			unit.cancel();
+			throw new WebApplicationException(e);
+		} finally {
+			unit.close();
+		}
+			
 	}
 }

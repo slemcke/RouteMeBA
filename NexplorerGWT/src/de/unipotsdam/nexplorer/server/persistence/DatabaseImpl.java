@@ -91,6 +91,12 @@ public class DatabaseImpl {
 		}
 		return result;
 	}
+	
+	public AodvDataPacket getDataPacketById(Long packetId) {
+
+		AodvDataPackets packet = (AodvDataPackets) session.createCriteria(AodvDataPackets.class).add(eq("id", packetId)).uniqueResult();
+		return factory.create(packet);
+	}
 
 	public int getRouteRequestCount(AodvDataPacket thePacket) {
 		List<AodvRoutingMessages> messages = session.createCriteria(AodvRoutingMessages.class).add(eq("type", Aodv.ROUTING_MESSAGE_TYPE_RREQ)).add(eq("sourceId", thePacket.inner().getPlayersBySourceId().getId())).add(eq("destinationId", thePacket.inner().getPlayersByDestinationId().getId())).list();

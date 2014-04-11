@@ -80,7 +80,6 @@ public class NodeMapper {
 			}
 
 			int packetCount = dbAccess.getAllDataPacketsSortedByDate(player).size();
-
 			node.setBattery(p.getBattery());
 			node.setHasSignalRangeBooster(p.getHasSignalRangeBooster() != null && p.getHasSignalRangeBooster() != 0 ? 1l : 0l);
 			node.setId(p.getId());
@@ -131,7 +130,7 @@ public class NodeMapper {
 		MessageDescription description = new MessageDescription(p.getPlayersBySourceId().getId(), p.getPlayersByDestinationId().getId(), p.getPlayersByOwnerId().getId());
 		Messager owner = new Messager(o.getId(), o.getName(), o.getScore());
 
-		DataPacketLocatable result = new DataPacketLocatable(owner, p.getId(), currentNode, p.getStatus(), description);
+		DataPacketLocatable result = new DataPacketLocatable(owner, p.getId(), currentNode, p.getStatus(), description, p.getType());
 		return result;
 	}
 }

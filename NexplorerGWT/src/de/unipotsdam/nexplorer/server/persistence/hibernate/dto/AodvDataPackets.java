@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 import com.google.gwt.user.client.rpc.GwtTransient;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 import de.unipotsdam.nexplorer.shared.DataPacket;
 
@@ -23,7 +24,7 @@ import de.unipotsdam.nexplorer.shared.DataPacket;
  */
 @Entity
 @Table(name = "aodv_data_packets")
-public class AodvDataPackets extends DataPacket implements java.io.Serializable {
+public class AodvDataPackets extends DataPacket implements java.io.Serializable, IsSerializable {
 
 	@GwtTransient
 	private Players playersByDestinationId;

@@ -46,6 +46,13 @@ public class AodvDataPacket implements ProcessableDataPacket {
 		Player source = data.create(inner.getPlayersBySourceId());
 		return factory.create(source);
 	}
+	
+
+	public AodvNode getCurrentNode() {
+		Player current = data.create(inner.getPlayersByCurrentNodeId());
+		return factory.create(current);
+	}
+	
 
 	public void delete() {
 		dbAccess.delete(inner);
@@ -108,6 +115,7 @@ public class AodvDataPacket implements ProcessableDataPacket {
 		Player destination = data.create(inner.getPlayersByDestinationId());
 		AodvNode dest = factory.create(destination);
 		RoutingTable table = new RoutingTable(aodvNode, dbAccess);
+		AodvNode nextNode= table.getNextHop(dest);
 		if (table.hasRouteTo(dest)) {
 			// Packet weitersenden
 			Link conn = factory.create(aodvNode, table.getNextHop(dest));
@@ -128,5 +136,29 @@ public class AodvDataPacket implements ProcessableDataPacket {
 
 	public void setCurrentNode(Player player) {
 		player.execute(new AsCurrent(inner));
+	}
+	
+	public void forwardPacket(AodvNode currentNode, AodvNode nextHop) {
+		// prüfen ob Route zum Ziel bekannt
+		Player destination = data.create(inner.getPlayersByDestinationId());
+		AodvNode dest = factory.create(destination);
+		RoutingTable table = new RoutingTable(currentNode, dbAccess);
+		AodvNode nextNode= table.getNextHop(dest);
+		if (table.hasRouteTo(dest) && nextHop.equals(nextNode)) {
+			// Packet weitersenden
+			Link conn = factory.create(currentNode, nextNode);
+			conn.transmit(this);
+		
+			// Packet löschen
+			logger.trace("Datenpaket mit sourceId " + inner.getPlayersBySourceId().getId() + " und destinationId " + inner.getPlayersByDestinationId().getId() + " löschen, weil fertig bearbeitet.");
+			delete();
+		} else {
+			// RERRs senden (jemand denkt irrtümlich ich würde eine Route kennen)
+			currentNode.sendRERRToNeighbours(destination);
+			
+			logger.trace("Datenpacket mit sourceId {} und destinationId {} nicht zustellbar, da keine Route bekannt", inner.getPlayersBySourceId().getId(), inner.getPlayersByDestinationId().getId());
+			inner.setStatus(Aodv.DATA_PACKET_STATUS_ERROR);
+			save();
+		}
 	}
 }

@@ -4,10 +4,9 @@ import java.util.HashMap;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
-import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Items;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Players;
+import de.unipotsdam.nexplorer.shared.DataPacket;
 import de.unipotsdam.nexplorer.shared.GameStats;
-import de.unipotsdam.nexplorer.shared.ItemMap;
 
 public class NodeGameSettingsJSON {
 
@@ -22,6 +21,8 @@ public class NodeGameSettingsJSON {
 	public Players node;
 	@JsonProperty("stats")
 	public GameStats gameStats;
+	@JsonProperty("packets")
+	public HashMap<Long, DataPacket> packets;
 	//soll irgendeiner Tippnachricht ausgeben
 	@JsonProperty("hint")
 	public String hint;
@@ -32,9 +33,10 @@ public class NodeGameSettingsJSON {
 	 * @param gameStats
 	 * @param node
 	 */
-	public NodeGameSettingsJSON(GameStats gameStats, Players node) {
+	public NodeGameSettingsJSON(GameStats gameStats, Players node, HashMap<Long, DataPacket> packets) {
 		this.gameStats = gameStats;
 		this.node = node;
+		this.packets=packets;
 	}
 
 	public Players getNode() {

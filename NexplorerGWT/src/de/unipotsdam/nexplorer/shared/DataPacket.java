@@ -25,7 +25,7 @@ public class DataPacket implements IsSerializable {
 	public MessageDescription messageDescription;
 	private Integer awardedScore;
 	@JsonProperty("type")
-	protected Byte type;
+	public Byte type;
 
 	public DataPacket() {
 		this.messageDescription = new MessageDescription();
@@ -119,4 +119,5 @@ public class DataPacket implements IsSerializable {
 	public void setAwardedScore(Integer score) {
 		this.awardedScore = score;
 	}
+	
 }
