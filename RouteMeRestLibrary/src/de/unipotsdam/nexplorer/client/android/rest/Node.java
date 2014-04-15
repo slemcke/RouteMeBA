@@ -8,6 +8,7 @@ public class Node {
 	private Integer neighbourCount;
 	private Integer score;
 	private Integer range;
+	private Integer level;
 	private Map<Integer, Neighbour> neighbours;
 	private Integer nearbyItemsCount;
 	private NearbyItems nearbyItems;
@@ -42,6 +43,14 @@ public class Node {
 
 	public Integer getRange() {
 		return range;
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
 	}
 
 	public void setRange(Integer range) {
