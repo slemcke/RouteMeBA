@@ -5,6 +5,23 @@
     android:background="@drawable/gradient"
     android:orientation="horizontal"
     android:padding="12dp" >
+    
+    
+    <TextView
+        android:id="@+id/level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="1dp"
+        android:drawableLeft="@drawable/placeholder"
+        android:gravity="center"
+        android:text=""
+        android:textColor="#FFFFFFFF" />
+
+    <Space
+        android:id="@+id/space1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
 
     <TextView
         android:id="@+id/points"
@@ -17,7 +34,7 @@
         android:textColor="#FFFFFFFF" />
 
     <Space
-        android:id="@+id/space1"
+        android:id="@+id/space2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
@@ -33,7 +50,7 @@
         android:textColor="#FFFFFFFF" />
 
     <Space
-        android:id="@+id/space2"
+        android:id="@+id/space3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
@@ -49,7 +66,7 @@
         android:textColor="#FFFFFFFF" />
 
     <Space
-        android:id="@+id/space3"
+        android:id="@+id/space4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
