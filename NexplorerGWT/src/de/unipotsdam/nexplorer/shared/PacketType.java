@@ -4,28 +4,18 @@ import java.io.Serializable;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 public enum PacketType implements Serializable {
-		@JsonProperty("MAIL")
-		MAIL ("MAIL", (byte)1),
-		@JsonProperty("VOIP")
-		VOIP ("VOIP", (byte)2),
-		@JsonProperty("CHAT")
-		CHAT ("CHAT", (byte)3),
-		@JsonProperty("CHAT8")
-		CHAT8 ("CHAT8", (byte)4),
-		@JsonProperty("CHAT1")
-		CHAT1 ("CHAT1", (byte)5),
-		@JsonProperty("CHAT2")
-		CHAT2 ("CHAT2", (byte)6),
-		@JsonProperty("CHAT3")
-		CHAT3 ("CHAT3", (byte)7),
-		@JsonProperty("CHAT4")
-		CHAT4 ("CHAT4", (byte)8),
-		@JsonProperty("CHAT5")
-		CHAT5 ("CHAT5", (byte)9),
-		@JsonProperty("CHAT6")
-		CHAT6 ("CHAT6", (byte)10),
-		@JsonProperty("CHAT7")
-		CHAT7 ("CHAT7", (byte)11);
+		@JsonProperty("Mail")
+		Mail ("Mail", (byte)1),
+		@JsonProperty("Html")
+		Html ("Html", (byte)2),
+		@JsonProperty("Chat")
+		Chat ("Chat", (byte)3),
+		@JsonProperty("Navigation")
+		Navigation ("Navigation", (byte)4),
+		@JsonProperty("VoIP")
+		VoIP ("VoIP", (byte)5);
+
+
 		
 	    private final String name;
 	    private final Byte priority; 
