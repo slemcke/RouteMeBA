@@ -4,6 +4,8 @@ package de.unipotsdam.nexplorer.server.persistence.hibernate.dto;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -36,11 +38,12 @@ public class AodvDataPackets extends DataPacket implements java.io.Serializable,
 	private Long processingRound;
 	private Byte didReachBonusGoal;
 	private Integer version;
+	private Timestamp created;
 
 	public AodvDataPackets() {
 	}
 
-	public AodvDataPackets(Players playersByDestinationId, Players playersByOwnerId, Players playersBySourceId, Players playersByCurrentNodeId, Short hopsDone, Byte status, Long processingRound, Byte didReachBonusGoal, Byte type) {
+	public AodvDataPackets(Players playersByDestinationId, Players playersByOwnerId, Players playersBySourceId, Players playersByCurrentNodeId, Short hopsDone, Byte status, Long processingRound, Byte didReachBonusGoal, Byte type, Timestamp created) {
 		setPlayersByDestinationId(playersByDestinationId);
 		setPlayersByOwnerId(playersByOwnerId);
 		setPlayersBySourceId(playersBySourceId);
@@ -50,6 +53,7 @@ public class AodvDataPackets extends DataPacket implements java.io.Serializable,
 		this.processingRound = processingRound;
 		this.didReachBonusGoal = didReachBonusGoal;
 		this.type=type;
+		this.created=created;
 	}
 
 	@Id
@@ -151,6 +155,15 @@ public class AodvDataPackets extends DataPacket implements java.io.Serializable,
 		this.type = type;
 	}
 
+	@Column(name = "created")
+	public Timestamp getCreated() {
+		return this.created;
+	}
+
+	public void setCreated(Timestamp created) {
+		this.created = created;
+	}
+	
 	@Column(name = "awarded_score")
 	public Integer getAwardedScore() {
 		return super.getAwardedScore();
@@ -217,6 +230,8 @@ public class AodvDataPackets extends DataPacket implements java.io.Serializable,
 			return false;
 		} else if (other.type != type) {
 				return false;
+		} else if (other.created != created) {
+			return false;
 		} else if (other.version != version) {
 			return false;
 		}

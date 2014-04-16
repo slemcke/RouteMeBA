@@ -16,6 +16,7 @@ import de.unipotsdam.nexplorer.client.MobileService;
 import de.unipotsdam.nexplorer.client.android.rest.RoutingRequest;
 import de.unipotsdam.nexplorer.client.android.rest.PingRequest;
 import de.unipotsdam.nexplorer.client.android.rest.PingResponse;
+import de.unipotsdam.nexplorer.client.android.rest.RoutingResponse;
 import de.unipotsdam.nexplorer.server.aodv.AodvDataPacket;
 import de.unipotsdam.nexplorer.server.aodv.AodvFactory;
 import de.unipotsdam.nexplorer.server.aodv.AodvNode;
@@ -227,7 +228,7 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 		}
 	}
 	
-	public OK sendPacket(RoutingRequest request){
+	public RoutingResponse sendPacket(RoutingRequest request){
 		Unit unit = new Unit();
 		try {
 			DatabaseImpl dbAccess = unit.resolve(DatabaseImpl.class);
@@ -237,9 +238,14 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 			Player next = dbAccess.getPlayerById(request.getNextHopId());
 			AodvNode nextHop = unit.resolve(AodvFactory.class).create(next);
 			
+			long currentScore = currentNode.player().getScore();
 			packet.forwardPacket(currentNode, nextHop);
 			
-			return new OK();
+			long newScore = currentNode.player().getScore();
+			RoutingResponse response = new RoutingResponse();
+			response.setScore(newScore - currentScore - 100);
+			return response;
+			
 		} catch (Throwable e) {
 			unit.cancel();
 			throw new WebApplicationException(e);

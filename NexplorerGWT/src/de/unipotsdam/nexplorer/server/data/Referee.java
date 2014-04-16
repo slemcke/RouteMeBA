@@ -32,10 +32,16 @@ public class Referee {
 		for (int i = 1; i <= packet.inner().getHopsDone(); i++) {
 			points += (i * 10);
 		}
+		
+		if(packet.inner().getType() != null){
+			int packetBonus = packet.inner().getType().byteValue();
+			points += Math.round((points * packetBonus)/10);
+		} 
 
 		if (packet.inner().getDidReachBonusGoal() != 0) {
 			points += Math.round(points * 0.5);
 		}
+			
 		
 		packet.inner().setAwardedScore(points);
 		packet.save();

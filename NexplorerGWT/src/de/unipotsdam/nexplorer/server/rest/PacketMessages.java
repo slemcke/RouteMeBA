@@ -7,7 +7,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import de.unipotsdam.nexplorer.client.android.rest.RoutingRequest;
-import de.unipotsdam.nexplorer.server.rest.dto.OK;
+import de.unipotsdam.nexplorer.client.android.rest.RoutingResponse;
 
 @Path("packet/")
 public class PacketMessages {
@@ -21,7 +21,7 @@ public class PacketMessages {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public OK sendPacket(RoutingRequest request) {
+	public RoutingResponse sendPacket(RoutingRequest request) {
 		return mobile.sendPacket(request);
 	}
 }
