@@ -7,15 +7,15 @@
     android:padding="12dp" >
     
     
-    <TextView
-        android:id="@+id/level"
+    <ImageView
+		android:id="@+id/level"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:src="@drawable/lvlone"
         android:layout_margin="1dp"
-        android:drawableLeft="@drawable/placeholder"
         android:gravity="center"
-        android:text=""
-        android:textColor="#FFFFFFFF" />
+        android:contentDescription="@drawable/placeholder"
+         />
 
     <Space
         android:id="@+id/space1"

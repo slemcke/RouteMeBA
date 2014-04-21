@@ -4,6 +4,7 @@
     <string name="default_points">0</string>
     <string name="default_neighbours">0</string>
     <string name="default_battery">0%</string>
+    <string name="default_level">level</string>
     <string name="default_time">0</string>
     <string name="collect_item">Gegenstand einsammeln</string>
     <string name="default_nextitemdistance"></string>
