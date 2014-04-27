@@ -5,8 +5,6 @@ import java.util.Date;
 
 import org.apache.logging.log4j.Logger;
 
-import sun.nio.cs.ext.PCK;
-
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
@@ -17,7 +15,6 @@ import de.unipotsdam.nexplorer.server.persistence.Setting;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvDataPackets;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingMessages;
 import de.unipotsdam.nexplorer.shared.Aodv;
-import de.unipotsdam.nexplorer.shared.PacketType;
 
 public class Link {
 
@@ -46,9 +43,9 @@ public class Link {
 		// prüfen ob Ziel wirklich noch in Reichweite und im Spiel
 		if (locator.isInRange(src.player(), dest.player()) && dest.hasBattery()) {
 			logger.trace("Datenpaket mit sourceId " + thePacket.inner().getPlayersBySourceId().getId() + " und destinationId " + thePacket.inner().getPlayersByDestinationId().getId() + " an Nachbarn mit ID " + dest.getId() + " senden, Batterie {} reduzieren.", src.getId());
+
 			
-			Timestamp newTime = new Timestamp(new Date().getTime());
-			AodvDataPackets newPacket = new AodvDataPackets(thePacket.inner().getPlayersByDestinationId(), thePacket.inner().getPlayersByOwnerId(), thePacket.inner().getPlayersBySourceId(), thePacket.inner().getPlayersByCurrentNodeId(), thePacket.inner().getHopsDone(), thePacket.inner().getStatus(), thePacket.inner().getProcessingRound(), thePacket.inner().getDidReachBonusGoal(), thePacket.inner().getType(), newTime);
+			AodvDataPackets newPacket = new AodvDataPackets(thePacket.inner().getPlayersByDestinationId(), thePacket.inner().getPlayersByOwnerId(), thePacket.inner().getPlayersBySourceId(), thePacket.inner().getPlayersByCurrentNodeId(), thePacket.inner().getHopsDone(), thePacket.inner().getStatus(), thePacket.inner().getProcessingRound(), thePacket.inner().getDidReachBonusGoal(), thePacket.inner().getType());
 			src.send(newPacket).toDestination();
 			newPacket.setHopsDone((short) (newPacket.getHopsDone() + 1));
 			newPacket.setProcessingRound(gameSettings.getCurrentDataRound() + 1);
@@ -60,11 +57,14 @@ public class Link {
 				arrivedPacket.inner().setStatus(Aodv.DATA_PACKET_STATUS_ARRIVED);
 				referee.packetArrived(gameSettings, arrivedPacket);
 			}
+			long newTime = System.currentTimeMillis();
+			newPacket.setCreated(newTime);
 			dbAccess.persist(newPacket);
+
 			if(thePacket.getCurrentNode().player().getDifficulty() == 3){
 				//Berechnung für Level 3 anhand Paketpriorität und verstrichener Zeit
-				Timestamp oldTime = thePacket.inner().getCreated();
-				long diff = (oldTime.getTime() - newTime.getTime())%1000; // in Sekunden				
+				long oldTime = thePacket.inner().getCreated();
+				long diff = (oldTime - newTime)%1000; // in Sekunden				
 				long type = thePacket.inner().getType();
 				
 				//Startwert: 20fache Paketwert

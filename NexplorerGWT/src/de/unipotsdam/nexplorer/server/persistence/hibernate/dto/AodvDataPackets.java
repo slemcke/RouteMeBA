@@ -38,12 +38,24 @@ public class AodvDataPackets extends DataPacket implements java.io.Serializable,
 	private Long processingRound;
 	private Byte didReachBonusGoal;
 	private Integer version;
-	private Timestamp created;
+	private long created;
 
 	public AodvDataPackets() {
 	}
 
-	public AodvDataPackets(Players playersByDestinationId, Players playersByOwnerId, Players playersBySourceId, Players playersByCurrentNodeId, Short hopsDone, Byte status, Long processingRound, Byte didReachBonusGoal, Byte type, Timestamp created) {
+	public AodvDataPackets(Players playersByDestinationId, Players playersByOwnerId, Players playersBySourceId, Players playersByCurrentNodeId, Short hopsDone, Byte status, Long processingRound, Byte didReachBonusGoal, Byte type) {
+		setPlayersByDestinationId(playersByDestinationId);
+		setPlayersByOwnerId(playersByOwnerId);
+		setPlayersBySourceId(playersBySourceId);
+		setPlayersByCurrentNodeId(playersByCurrentNodeId);
+		this.hopsDone = hopsDone;
+		this.status = status;
+		this.processingRound = processingRound;
+		this.didReachBonusGoal = didReachBonusGoal;
+		this.type=type;
+	}
+	
+	public AodvDataPackets(Players playersByDestinationId, Players playersByOwnerId, Players playersBySourceId, Players playersByCurrentNodeId, Short hopsDone, Byte status, Long processingRound, Byte didReachBonusGoal, Byte type, long created) {
 		setPlayersByDestinationId(playersByDestinationId);
 		setPlayersByOwnerId(playersByOwnerId);
 		setPlayersBySourceId(playersBySourceId);
@@ -154,16 +166,17 @@ public class AodvDataPackets extends DataPacket implements java.io.Serializable,
 	public void setType(Byte type) {
 		this.type = type;
 	}
-
+	
 	@Column(name = "created")
-	public Timestamp getCreated() {
+	public long getCreated() {
 		return this.created;
 	}
 
-	public void setCreated(Timestamp created) {
+	public void setCreated(long created) {
 		this.created = created;
 	}
 	
+
 	@Column(name = "awarded_score")
 	public Integer getAwardedScore() {
 		return super.getAwardedScore();

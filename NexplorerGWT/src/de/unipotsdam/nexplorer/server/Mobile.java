@@ -21,7 +21,6 @@ import de.unipotsdam.nexplorer.server.aodv.AodvDataPacket;
 import de.unipotsdam.nexplorer.server.aodv.AodvFactory;
 import de.unipotsdam.nexplorer.server.aodv.AodvNode;
 import de.unipotsdam.nexplorer.server.aodv.AodvRoutingAlgorithm;
-import de.unipotsdam.nexplorer.server.aodv.Link;
 import de.unipotsdam.nexplorer.server.aodv.RoutingTable;
 import de.unipotsdam.nexplorer.server.data.ItemCollector;
 import de.unipotsdam.nexplorer.server.data.NodeMapper;
@@ -30,12 +29,10 @@ import de.unipotsdam.nexplorer.server.data.Unit;
 import de.unipotsdam.nexplorer.server.di.LogWrapper;
 import de.unipotsdam.nexplorer.server.persistence.DatabaseImpl;
 import de.unipotsdam.nexplorer.server.persistence.Player;
-import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvDataPackets;
+import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingTableEntries;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Players;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.PositionBacklog;
 import de.unipotsdam.nexplorer.server.rest.dto.NodeGameSettingsJSON;
-import de.unipotsdam.nexplorer.server.rest.dto.OK;
-import de.unipotsdam.nexplorer.shared.Aodv;
 import de.unipotsdam.nexplorer.shared.DataPacket;
 import de.unipotsdam.nexplorer.shared.Game;
 import de.unipotsdam.nexplorer.shared.GameStats;
@@ -192,7 +189,9 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 				jsonPackets.put(jsonPacket.getId(), jsonPacket);
 			}
 			
-			NodeGameSettingsJSON result = new NodeGameSettingsJSON(stats, node, jsonPackets);
+			List<AodvRoutingTableEntries> table = dbAccess.getRoutingTable(id);
+			
+			NodeGameSettingsJSON result = new NodeGameSettingsJSON(stats, node, jsonPackets, table);
 			return result;
 		} catch (Exception e) {
 			unit.cancel();

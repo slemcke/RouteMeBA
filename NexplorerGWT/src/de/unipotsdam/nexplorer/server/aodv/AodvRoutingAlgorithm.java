@@ -1,6 +1,5 @@
 package de.unipotsdam.nexplorer.server.aodv;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
@@ -47,7 +46,7 @@ public class AodvRoutingAlgorithm {
 		if(type != null){
 			newMessage.setType(type);
 		}
-		newMessage.setCreated(new Timestamp(new Date().getTime()));
+		newMessage.setCreated(System.currentTimeMillis());
 		return factory.create(src).enqueMessage(newMessage);
 	}
 

@@ -316,6 +316,11 @@ public class DatabaseImpl {
 		}
 		return result;
 	}
+	
+	public List<AodvRoutingTableEntries> getRoutingTable(Long nodeId) {
+		return session.createCriteria(AodvRoutingTableEntries.class).add(eq("nodeId", nodeId)).list();
+	}
+	
 
 	public List<Player> getNeighboursWithinRange(Player center) {
 		// query.having("distance <= ".gameSettings.baseNodeRange / 1000);

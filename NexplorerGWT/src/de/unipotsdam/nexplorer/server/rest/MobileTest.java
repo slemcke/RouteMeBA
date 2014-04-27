@@ -31,7 +31,7 @@ public class MobileTest {
 	@Path("get_game_status")
 	@Produces("application/json")
 	public NodeGameSettingsJSON getNodeGameSettingsJSON() {
-		NodeGameSettingsJSON result = new NodeGameSettingsJSON(null, null, null);
+		NodeGameSettingsJSON result = new NodeGameSettingsJSON(null, null, null, null);
 		result.hint = "hint";
 
 		result.node = new Players();

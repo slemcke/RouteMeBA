@@ -1,9 +1,11 @@
 package de.unipotsdam.nexplorer.server.rest.dto;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
+import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvRoutingTableEntries;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Players;
 import de.unipotsdam.nexplorer.shared.DataPacket;
 import de.unipotsdam.nexplorer.shared.GameStats;
@@ -23,6 +25,8 @@ public class NodeGameSettingsJSON {
 	public GameStats gameStats;
 	@JsonProperty("packets")
 	public HashMap<Long, DataPacket> packets;
+	@JsonProperty("routingTable")
+	public List<AodvRoutingTableEntries> table;
 	//soll irgendeiner Tippnachricht ausgeben
 	@JsonProperty("hint")
 	public String hint;
@@ -33,10 +37,11 @@ public class NodeGameSettingsJSON {
 	 * @param gameStats
 	 * @param node
 	 */
-	public NodeGameSettingsJSON(GameStats gameStats, Players node, HashMap<Long, DataPacket> packets) {
+	public NodeGameSettingsJSON(GameStats gameStats, Players node, HashMap<Long, DataPacket> packets, List<AodvRoutingTableEntries> table) {
 		this.gameStats = gameStats;
 		this.node = node;
 		this.packets=packets;
+		this.table=table;
 	}
 
 	public Players getNode() {

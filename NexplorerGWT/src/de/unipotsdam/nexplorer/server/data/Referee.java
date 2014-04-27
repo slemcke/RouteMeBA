@@ -41,7 +41,6 @@ public class Referee {
 		if (packet.inner().getDidReachBonusGoal() != 0) {
 			points += Math.round(points * 0.5);
 		}
-			
 		
 		packet.inner().setAwardedScore(points);
 		packet.save();

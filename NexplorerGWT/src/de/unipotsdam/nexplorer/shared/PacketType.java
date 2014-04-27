@@ -14,8 +14,6 @@ public enum PacketType implements Serializable {
 		Navigation ("Navigation", (byte)4),
 		@JsonProperty("VoIP")
 		VoIP ("VoIP", (byte)5);
-
-
 		
 	    private final String name;
 	    private final Byte priority; 
