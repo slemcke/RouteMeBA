@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <project
-    name="KompetenzManager"
+    name="RouteMe"
     basedir="."
-    default="default" >
+    default="buildwar" >
 
     <target
         name="default"
@@ -13,14 +13,15 @@
 
         <war
             basedir="war"
-            destfile="KompetenzManager.war"
+            destfile="ROOT.war"
             webxml="war/WEB-INF/web.xml" >
 
             <exclude name="WEB-INF/**" />
-
             <webinf dir="war/WEB-INF/" >
-
                 <include name="**/*.jar" />
+                <include name="**/classes/**" />
+                <include name="**/deploy/**" />
+                <include name="**/settings.xml" />
             </webinf>
         </war>
     </target>
@@ -28,7 +29,7 @@
     <target name="deploy" >
 
         <copy
-            file="KompetenzManager.war"
+            file="ROOT.war"
             todir="." />
     </target>
 

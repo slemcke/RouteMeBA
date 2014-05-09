@@ -8,13 +8,20 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+
+
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 
+import javax.annotation.meta.Exclusive;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.google.inject.Injector;
 
@@ -56,6 +63,7 @@ public class AodvRoutingAlgorithmTest {
 
 	@Before
 	public void setUp() {
+		
 		srcPlayer = new Players();
 		srcPlayer.setAodvDataPacketsesForCurrentNodeId(new HashSet<AodvDataPackets>());
 		srcPlayer.setAodvDataPacketsesForDestinationId(new HashSet<AodvDataPackets>());
@@ -179,9 +187,13 @@ public class AodvRoutingAlgorithmTest {
 		when(dbAccess.getPlayerById(4l)).thenReturn(other);
 
 		factory = injector.getInstance(AodvFactory.class);
+		
+		
 	}
 
+	
 	private void makeNeighbours(Player one, Player two, Players pOne, Players pTwo) {
+
 		when(locator.isInRange(refEq(one), refEq(two))).thenReturn(true);
 
 		pOne.getNeighbourses().add(new Neighbours(pTwo, pOne));
@@ -197,6 +209,8 @@ public class AodvRoutingAlgorithmTest {
 
 	@Test
 	public void testInsertNewMessageWithoutRoute() throws PlayerDoesNotExistException {
+
+		    
 		long dataProcessingRound = 5l;
 		long routingProcessingRound = 15l;
 		settings.setCurrentDataPacketProcessingRound(dataProcessingRound);
@@ -207,11 +221,12 @@ public class AodvRoutingAlgorithmTest {
 
 		makeNeighbours(src, other, srcPlayer, otherPlayer);
 
+		
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
 		Collection<Object> result = sut.aodvInsertNewMessage(src, dest, owner, null);
-
+		
 		AodvRoutingMessages RREQ = new AodvRoutingMessages(other.getId(), Aodv.ROUTING_MESSAGE_TYPE_RREQ, src.getId(), dest.getId(), 8l, srcSequenceNumber + 1, 1l, "1", routingProcessingRound + 1);
-		AodvDataPackets dataPacket = new AodvDataPackets(destPlayer, ownerPlayer, srcPlayer, srcPlayer, (short) 0, Aodv.DATA_PACKET_STATUS_WAITING_FOR_ROUTE, dataProcessingRound + 1, (byte) 0, null);
+		AodvDataPackets dataPacket = new AodvDataPackets(destPlayer, ownerPlayer, srcPlayer, srcPlayer, (short) 0, Aodv.DATA_PACKET_STATUS_WAITING_FOR_ROUTE, dataProcessingRound + 1, (byte) 0, null, 0);
 		AodvRouteRequestBufferEntries bufferEntry = new AodvRouteRequestBufferEntries(src.getId(), src.getId(), srcPlayer.getSequenceNumber());
 
 		verify(dbAccess).persist(srcPlayer);
@@ -266,6 +281,7 @@ public class AodvRoutingAlgorithmTest {
 		packet.setPlayersByOwnerId(ownerPlayer);
 		packet.setPlayersBySourceId(srcPlayer);
 		packet.setProcessingRound(3l);
+		packet.setCreated(0l);
 
 		assertTrue(result.contains(packet));
 	}
@@ -356,8 +372,9 @@ public class AodvRoutingAlgorithmTest {
 		result.setPlayersByOwnerId(ownerPlayer);
 		result.setPlayersBySourceId(srcPlayer);
 		result.setProcessingRound(6l);
-
-		verify(dbAccess).persist(refEq(result));
+		result.setCreated(0l);
+		String[] except = { "created" };
+		verify(dbAccess).persist(refEq(result,except));
 		verify(dbAccess).delete(packets);
 	}
 
@@ -414,7 +431,8 @@ public class AodvRoutingAlgorithmTest {
 		result.setProcessingRound(4l);
 		result.setStatus(Aodv.DATA_PACKET_STATUS_UNDERWAY);
 
-		verify(dbAccess).persist(refEq(result));
+		String[] except = { "created" };
+		verify(dbAccess).persist(refEq(result, except));
 		verify(dbAccess).delete(packets);
 	}
 
@@ -660,7 +678,8 @@ public class AodvRoutingAlgorithmTest {
 		result.setProcessingRound(currentDataRound + 1);
 		result.setStatus(Aodv.DATA_PACKET_STATUS_ARRIVED);
 
+		String[] except = { "created" };
 		verify(referee).packetArrived(any(Setting.class), any(AodvDataPacket.class));
-		verify(dbAccess).persist(refEq(result));
+		verify(dbAccess).persist(refEq(result, except));
 	}
 }
