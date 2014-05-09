@@ -61,8 +61,8 @@ public class Link {
 			newPacket.setCreated(newTime);
 			dbAccess.persist(newPacket);
 
-			if(thePacket.getCurrentNode().player().getDifficulty() == 3){
-				//Berechnung für Level 3 anhand Paketpriorität und verstrichener Zeit
+			if(thePacket.getCurrentNode().player().getDifficulty() != null && thePacket.getCurrentNode().player().getDifficulty() == 3){
+			//	Berechnung für Level 3 anhand Paketpriorität und verstrichener Zeit
 				long oldTime = thePacket.inner().getCreated();
 				long diff = (oldTime - newTime)%1000; // in Sekunden				
 				long type = thePacket.inner().getType();

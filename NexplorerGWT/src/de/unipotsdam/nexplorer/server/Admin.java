@@ -368,7 +368,7 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 					theNode.decreaseBatteryBy(malus);
 					// theNode.save();
 
-					if (theNode.hasBattery()) {
+					if (theNode.hasBattery() && theNode.getDifficulty() !=3) {
 						theNode.increaseScoreBy(theNode.getNeighbours().size() * 10);
 						theNode.save();
 					} else {

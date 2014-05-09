@@ -44,9 +44,10 @@ public class AodvRoutingAlgorithm {
 		newMessage.setHopsDone((short) 0);
 		newMessage.setDidReachBonusGoal((byte) 0);
 		if(type != null){
-			newMessage.setType(type);
+			newMessage.setType(type);		
 		}
 		newMessage.setCreated(System.currentTimeMillis());
+		
 		return factory.create(src).enqueMessage(newMessage);
 	}
 
@@ -79,7 +80,7 @@ public class AodvRoutingAlgorithm {
 		Setting gameSettings = getGameSettings();
 		logger.trace("------------adovProcessDataPackets Runde " + gameSettings.getCurrentRoutingRound() + " " + new SimpleDateFormat("dd.MM.yyyy HH:m:ss").format(new Date()) + "----------------");
 		for (Player theNode : dbAccess.getAllActiveNodesInRandomOrder()) {
-			if (theNode.getDifficulty() != 3){
+			if (theNode.getDifficulty() == null || theNode.getDifficulty() != 3){
 				factory.create(theNode).aodvProcessDataPackets(gameSettings.getCurrentDataRound());
 			}
 		}

@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import com.google.gwt.editor.client.Editor.Ignore;
 import com.google.gwt.user.client.rpc.GwtTransient;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -243,8 +244,6 @@ public class AodvDataPackets extends DataPacket implements java.io.Serializable,
 			return false;
 		} else if (other.type != type) {
 				return false;
-		} else if (other.created != created) {
-			return false;
 		} else if (other.version != version) {
 			return false;
 		}
