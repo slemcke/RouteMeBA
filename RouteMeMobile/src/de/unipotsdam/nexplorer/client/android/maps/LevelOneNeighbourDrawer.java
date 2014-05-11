@@ -38,6 +38,7 @@ public class LevelOneNeighbourDrawer implements NeighbourDrawer {
 		if (neighbourMarkersArray.get(playerId) == null) {
 			Marker marker = new Marker(host) {
 
+				@Override
 				protected void setData() {
 					position = latlng;
 					map = senchaMap;

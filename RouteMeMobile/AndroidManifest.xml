@@ -39,8 +39,11 @@
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyAxFjPD9732Hi6Yihe9NjW-VunCKqT3kLw" />
+            android:value="AIzaSyDJ9StkA7DcUM5kToWBJkpgtembNnt61Y0" />
 
+        <meta-data android:name="com.google.android.gms.version"
+           android:value="@integer/google_play_services_version" />
+        		
         <activity
             android:name="de.unipotsdam.nexplorer.client.android.ScannedActivity"
             android:label="@string/title_activity_scanned" >

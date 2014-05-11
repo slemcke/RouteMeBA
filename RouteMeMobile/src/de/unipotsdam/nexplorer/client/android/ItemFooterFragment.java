@@ -1,5 +1,7 @@
 package de.unipotsdam.nexplorer.client.android;
 
+import java.util.HashMap;
+
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -36,9 +38,9 @@ public class ItemFooterFragment extends Fragment implements UIFooter {
 		return result;
 	}
 
-	@Override
-	public void updateFooter(Integer nextItemDistance, boolean hasRangeBooster, boolean itemInCollectionRange, String hint) {
+	private void updateFooter(Integer nextItemDistance, boolean hasRangeBooster, boolean itemInCollectionRange, String hint) {
 		this.hint.setText(hint);
+		//dont show hints at lvl 3
 
 		if (nextItemDistance != null)
 			setText(this.nextItemDistance, "Entfernung zum nächsten Gegenstand " + nextItemDistance + " Meter.");
@@ -75,6 +77,11 @@ public class ItemFooterFragment extends Fragment implements UIFooter {
 			collectItem.setText("Gegenstand wird eingesammelt...<img src='media/images/ajax-loader.gif' />");
 		}
 	}
+	
+//	@Override
+//	public void setIsSendingPackage(boolean isSendingPackage){
+//		
+//	}
 
 	private void setText(TextView text, final String string, final Integer imageId) {
 		if (imageId != null) {
@@ -90,5 +97,13 @@ public class ItemFooterFragment extends Fragment implements UIFooter {
 
 	void setText(TextView text, final String string) {
 		setText(text, string, null);
+	}
+
+	@Override
+	public void updateFooter(Integer nextItemDistance, boolean hasRangeBooster,
+			boolean itemInCollectionRange, String hint,
+			HashMap<Long, Byte> packages) {
+		updateFooter(nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
+		
 	}
 }

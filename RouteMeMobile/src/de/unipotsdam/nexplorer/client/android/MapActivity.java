@@ -46,7 +46,9 @@ public class MapActivity extends FragmentActivity {
 		MapRotator map = mapFragment.getMapRotator();
 
 		UIHeader header = (StatusHeaderFragment) getSupportFragmentManager().findFragmentById(R.id.statusHeader);
-		ItemFooterFragment footer = addItemFooter();
+//		ItemFooterFragment footer = addItemFooter();
+		PackageFooterFragment footer = addPackageFooter();
+//		UIFooter footer = (ItemFooterFragment) getSupportFragmentManager().findFragmentById(R.id.itemFooter);
 
 		loginDialog = new LoginDialog(this);
 		loginDialog.setOnLoginListener(new LoginDialog.LoginCallback() {
@@ -87,6 +89,16 @@ public class MapActivity extends FragmentActivity {
 		FragmentTransaction transaction = manager.beginTransaction();
 
 		ItemFooterFragment footer = new ItemFooterFragment();
+		transaction.replace(R.id.itemFooter, footer);
+		transaction.commit();
+		return footer;
+	}
+	
+	private PackageFooterFragment addPackageFooter() {
+		FragmentManager manager = getSupportFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+
+		PackageFooterFragment footer = new PackageFooterFragment();
 		transaction.replace(R.id.itemFooter, footer);
 		transaction.commit();
 		return footer;

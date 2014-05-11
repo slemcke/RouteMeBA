@@ -47,6 +47,7 @@ public class NexplorerMap extends RotatingMapFragment {
 
 		playerMarker = new Marker(getActivity()) {
 
+			@Override
 			protected void setData() {
 				MarkerImage image = new MarkerImage(R.drawable.home_network);
 				this.icon = image;
@@ -90,7 +91,10 @@ public class NexplorerMap extends RotatingMapFragment {
 			neighbourDrawer = new LevelOneNeighbourDrawer(googleMap, getActivity());
 		} else if (difficulty.equals("2")) {
 			neighbourDrawer = new LevelTwoNeighbourDrawer(googleMap, getActivity());
+		} else if (difficulty.equals("3")){
+			neighbourDrawer = new LevelTwoNeighbourDrawer(googleMap, getActivity());
 		}
+		
 	}
 
 	/**
@@ -116,6 +120,7 @@ public class NexplorerMap extends RotatingMapFragment {
 		if (nearbyItemMarkersArray.get(itemId) == null) {
 			Marker marker = new Marker(getActivity()) {
 
+				@Override
 				protected void setData() {
 					position = latlng;
 					map = googleMap;

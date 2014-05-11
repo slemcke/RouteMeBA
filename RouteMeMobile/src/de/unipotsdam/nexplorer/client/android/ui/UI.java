@@ -1,5 +1,7 @@
 package de.unipotsdam.nexplorer.client.android.ui;
 
+import java.util.HashMap;
+
 import android.app.Activity;
 import de.unipotsdam.nexplorer.client.android.callbacks.LoginError;
 import de.unipotsdam.nexplorer.client.android.callbacks.RemovalReason;
@@ -32,9 +34,9 @@ public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 		this.header = header;
 	}
 
-	public void updateStatusHeaderAndFooter(final int score, final int neighbourCount, final long remainingPlayingTime, final double battery, final Integer nextItemDistance, final boolean hasRangeBooster, final boolean itemInCollectionRange, final String hint, final int level) {
+	public void updateStatusHeaderAndFooter(final int score, final int neighbourCount, final long remainingPlayingTime, final double battery, final Integer nextItemDistance, final boolean hasRangeBooster, final boolean itemInCollectionRange, final String hint, final int level, final HashMap<Long,Byte> packages) {
 		header.updateHeader(score, neighbourCount, remainingPlayingTime, battery,level);
-		footer.updateFooter(nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
+		footer.updateFooter(nextItemDistance, hasRangeBooster, itemInCollectionRange, hint,packages);
 	}
 
 	public void disableButtonForItemCollection() {

@@ -1,7 +1,7 @@
 package de.unipotsdam.nexplorer.client.android.sensors;
 
 import android.app.Activity;
-import android.app.Service;
+import android.content.Context;
 import android.os.Vibrator;
 
 public class TouchVibrator {
@@ -10,7 +10,7 @@ public class TouchVibrator {
 	private Vibrator vibrator;
 
 	public TouchVibrator(Activity host) {
-		this.vibrator = (Vibrator) host.getSystemService(Service.VIBRATOR_SERVICE);
+		this.vibrator = (Vibrator) host.getSystemService(Context.VIBRATOR_SERVICE);
 	}
 
 	public void vibrate() {

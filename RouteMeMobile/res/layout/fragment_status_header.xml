@@ -6,16 +6,14 @@
     android:orientation="horizontal"
     android:padding="12dp" >
     
-    
     <ImageView
-		android:id="@+id/level"
+        android:id="@+id/level"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/lvlone"
         android:layout_margin="1dp"
+        android:contentDescription="@string/default_level"
         android:gravity="center"
-        android:contentDescription="@drawable/placeholder"
-         />
+        android:src="@drawable/lvlthree" />
 
     <Space
         android:id="@+id/space1"
