@@ -202,13 +202,13 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 			int neighbourCount = data.node.getNeighbourCount();
 			int score = data.node.getScore();
 			int playerRange = data.node.getRange();
-//			int level = data.node.getLevel();
-			int level = 1;
-			try{
-			level = Integer.parseInt(data.stats.getGameDifficulty());
-			}catch (NumberFormatException e){
-				//TODO handle exception
-			}
+			int level = data.node.getDifficulty();
+//			int level = 1;
+//			try{
+//			level = Integer.parseInt(data.stats.getGameDifficulty());
+//			}catch (NumberFormatException e){
+//				//TODO handle exception
+//			}
 //			int level = 1;
 			java.util.Map<Integer, Neighbour> neighbours = data.node.getNeighbours();
 			java.util.Map<Integer, Item> nearbyItems = data.node.getNearbyItems().getItems();

@@ -8,7 +8,7 @@ public class Node {
 	private Integer neighbourCount;
 	private Integer score;
 	private Integer range;
-	private Integer level;
+	private Long difficulty;
 	private Map<Integer, Neighbour> neighbours;
 	private Integer nearbyItemsCount;
 	private NearbyItems nearbyItems;
@@ -16,6 +16,16 @@ public class Node {
 	private int itemInCollectionRange;
 	private Integer hasRangeBooster;
 	private boolean pingActive;
+	private RoutingTable routingTable;
+	
+
+	public RoutingTable getRoutingTable() {
+		return routingTable;
+	}
+
+	public void setRoutingTable(RoutingTable routingTable) {
+		this.routingTable = routingTable;
+	}
 
 	public Double getBatterieLevel() {
 		return batterieLevel;
@@ -45,12 +55,12 @@ public class Node {
 		return range;
 	}
 
-	public int getLevel() {
-		return level;
+	public int getDifficulty() {
+		return difficulty;
 	}
 
-	public void setLevel(int level) {
-		this.level = level;
+	public void setDifficulty(int difficulty) {
+		this.difficulty = difficulty;
 	}
 
 	public void setRange(Integer range) {
