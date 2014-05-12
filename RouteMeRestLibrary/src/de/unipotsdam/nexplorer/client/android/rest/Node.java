@@ -8,7 +8,7 @@ public class Node {
 	private Integer neighbourCount;
 	private Integer score;
 	private Integer range;
-	private Long difficulty;
+	private Integer difficulty;
 	private Map<Integer, Neighbour> neighbours;
 	private Integer nearbyItemsCount;
 	private NearbyItems nearbyItems;
