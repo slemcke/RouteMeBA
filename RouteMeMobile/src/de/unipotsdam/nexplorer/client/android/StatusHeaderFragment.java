@@ -34,7 +34,7 @@ public class StatusHeaderFragment extends Fragment implements UIHeader {
 
 	@Override
 	public void updateHeader(Integer score, Integer neighbourCount,
-			Long remainingPlayingTime, Double battery, Integer level) {
+			Long remainingPlayingTime, Double battery, Long level) {
 		//set level icon (maybe onCreate method)
 		if (level == 1) {
 			this.level.setImageResource(R.drawable.lvlone);

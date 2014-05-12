@@ -10,7 +10,7 @@ import de.unipotsdam.nexplorer.client.android.callbacks.UIGameEvents;
 import de.unipotsdam.nexplorer.client.android.callbacks.UIHeader;
 import de.unipotsdam.nexplorer.client.android.callbacks.UILogin;
 import de.unipotsdam.nexplorer.client.android.callbacks.UISensors;
-import de.unipotsdam.nexplorer.client.android.rest.DataPacket;
+import de.unipotsdam.nexplorer.client.android.rest.Packet;
 
 public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 
@@ -35,7 +35,7 @@ public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 		this.header = header;
 	}
 
-	public void updateStatusHeaderAndFooter(final int score, final int neighbourCount, final long remainingPlayingTime, final double battery, final Integer nextItemDistance, final boolean hasRangeBooster, final boolean itemInCollectionRange, final String hint, final int level, final HashMap<Long,Byte> packages) {
+	public void updateStatusHeaderAndFooter(final int score, final int neighbourCount, final long remainingPlayingTime, final double battery, final Integer nextItemDistance, final boolean hasRangeBooster, final boolean itemInCollectionRange, final String hint, final long level, final HashMap<Long,Byte> packages) {
 		header.updateHeader(score, neighbourCount, remainingPlayingTime, battery,level);
 		footer.updateFooter(nextItemDistance, hasRangeBooster, itemInCollectionRange, hint,packages);
 	}
@@ -44,7 +44,7 @@ public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 		//TODO
 	}
 	
-	public void addPacketToUI(DataPacket packet){
+	public void addPacketToUI(Packet packet){
 		//TODO
 	}
 

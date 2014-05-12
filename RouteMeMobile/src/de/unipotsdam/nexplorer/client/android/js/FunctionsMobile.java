@@ -202,7 +202,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 			int neighbourCount = data.node.getNeighbourCount();
 			int score = data.node.getScore();
 			int playerRange = data.node.getRange();
-			int level = data.node.getDifficulty();
+			long level = data.node.getDifficulty();
 //			int level = 1;
 //			try{
 //			level = Integer.parseInt(data.stats.getGameDifficulty());
@@ -269,7 +269,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 	/**
 	 * updates the display with the new position and the positions of the neighbours
 	 */
-	private void updateDisplay(int playerRange, int itemCollectionRange, java.util.Map<Integer, Neighbour> neighbours, java.util.Map<Integer, Item> nearbyItems, String gameDifficulty, int score, int neighbourCount, long remainingPlayingTime, double battery, Integer nextItemDistance, boolean hasRangeBooster, boolean itemInCollectionRange, String hint, Integer level,HashMap<Long,Byte> packages) {
+	private void updateDisplay(int playerRange, int itemCollectionRange, java.util.Map<Integer, Neighbour> neighbours, java.util.Map<Integer, Item> nearbyItems, String gameDifficulty, int score, int neighbourCount, long remainingPlayingTime, double battery, Integer nextItemDistance, boolean hasRangeBooster, boolean itemInCollectionRange, String hint, Long level,HashMap<Long,Byte> packages) {
 		mapTasks.updateMap(playerRange, itemCollectionRange, neighbours, nearbyItems, gameDifficulty);
 		ui.updateStatusHeaderAndFooter(score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint,level, packages);
 	}
