@@ -9,8 +9,10 @@ import de.unipotsdam.nexplorer.client.android.callbacks.AjaxResult;
 import de.unipotsdam.nexplorer.client.android.rest.GameStatus;
 import de.unipotsdam.nexplorer.client.android.rest.LoginAnswer;
 import de.unipotsdam.nexplorer.client.android.rest.Options;
+import de.unipotsdam.nexplorer.client.android.rest.RoutingRequest;
 import de.unipotsdam.nexplorer.client.android.rest.PingRequest;
 import de.unipotsdam.nexplorer.client.android.rest.PingResponse;
+import de.unipotsdam.nexplorer.client.android.rest.RoutingResponse;
 
 public class RestMobile {
 
@@ -89,6 +91,10 @@ public class RestMobile {
 			}
 		});
 	}
+	
+//	public void sendPacket(final Request request){
+//		
+//	}
 
 	public void login(final String name, final AjaxResult<LoginAnswer> ajaxResult) {
 		String url = host + "/rest/loginManager/login_player_mobile";
@@ -117,7 +123,7 @@ public class RestMobile {
 				try {
 					final String url = host + "/rest/ping";
 					final PingRequest data = new PingRequest();
-
+					
 					data.setNodeId(playerId);
 					data.setLatitude(currentLocation.getLatitude());
 					data.setLongitude(currentLocation.getLongitude());
@@ -165,4 +171,28 @@ public class RestMobile {
 			return e;
 		}
 	}
+
+	public void routePacket(final Long nextHopId, final Long packetId, final AjaxResult<Object> ajaxResult) {
+		new Thread(new Runnable(){
+
+			@Override
+			public void run() {
+				try{
+				final String url = host + "/rest/packet";
+				final RoutingRequest data = new RoutingRequest ();
+				
+				data.setNextHopId(nextHopId);
+				data.setPacketId(packetId);
+				
+				RoutingResponse result = template.postForObject(url, data, RoutingResponse.class);
+				ajaxResult.success(result);
+			} catch(Exception e){
+				ajaxResult.error(e);
+			}
+			}
+		}).start();
+		// TODO Auto-generated method stub
+		
+	}
+	
 }

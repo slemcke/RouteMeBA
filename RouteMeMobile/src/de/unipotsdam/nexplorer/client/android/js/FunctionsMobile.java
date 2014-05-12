@@ -1,7 +1,8 @@
 package de.unipotsdam.nexplorer.client.android.js;
 
-import java.util.Collection;
 import java.util.HashMap;
+
+import org.apache.http.impl.client.RoutedRequest;
 
 import android.location.Location;
 import android.os.AsyncTask;
@@ -19,8 +20,8 @@ import de.unipotsdam.nexplorer.client.android.js.tasks.LoginTask;
 import de.unipotsdam.nexplorer.client.android.net.CollectItem;
 import de.unipotsdam.nexplorer.client.android.net.RequestPing;
 import de.unipotsdam.nexplorer.client.android.net.RestMobile;
+import de.unipotsdam.nexplorer.client.android.net.RoutePacket;
 import de.unipotsdam.nexplorer.client.android.net.SendLocation;
-import de.unipotsdam.nexplorer.client.android.rest.DataPacket;
 import de.unipotsdam.nexplorer.client.android.rest.GameStatus;
 import de.unipotsdam.nexplorer.client.android.rest.Item;
 import de.unipotsdam.nexplorer.client.android.rest.LoginAnswer;
@@ -34,6 +35,7 @@ import de.unipotsdam.nexplorer.client.android.support.LocationObserver;
 import de.unipotsdam.nexplorer.client.android.support.LoginObserver;
 import de.unipotsdam.nexplorer.client.android.support.PingObserver;
 import de.unipotsdam.nexplorer.client.android.support.RangeObserver;
+import de.unipotsdam.nexplorer.client.android.support.RouteRequestObserver;
 import de.unipotsdam.nexplorer.client.android.ui.UI;
 
 public class FunctionsMobile implements PositionWatcher, OnMapClickListener, ShakeListener {
@@ -63,6 +65,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 	private final PingObserver pingObserver;
 	private final CollectObserver collectObserver;
 	private final RangeObserver rangeObserver;
+	private final RouteRequestObserver routeRequestObserver;
 
 	public FunctionsMobile(UI ui, AppWrapper app, Handler handler, NexplorerMap mapTasks, RestMobile rest, RadiusBlinker blinker, TouchVibrator vibrator, GpsReceiver gpsReceiver) {
 		this.mapTasks = mapTasks;
@@ -78,6 +81,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 		CollectItem collectItem = new CollectItem(rest, ui);
 		RadiusBlinker radiusBlinker = blinker;
 		RequestPing requestPing = new RequestPing(rest);
+		RoutePacket routePacket = new RoutePacket(rest,ui);
 		CollectItemVibration vibration = new CollectItemVibration(vibrator);
 
 		this.locationObserver = new LocationObserver();
@@ -100,6 +104,9 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 
 		this.rangeObserver = new RangeObserver();
 		this.rangeObserver.add(radiusBlinker);
+		
+		this.routeRequestObserver = new RouteRequestObserver();
+		this.routeRequestObserver.add(routePacket);
 
 		gpsReceiver.watchPosition(this);
 		mapTasks.setOnMapClickListener(this);
@@ -197,6 +204,12 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 			int playerRange = data.node.getRange();
 //			int level = data.node.getLevel();
 			int level = 1;
+			try{
+			level = Integer.parseInt(data.stats.getGameDifficulty());
+			}catch (NumberFormatException e){
+				//TODO handle exception
+			}
+//			int level = 1;
 			java.util.Map<Integer, Neighbour> neighbours = data.node.getNeighbours();
 			java.util.Map<Integer, Item> nearbyItems = data.node.getNearbyItems().getItems();
 			Integer nextItemDistance = data.node.getNextItemDistance();
@@ -205,17 +218,20 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 			String hint = data.getHint();
 			
 			//Pakete
-			HashMap<Long, DataPacket> packagesMap = data.node.getPackets();
+			
+//			HashMap<Long, DataPacket> packagesMap = data.packets;
 			HashMap<Long,Byte> packages = new HashMap<Long, Byte>();
-			//manipulate map to match gui requirements (id, type)
-			Collection<DataPacket> values = packagesMap.values();
-			for (DataPacket value : values) {
-				packages.put(value.getId(), value.getType());
-			}
-
-			if (oldRange != playerRange) {
-				rangeObserver.fire((double) playerRange);
-			}
+//			//manipulate map to match gui requirements (id, type)
+//			Collection<Long> keys = packagesMap.keySet();
+//			for (Long key : keys) {
+//				DataPacket packet = packagesMap.get(key);
+//				if(packet.get)
+//				packages.put(value.getId(), value.getType());
+//			}
+//
+//			if (oldRange != playerRange) {
+//				rangeObserver.fire((double) playerRange);
+//			}
 
 			mapTasks.removeInvisibleMarkers(neighbours, nearbyItems, gameDifficulty);
 
@@ -253,10 +269,6 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 	/**
 	 * updates the display with the new position and the positions of the neighbours
 	 */
-	void updateDisplay() {
-		// updateDisplay(playerRange, itemCollectionRange, neighbours, nearbyItems, gameDifficulty, score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
-	}
-
 	private void updateDisplay(int playerRange, int itemCollectionRange, java.util.Map<Integer, Neighbour> neighbours, java.util.Map<Integer, Item> nearbyItems, String gameDifficulty, int score, int neighbourCount, long remainingPlayingTime, double battery, Integer nextItemDistance, boolean hasRangeBooster, boolean itemInCollectionRange, String hint, Integer level,HashMap<Long,Byte> packages) {
 		mapTasks.updateMap(playerRange, itemCollectionRange, neighbours, nearbyItems, gameDifficulty);
 		ui.updateStatusHeaderAndFooter(score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint,level, packages);

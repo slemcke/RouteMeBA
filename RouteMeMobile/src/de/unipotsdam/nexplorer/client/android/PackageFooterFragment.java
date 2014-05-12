@@ -27,6 +27,7 @@ public class PackageFooterFragment extends Fragment implements UIFooter {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		
 		super.onCreate(savedInstanceState);
 		this.isCollectingItem = false;
 	}

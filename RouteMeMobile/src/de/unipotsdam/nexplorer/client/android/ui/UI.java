@@ -10,6 +10,7 @@ import de.unipotsdam.nexplorer.client.android.callbacks.UIGameEvents;
 import de.unipotsdam.nexplorer.client.android.callbacks.UIHeader;
 import de.unipotsdam.nexplorer.client.android.callbacks.UILogin;
 import de.unipotsdam.nexplorer.client.android.callbacks.UISensors;
+import de.unipotsdam.nexplorer.client.android.rest.DataPacket;
 
 public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 
@@ -37,6 +38,14 @@ public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 	public void updateStatusHeaderAndFooter(final int score, final int neighbourCount, final long remainingPlayingTime, final double battery, final Integer nextItemDistance, final boolean hasRangeBooster, final boolean itemInCollectionRange, final String hint, final int level, final HashMap<Long,Byte> packages) {
 		header.updateHeader(score, neighbourCount, remainingPlayingTime, battery,level);
 		footer.updateFooter(nextItemDistance, hasRangeBooster, itemInCollectionRange, hint,packages);
+	}
+	
+	public void removePacketFromUI(Long packetId){
+		//TODO
+	}
+	
+	public void addPacketToUI(DataPacket packet){
+		//TODO
 	}
 
 	public void disableButtonForItemCollection() {
