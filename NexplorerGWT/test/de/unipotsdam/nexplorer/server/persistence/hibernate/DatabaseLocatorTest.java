@@ -18,7 +18,7 @@ import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Players;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Settings;
 
 public class DatabaseLocatorTest {
-
+//nur alleine Testen, sonst kann es zu konflikten durch andere Tests kommen
 	@BeforeClass
 	public static void setUp() {
 		Settings settings = new Admin().getDefaultGameStats();

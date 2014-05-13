@@ -13,7 +13,7 @@ import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvDataPackets;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Players;
 
 public class SilentUpdateTest {
-
+//nur alleine testen, sonst kommt es zum Konflikt mit anderen Tests
 	@Before
 	public void before() {
 		Session session = HibernateSessions.getSessionFactory().openSession();

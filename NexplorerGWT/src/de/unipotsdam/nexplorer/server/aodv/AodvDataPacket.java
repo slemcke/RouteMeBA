@@ -115,7 +115,6 @@ public class AodvDataPacket implements ProcessableDataPacket {
 		Player destination = data.create(inner.getPlayersByDestinationId());
 		AodvNode dest = factory.create(destination);
 		RoutingTable table = new RoutingTable(aodvNode, dbAccess);
-		AodvNode nextNode= table.getNextHop(dest);
 		if (table.hasRouteTo(dest)) {
 			// Packet weitersenden
 			Link conn = factory.create(aodvNode, table.getNextHop(dest));
@@ -144,9 +143,9 @@ public class AodvDataPacket implements ProcessableDataPacket {
 		AodvNode dest = factory.create(destination);
 		RoutingTable table = new RoutingTable(currentNode, dbAccess);
 		AodvNode nextNode= table.getNextHop(dest);
-		if (table.hasRouteTo(dest) && nextHop.equals(nextNode)) {
+		if (table.hasRouteTo(dest) && nextHop.getId().equals(nextNode.getId())) {
 			// Packet weitersenden
-			Link conn = factory.create(currentNode, nextNode);
+			Link conn = factory.create(currentNode,nextHop);
 			conn.transmit(this);
 		
 			// Packet löschen
@@ -161,4 +160,5 @@ public class AodvDataPacket implements ProcessableDataPacket {
 			save();
 		}
 	}
+
 }

@@ -21,7 +21,6 @@ import de.unipotsdam.nexplorer.server.aodv.AodvDataPacket;
 import de.unipotsdam.nexplorer.server.aodv.AodvFactory;
 import de.unipotsdam.nexplorer.server.aodv.AodvNode;
 import de.unipotsdam.nexplorer.server.aodv.AodvRoutingAlgorithm;
-import de.unipotsdam.nexplorer.server.aodv.RoutingTable;
 import de.unipotsdam.nexplorer.server.data.ItemCollector;
 import de.unipotsdam.nexplorer.server.data.NodeMapper;
 import de.unipotsdam.nexplorer.server.data.PlayerDoesNotExistException;
@@ -230,11 +229,13 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 	public RoutingResponse sendPacket(RoutingRequest request){
 		Unit unit = new Unit();
 		try {
+			long nextHopId = request.getNextHopId();
+			
 			DatabaseImpl dbAccess = unit.resolve(DatabaseImpl.class);
 			
 			AodvDataPacket packet = dbAccess.getDataPacketById(request.getPacketId());
 			AodvNode currentNode = packet.getCurrentNode();		
-			Player next = dbAccess.getPlayerById(request.getNextHopId());
+			Player next = dbAccess.getPlayerById(nextHopId);
 			AodvNode nextHop = unit.resolve(AodvFactory.class).create(next);
 			
 			long currentScore = currentNode.player().getScore();

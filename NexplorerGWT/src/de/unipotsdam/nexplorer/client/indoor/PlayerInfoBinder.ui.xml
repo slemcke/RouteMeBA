@@ -19,6 +19,17 @@
 
 		<div style="width:100%; text-align:center; font-weight:bold">***Spielerstatus***</div>
 		<table style="width:100%">
+		    <tr>
+				<td>
+					<img src="media/images/icons/user.png" style="vertical-align: middle" />
+				</td>
+				<td>
+					Spielerlevel
+				</td>
+				<td>
+					<img ui:field="currentPlayerLevelPic" style="vertical-align: middle" />
+				</td>
+			</tr>
 			<tr>
 				<td>
 					<img src="media/images/icons/user.png" style="vertical-align: middle" />

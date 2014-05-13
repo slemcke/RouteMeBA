@@ -7,23 +7,18 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.never;
 
-
-
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 
-import javax.annotation.meta.Exclusive;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import com.google.inject.Injector;
+import com.mysql.jdbc.PacketTooBigException;
 
 import de.unipotsdam.nexplorer.server.data.PlayerDoesNotExistException;
 import de.unipotsdam.nexplorer.server.data.Referee;
@@ -42,6 +37,7 @@ import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Neighbours;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Players;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Settings;
 import de.unipotsdam.nexplorer.shared.Aodv;
+import de.unipotsdam.nexplorer.shared.PacketType;
 
 public class AodvRoutingAlgorithmTest {
 
@@ -217,8 +213,9 @@ public class AodvRoutingAlgorithmTest {
 		settings.setCurrentRoutingMessageProcessingRound(routingProcessingRound);
 
 		long srcSequenceNumber = 1337l;
+	
 		srcPlayer.setSequenceNumber(srcSequenceNumber);
-
+		
 		makeNeighbours(src, other, srcPlayer, otherPlayer);
 
 		
@@ -233,6 +230,13 @@ public class AodvRoutingAlgorithmTest {
 		verify(dbAccess).persist(refEq(bufferEntry));
 		verify(dbAccess).persist(refEq(RREQ));
 		assertTrue(result.contains(dataPacket));
+		
+		
+		//PacketType is set
+		result = sut.aodvInsertNewMessage(src, dest, owner, (byte)1);
+		
+		AodvDataPackets dataPacket1 = new AodvDataPackets(destPlayer, ownerPlayer, srcPlayer, srcPlayer, (short) 0, Aodv.DATA_PACKET_STATUS_WAITING_FOR_ROUTE, dataProcessingRound + 1, (byte) 0, (byte) 1, 0);	
+		assertTrue(result.contains(dataPacket1));
 	}
 
 	@Test
@@ -270,7 +274,7 @@ public class AodvRoutingAlgorithmTest {
 		when(dbAccess.getRouteToDestination(destPlayer.getId(), otherPlayer.getId())).thenReturn(factory.create(otherRoute));
 
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
-		Collection<Object> result = sut.aodvInsertNewMessage(src, dest, owner, null);
+		Collection<Object> result = sut.aodvInsertNewMessage(src, dest, owner, (byte)1);
 
 		AodvDataPackets packet = new AodvDataPackets();
 		packet.setStatus(Aodv.DATA_PACKET_STATUS_UNDERWAY);
@@ -281,6 +285,7 @@ public class AodvRoutingAlgorithmTest {
 		packet.setPlayersByOwnerId(ownerPlayer);
 		packet.setPlayersBySourceId(srcPlayer);
 		packet.setProcessingRound(3l);
+		packet.setType((byte)1);
 		packet.setCreated(0l);
 
 		assertTrue(result.contains(packet));
@@ -417,6 +422,7 @@ public class AodvRoutingAlgorithmTest {
 		fromOtherToDest.setTimestamp(new Date().getTime());
 		when(dbAccess.getRouteToDestination(otherPlayer.getId(), destPlayer.getId())).thenReturn(factory.create(fromOtherToDest));
 
+
 		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
 		sut.aodvProcessDataPackets();
 
@@ -434,6 +440,66 @@ public class AodvRoutingAlgorithmTest {
 		String[] except = { "created" };
 		verify(dbAccess).persist(refEq(result, except));
 		verify(dbAccess).delete(packets);
+	}
+	
+	@Test
+	public void testProcessDataPacketForLevelThree() {
+		//packets not send
+		when(dbAccess.getAllActiveNodesInRandomOrder()).thenReturn(Arrays.asList(src));
+		makeNeighbours(src, other, srcPlayer, otherPlayer);
+		
+		srcPlayer.setDifficulty(3l);
+		settings.setCurrentDataPacketProcessingRound(3l);
+
+		AodvDataPackets packets = new AodvDataPackets();
+		packets.setDidReachBonusGoal(null);
+		packets.setHopsDone((short) 0);
+		packets.setId(2l);
+		packets.setPlayersByCurrentNodeId(srcPlayer);
+		packets.setPlayersByDestinationId(destPlayer);
+		packets.setPlayersByOwnerId(ownerPlayer);
+		packets.setPlayersBySourceId(srcPlayer);
+		packets.setProcessingRound(3l);
+		packets.setStatus(Aodv.DATA_PACKET_STATUS_UNDERWAY);
+		when(dbAccess.getAllDataPacketsSortedByDate(src)).thenReturn(Arrays.asList(factory.create(packets)));
+
+		AodvRoutingTableEntries fromSrcToOther = new AodvRoutingTableEntries();
+		fromSrcToOther.setDestinationId(destPlayer.getId());
+		fromSrcToOther.setDestinationSequenceNumber(2l);
+		fromSrcToOther.setHopCount(2l);
+		fromSrcToOther.setId(1l);
+		fromSrcToOther.setNextHopId(otherPlayer.getId());
+		fromSrcToOther.setNodeId(srcPlayer.getId());
+		fromSrcToOther.setTimestamp(new Date().getTime());
+		when(dbAccess.getRouteToDestination(destPlayer.getId(), srcPlayer.getId())).thenReturn(factory.create(fromSrcToOther));
+
+		AodvRoutingTableEntries fromOtherToDest = new AodvRoutingTableEntries();
+		fromOtherToDest.setDestinationId(destPlayer.getId());
+		fromOtherToDest.setDestinationSequenceNumber(2l);
+		fromOtherToDest.setHopCount(1l);
+		fromOtherToDest.setId(2l);
+		fromOtherToDest.setNextHopId(destPlayer.getId());
+		fromOtherToDest.setNodeId(otherPlayer.getId());
+		fromOtherToDest.setTimestamp(new Date().getTime());
+		when(dbAccess.getRouteToDestination(otherPlayer.getId(), destPlayer.getId())).thenReturn(factory.create(fromOtherToDest));
+
+		AodvRoutingAlgorithm sut = injector.getInstance(AodvRoutingAlgorithm.class);
+		sut.aodvProcessDataPackets();
+
+		AodvDataPackets result = new AodvDataPackets();
+		result.setDidReachBonusGoal(null);
+		result.setHopsDone((short) 1);
+		result.setId(null);
+		result.setPlayersByCurrentNodeId(srcPlayer);
+		result.setPlayersByDestinationId(destPlayer);
+		result.setPlayersByOwnerId(ownerPlayer);
+		result.setPlayersBySourceId(srcPlayer);
+		result.setProcessingRound(4l);
+		result.setStatus(Aodv.DATA_PACKET_STATUS_UNDERWAY);
+
+		String[] except = { "created" };
+		verify(dbAccess, never()).persist(refEq(result, except));
+		verify(dbAccess, never()).delete(packets);
 	}
 
 	@Test

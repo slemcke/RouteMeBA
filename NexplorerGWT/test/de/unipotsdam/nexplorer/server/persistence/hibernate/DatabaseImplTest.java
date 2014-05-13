@@ -1,5 +1,7 @@
 package de.unipotsdam.nexplorer.server.persistence.hibernate;
 
+import static org.junit.Assert.*;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -41,12 +43,14 @@ public class DatabaseImplTest {
 		settings.setPlayingFieldLowerRightLongitude(52.);
 		settings.setPlayingFieldUpperLeftLatitude(12.);
 		settings.setPlayingFieldUpperLeftLongitude(51.);
-
+		
 		Players p = new Players();
 
+		AodvDataPackets dp = new AodvDataPackets();
 		Unit unit = new Unit();
 		unit.resolve(DatabaseImpl.class).persist(settings);
 		unit.resolve(DatabaseImpl.class).persist(p);
+		unit.resolve(DatabaseImpl.class).persist(dp);
 		unit.close();
 	}
 
@@ -74,6 +78,14 @@ public class DatabaseImplTest {
 		inner.setId(1l);
 		Player theNode = data.create(inner);
 		dbAccess.getAllDataPacketsSortedByDate(theNode);
+	}
+	
+	@Test
+	public void testgetDataPacketById() {
+		AodvDataPacket result = dbAccess.getDataPacketById(1l);
+		assertNotNull(result);
+		result = dbAccess.getDataPacketById(2l);
+		assertNull(result);
 	}
 
 	@Test
@@ -188,6 +200,11 @@ public class DatabaseImplTest {
 	@Test
 	public void testGetRoutingTableEntries() {
 		dbAccess.getRoutingTableEntries(1l, 2l);
+	}
+	
+	@Test
+	public void testGetRoutingTable() {
+		dbAccess.getRoutingTable(1l);
 	}
 
 	@Test

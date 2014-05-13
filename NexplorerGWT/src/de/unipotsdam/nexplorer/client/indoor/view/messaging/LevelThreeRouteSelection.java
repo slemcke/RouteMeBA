@@ -3,24 +3,20 @@ package de.unipotsdam.nexplorer.client.indoor.view.messaging;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
-import com.google.gwt.dom.client.UListElement;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.ListBox;
 
 import de.unipotsdam.nexplorer.client.indoor.levels.PacketKeeper;
 
-import de.unipotsdam.nexplorer.shared.PacketType;
 
 public class LevelThreeRouteSelection extends LevelTwoRouteSelection {
 
 	private static LevelThreeRouteSelectionUiBinder uiBinder = GWT.create(LevelThreeRouteSelectionUiBinder.class);
-
+	
 	interface LevelThreeRouteSelectionUiBinder extends UiBinder<Element, LevelThreeRouteSelection> {
 	}
 

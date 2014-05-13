@@ -95,7 +95,11 @@ public class DatabaseImpl {
 	public AodvDataPacket getDataPacketById(Long packetId) {
 
 		AodvDataPackets packet = (AodvDataPackets) session.createCriteria(AodvDataPackets.class).add(eq("id", packetId)).uniqueResult();
-		return factory.create(packet);
+		if(packet != null){
+			return factory.create(packet);
+		} else {
+			return null;
+		}
 	}
 
 	public int getRouteRequestCount(AodvDataPacket thePacket) {

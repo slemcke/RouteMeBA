@@ -9,14 +9,13 @@ import de.unipotsdam.nexplorer.shared.PacketType;
 
 public class PacketKeeper {
 
-//	private final Random random;
 	private int i;
 	private int j;
 
 	public PacketKeeper() {
-//		this.random = new Random();
 	}
 
+	//returns 15 packets (three per Type)
 	public List<String> createPacketList() {
 		
 		List<String> packetList = new ArrayList<String>(); 
@@ -27,7 +26,5 @@ public class PacketKeeper {
 		}
 		
 		return packetList;
-//		int pick = random.nextInt(PacketType.values().length);
-//		return PacketType.values()[pick];
 	}
 }

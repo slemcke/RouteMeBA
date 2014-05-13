@@ -54,7 +54,7 @@ public class Route {
 		}
 
 		Route o = (Route) other;
-		return this.getSource().equals(o.getSource()) && this.getDestination().equals(o.getDestination()) && this.getPacket().equals(o.getPacket());
+		return this.getSource().equals(o.getSource()) && this.getDestination().equals(o.getDestination());
 	}
 
 	@Override

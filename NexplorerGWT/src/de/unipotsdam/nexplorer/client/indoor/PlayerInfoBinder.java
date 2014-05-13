@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.dom.client.Node;
@@ -24,13 +25,13 @@ import de.unipotsdam.nexplorer.client.indoor.viewcontroller.IndoorStatsTimer;
 import de.unipotsdam.nexplorer.client.util.HasTable;
 import de.unipotsdam.nexplorer.shared.Aodv;
 import de.unipotsdam.nexplorer.shared.DataPacket;
-import de.unipotsdam.nexplorer.shared.GameStats;
 import de.unipotsdam.nexplorer.shared.GameStatus;
 import de.unipotsdam.nexplorer.shared.TimeManager;
 
 public class PlayerInfoBinder extends HasTable {
 
 	private static PlayerInfoBinderUiBinder uiBinder = GWT.create(PlayerInfoBinderUiBinder.class);
+	private static String media = "media/images/icons/";
 
 	interface PlayerInfoBinderUiBinder extends UiBinder<Element, PlayerInfoBinder> {
 	}
@@ -45,6 +46,8 @@ public class PlayerInfoBinder extends HasTable {
 	DivElement hintMessage;
 	@UiField
 	DivElement currentRouteView;
+	@UiField
+	ImageElement currentPlayerLevelPic;
 	/**
 	 * contains either NewMessageBinder or NewRouteRequestBinder or ResetPLayerMessageBinder
 	 */
@@ -139,6 +142,13 @@ public class PlayerInfoBinder extends HasTable {
 		if (info.getPlayer() != null) {
 			this.currentPlayerName.setInnerText(info.getPlayer().getName());
 			this.currentPlayerScore.setInnerText(info.getPlayer().getScore());
+			if(info.getPlayer().getDifficulty() == 1){
+				this.currentPlayerLevelPic.setSrc(media + "lvlone.png");
+			} else if (info.getPlayer().getDifficulty() == 2){
+				this.currentPlayerLevelPic.setSrc(media + "lvltwo.png");
+			} else {
+				this.currentPlayerLevelPic.setSrc(media + "lvlthree.png");
+			}
 		}
 		if (info.getDataPacketSend() != null) {
 			this.activeRouting.setSourceNode(info.getDataPacketSend().getSourceNodeId());
