@@ -231,14 +231,15 @@ public class AodvNode implements NeighbourAction {
 		if (!theNode.hasBattery()) {
 			return Collections.emptyList();
 		}
-
 		if (table.hasRouteTo(destination)) {
 			send(message).toDestination();
 		} else {
 			pause(message);
-			sendRREQFor(destination).toNeighbours();
-		}
 
+			if (theNode.getDifficulty() == null || theNode.getDifficulty() != 3){
+				sendRREQFor(destination).toNeighbours();
+			}
+		}
 		return Arrays.asList((Object) message);
 	}
 

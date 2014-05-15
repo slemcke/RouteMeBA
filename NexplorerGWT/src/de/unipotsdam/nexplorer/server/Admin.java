@@ -368,8 +368,11 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 					theNode.decreaseBatteryBy(malus);
 					// theNode.save();
 
-					if (theNode.hasBattery() && theNode.getDifficulty() !=3) {
-						theNode.increaseScoreBy(theNode.getNeighbours().size() * 10);
+					if (theNode.hasBattery()) {
+						// Punkte fuer Knoten Level 3 nicht updaten
+						if(theNode.getDifficulty() !=3){
+							theNode.increaseScoreBy(theNode.getNeighbours().size() * 10);							
+						}
 						theNode.save();
 					} else {
 						// aufräumen wenn Knoten ausgefallen (AODV)

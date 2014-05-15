@@ -159,7 +159,7 @@ public class PlayerInfoBinder extends HasTable {
 		} else {
 			this.hintMessage.setInnerHTML(getHintMessage(info));
 		}
-		if(level instanceof LevelThreeRouteSelection){
+		if(level instanceof LevelThreeRouteSelection && info.getDataPacketSend() != null){
 			
 			if(info.getDataPacketSend().getStatus().equals(Aodv.DATA_PACKET_STATUS_ARRIVED) && test){
 				((LevelThreeRouteSelection)this.level).updatePackets();
