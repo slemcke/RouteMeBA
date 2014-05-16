@@ -1,6 +1,7 @@
 package de.unipotsdam.nexplorer.client.android;
 
 import java.util.HashMap;
+import java.util.TreeMap;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -14,15 +15,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import de.unipotsdam.nexplorer.client.android.callbacks.UIFooter;
+import de.unipotsdam.nexplorer.client.android.rest.Packet;
 
-public class PackageFooterFragment extends Fragment implements UIFooter {
+public class PacketFooterFragment extends Fragment implements UIFooter {
 
 	private Button collectItem;
 	private TextView activeItems;
 	private TextView hint;
 	private TextView nextItemDistance;
 	private boolean isCollectingItem;
-	private LinearLayout packagesLayout;
+	private LinearLayout packetLayout;
 	private View result;
 
 	@Override
@@ -35,7 +37,7 @@ public class PackageFooterFragment extends Fragment implements UIFooter {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		result = inflater.inflate(R.layout.fragment_package_footer, container, false);
-		packagesLayout= (LinearLayout) result.findViewById(R.id.packages);
+		packetLayout= (LinearLayout) result.findViewById(R.id.packages);
 //		collectItem = (Button) result.findViewById(R.id.collectItem);
 //		activeItems = (TextView) result.findViewById(R.id.activeItems);
 //		hint = (TextView) result.findViewById(R.id.hint);
@@ -46,7 +48,7 @@ public class PackageFooterFragment extends Fragment implements UIFooter {
 
 
 	@Override
-	public void updateFooter(Integer nextItemDistance, boolean hasRangeBooster, boolean itemInCollectionRange, String hint, HashMap<Long,Byte> packages) {
+	public void updateFooter(Integer nextItemDistance, boolean hasRangeBooster, boolean itemInCollectionRange, String hint, HashMap<Long,Packet> packages) {
 //		this.hint.setText(hint);
 //		//dont show hints at lvl 3
 //
@@ -81,22 +83,32 @@ public class PackageFooterFragment extends Fragment implements UIFooter {
 		//update packages
 		//sort by id
 		
-		for (Long packetID : packages.keySet()) {
-			Byte packetType = packages.get(packetID);
+		//reset packetLayout
+		packetLayout.removeAllViews();
+		
+		//create tree map to sort packets by id -> oldest packet has the lowest key
+		TreeMap<Long,Packet> packetsTree = new TreeMap<Long, Packet>(packages);
+		
+		for (Packet packet : packetsTree.values()) {
+			Byte packetType = packet.getType();
 			//show empty image if no legal type is given
+			//TODO all images
 			int resId = R.drawable.placeholder;
-			if(packetType == 0){
+			if(packetType == (byte)1){
 				resId =  R.drawable.voip;
-			} else if(packetType ==1){
+			} else if(packetType ==(byte)2){
+				resId =  R.drawable.voip;
+			}else if(packetType==(byte)3){
 				resId =  R.drawable.chat;
-			}else if(packetType==2){
+			}else if(packetType==(byte)4){
 				resId =  R.drawable.voip;
-			}else if(packetType==3){
+			}else if(packetType==(byte)5){
 				resId =  R.drawable.voip;
 			}
+			//create new image view for each packet
 			ImageView newPacket = new ImageView(context);
 			newPacket.setImageResource(resId);
-			packagesLayout.addView(newPacket);
+			packetLayout.addView(newPacket);
 		}
 	}
 
