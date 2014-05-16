@@ -47,7 +47,8 @@ public class MapActivity extends FragmentActivity {
 
 		UIHeader header = (StatusHeaderFragment) getSupportFragmentManager().findFragmentById(R.id.statusHeader);
 //		ItemFooterFragment footer = addItemFooter();
-		PackageFooterFragment footer = addPackageFooter();
+//		if(level == 3) TODO cases for level (send level here)
+		PacketFooterFragment footer = addPackageFooter();
 //		UIFooter footer = (ItemFooterFragment) getSupportFragmentManager().findFragmentById(R.id.itemFooter);
 
 		loginDialog = new LoginDialog(this);
@@ -94,11 +95,11 @@ public class MapActivity extends FragmentActivity {
 		return footer;
 	}
 	
-	private PackageFooterFragment addPackageFooter() {
+	private PacketFooterFragment addPackageFooter() {
 		FragmentManager manager = getSupportFragmentManager();
 		FragmentTransaction transaction = manager.beginTransaction();
 
-		PackageFooterFragment footer = new PackageFooterFragment();
+		PacketFooterFragment footer = new PacketFooterFragment();
 		transaction.replace(R.id.itemFooter, footer);
 		transaction.commit();
 		return footer;

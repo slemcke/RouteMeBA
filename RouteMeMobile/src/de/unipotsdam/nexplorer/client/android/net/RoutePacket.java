@@ -3,6 +3,7 @@ package de.unipotsdam.nexplorer.client.android.net;
 import de.unipotsdam.nexplorer.client.android.callbacks.AjaxResult;
 import de.unipotsdam.nexplorer.client.android.callbacks.Loginable;
 import de.unipotsdam.nexplorer.client.android.callbacks.Sendable;
+import de.unipotsdam.nexplorer.client.android.rest.RoutingResponse;
 import de.unipotsdam.nexplorer.client.android.ui.UI;
 
 public class RoutePacket implements Sendable, Loginable{
@@ -29,16 +30,18 @@ public class RoutePacket implements Sendable, Loginable{
 	}
 
 	@Override
-	public void sendRequested(Integer packageId) {
+	public void sendRequested(Long packageId, Long nextHopId) {
 		if(!isSendingPackage && playerId != null){
 			isSendingPackage = true;
 			
 			//TODO remove imageView for package from ui
 //			ui.
-			rest.routePacket(nextHopId,playerId, new AjaxResult<Object>(){
+			rest.sendPacket(nextHopId,nextHopId, new AjaxResult<RoutingResponse>(){
+				@Override
 				public void success(){
 					isSendingPackage = false;
 				}
+				@Override
 				public void error(){
 					isSendingPackage = false;
 					

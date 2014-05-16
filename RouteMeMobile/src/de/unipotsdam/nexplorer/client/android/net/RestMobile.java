@@ -75,6 +75,7 @@ public class RestMobile {
 		});
 	}
 
+
 	public void collectItem(final long playerId, final AjaxResult<Object> ajaxResult) {
 		ajax(new Options<Object>(Object.class) {
 
@@ -115,6 +116,34 @@ public class RestMobile {
 		return template.postForObject(url, request, LoginAnswer.class);
 	}
 
+	
+	public void sendPacket(final long targetId, final Long packetId, final AjaxResult<RoutingResponse> ajaxResult){
+		new Thread(new Runnable() {
+			
+			//TODO Fehlerbehandlung (Routing zu Knoten, der nicht in Routingtabelle ist - wo?)
+
+			@Override
+			public void run() { //TODO do we need a thread here?
+				try {
+					final String url = host + "/rest/packet";
+					final RoutingRequest data = new RoutingRequest();
+					
+					data.setNextHopId(targetId);
+					data.setPacketId(packetId);
+					//TODO do i need position of packet in this place?
+//					packet.setLatitude(targetLocation.getLatitude());
+//					packet.setLongitude(targetLocation.getLongitude());
+
+					RoutingResponse result = template.postForObject(url, data, RoutingResponse.class);
+					ajaxResult.success(result);
+				} catch (Exception e) {
+					ajaxResult.error(e);
+				}
+			}
+		}).start();
+	}
+	
+	
 	public void requestPing(final long playerId, final Location currentLocation, final AjaxResult<PingResponse> ajaxResult) {
 		new Thread(new Runnable() {
 
@@ -170,29 +199,6 @@ public class RestMobile {
 		} catch (Exception e) {
 			return e;
 		}
-	}
-
-	public void routePacket(final Long nextHopId, final Long packetId, final AjaxResult<Object> ajaxResult) {
-		new Thread(new Runnable(){
-
-			@Override
-			public void run() {
-				try{
-				final String url = host + "/rest/packet";
-				final RoutingRequest data = new RoutingRequest ();
-				
-				data.setNextHopId(nextHopId);
-				data.setPacketId(packetId);
-				
-				RoutingResponse result = template.postForObject(url, data, RoutingResponse.class);
-				ajaxResult.success(result);
-			} catch(Exception e){
-				ajaxResult.error(e);
-			}
-			}
-		}).start();
-		// TODO Auto-generated method stub
-		
 	}
 	
 }

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import de.unipotsdam.nexplorer.client.android.callbacks.UIFooter;
+import de.unipotsdam.nexplorer.client.android.rest.Packet;
 
 public class ItemFooterFragment extends Fragment implements UIFooter {
 
@@ -98,11 +99,11 @@ public class ItemFooterFragment extends Fragment implements UIFooter {
 	void setText(TextView text, final String string) {
 		setText(text, string, null);
 	}
-
+	
 	@Override
 	public void updateFooter(Integer nextItemDistance, boolean hasRangeBooster,
 			boolean itemInCollectionRange, String hint,
-			HashMap<Long, Byte> packages) {
+			HashMap<Long, Packet> packages) {
 		updateFooter(nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
 		
 	}

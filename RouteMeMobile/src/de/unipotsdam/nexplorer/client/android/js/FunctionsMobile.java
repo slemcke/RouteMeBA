@@ -2,15 +2,12 @@ package de.unipotsdam.nexplorer.client.android.js;
 
 import java.util.HashMap;
 
-import org.apache.http.impl.client.RoutedRequest;
-
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Handler;
 
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.model.LatLng;
-
 import de.unipotsdam.nexplorer.client.android.NexplorerMap;
 import de.unipotsdam.nexplorer.client.android.callbacks.RemovalReason;
 import de.unipotsdam.nexplorer.client.android.callbacks.UIGameEvents;
@@ -26,6 +23,7 @@ import de.unipotsdam.nexplorer.client.android.rest.GameStatus;
 import de.unipotsdam.nexplorer.client.android.rest.Item;
 import de.unipotsdam.nexplorer.client.android.rest.LoginAnswer;
 import de.unipotsdam.nexplorer.client.android.rest.Neighbour;
+import de.unipotsdam.nexplorer.client.android.rest.Packet;
 import de.unipotsdam.nexplorer.client.android.sensors.GpsReceiver;
 import de.unipotsdam.nexplorer.client.android.sensors.GpsReceiver.PositionWatcher;
 import de.unipotsdam.nexplorer.client.android.sensors.ShakeDetector.ShakeListener;
@@ -220,7 +218,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 			//Pakete
 			
 //			HashMap<Long, DataPacket> packagesMap = data.packets;
-			HashMap<Long,Byte> packages = new HashMap<Long, Byte>();
+			HashMap<Long, Packet> packages = data.packets;
 //			//manipulate map to match gui requirements (id, type)
 //			Collection<Long> keys = packagesMap.keySet();
 //			for (Long key : keys) {
@@ -269,7 +267,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 	/**
 	 * updates the display with the new position and the positions of the neighbours
 	 */
-	private void updateDisplay(int playerRange, int itemCollectionRange, java.util.Map<Integer, Neighbour> neighbours, java.util.Map<Integer, Item> nearbyItems, String gameDifficulty, int score, int neighbourCount, long remainingPlayingTime, double battery, Integer nextItemDistance, boolean hasRangeBooster, boolean itemInCollectionRange, String hint, Long level,HashMap<Long,Byte> packages) {
+	private void updateDisplay(int playerRange, int itemCollectionRange, java.util.Map<Integer, Neighbour> neighbours, java.util.Map<Integer, Item> nearbyItems, String gameDifficulty, int score, int neighbourCount, long remainingPlayingTime, double battery, Integer nextItemDistance, boolean hasRangeBooster, boolean itemInCollectionRange, String hint, Long level,HashMap<Long,Packet> packages) {
 		mapTasks.updateMap(playerRange, itemCollectionRange, neighbours, nearbyItems, gameDifficulty);
 		ui.updateStatusHeaderAndFooter(score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint,level, packages);
 	}

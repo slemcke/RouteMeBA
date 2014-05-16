@@ -92,6 +92,7 @@ public class NexplorerMap extends RotatingMapFragment {
 		} else if (difficulty.equals("2")) {
 			neighbourDrawer = new LevelTwoNeighbourDrawer(googleMap, getActivity());
 		} else if (difficulty.equals("3")){
+			//Neighbourhood does not differ in Level 3, so we can use Level 2 Drawer
 			neighbourDrawer = new LevelTwoNeighbourDrawer(googleMap, getActivity());
 		}
 		
