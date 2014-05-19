@@ -92,6 +92,21 @@ public class DatabaseImpl {
 		return result;
 	}
 	
+	public List<AodvDataPacket> getAllDataPacketsLvlThreeSortedByDate(Player theNode) {
+		Setting settings = getSettings();
+
+		List<AodvDataPackets> dataPackets = session.createCriteria(AodvDataPackets.class).add(not(eq("status", Aodv.DATA_PACKET_STATUS_ARRIVED))).add(not(eq("status", Aodv.DATA_PACKET_STATUS_CANCELLED))).addOrder(Order.asc("id")).createCriteria("playersByCurrentNodeId").add(eq("id", theNode.getId())).list();
+
+		List<AodvDataPacket> result = new LinkedList<AodvDataPacket>();
+		for (AodvDataPackets packet : dataPackets) {
+			result.add(factory.create(packet));
+		}
+		return result;
+	}
+	
+	/*
+	 * returns DataPackets for given id
+	 */
 	public AodvDataPacket getDataPacketById(Long packetId) {
 
 		AodvDataPackets packet = (AodvDataPackets) session.createCriteria(AodvDataPackets.class).add(eq("id", packetId)).uniqueResult();
@@ -321,6 +336,9 @@ public class DatabaseImpl {
 		return result;
 	}
 	
+	/*
+	 * returns RoutingTable for given nodeId
+	 */
 	public List<AodvRoutingTableEntries> getRoutingTable(Long nodeId) {
 		return session.createCriteria(AodvRoutingTableEntries.class).add(eq("nodeId", nodeId)).list();
 	}

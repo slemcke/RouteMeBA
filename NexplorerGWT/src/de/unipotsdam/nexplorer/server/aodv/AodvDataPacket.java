@@ -47,7 +47,9 @@ public class AodvDataPacket implements ProcessableDataPacket {
 		return factory.create(source);
 	}
 	
-
+	/*
+	 * returns AodvNode for current node of the message
+	 */
 	public AodvNode getCurrentNode() {
 		Player current = data.create(inner.getPlayersByCurrentNodeId());
 		return factory.create(current);

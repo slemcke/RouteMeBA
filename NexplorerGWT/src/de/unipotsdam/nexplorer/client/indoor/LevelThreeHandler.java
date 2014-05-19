@@ -2,7 +2,10 @@ package de.unipotsdam.nexplorer.client.indoor;
 
 import de.unipotsdam.nexplorer.client.indoor.levels.Route;
 
-
+/*
+ * extends LevelTwoHandler
+ * inserts also packetType
+ */
 public class LevelThreeHandler extends LevelTwoHandler{
 	
 	@Override

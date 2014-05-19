@@ -32,7 +32,7 @@ public class Referee {
 		for (int i = 1; i <= packet.inner().getHopsDone(); i++) {
 			points += (i * 10);
 		}
-		
+		// Punkte für Indoorspieler hängen auch von Pakettyp ab (Level 3)
 		if(packet.inner().getType() != null){
 			int packetBonus = packet.inner().getType().byteValue();
 			points += Math.round((points * packetBonus)/10);

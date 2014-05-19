@@ -2,7 +2,9 @@ package de.unipotsdam.nexplorer.shared;
 import java.io.Serializable;
 
 import org.codehaus.jackson.annotate.JsonProperty;
-
+/*
+ * defines packet types
+ */
 public enum PacketType implements Serializable {
 		@JsonProperty("Mail")
 		Mail ("Mail", (byte)1),

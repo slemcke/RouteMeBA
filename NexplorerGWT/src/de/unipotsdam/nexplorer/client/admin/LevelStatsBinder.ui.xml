@@ -28,7 +28,7 @@
             </button>
           </div>
 		</td>
-         </tr>
+        </tr>
     </table>
  </g:HTMLPanel>	           	
 </ui:UiBinder>

@@ -3,7 +3,6 @@ package de.unipotsdam.nexplorer.client.indoor.levels;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import de.unipotsdam.nexplorer.shared.PacketType;
 
@@ -15,7 +14,7 @@ public class PacketKeeper {
 	public PacketKeeper() {
 	}
 
-	//returns 15 packets (three per Type)
+	//returns 15 packets (three per type)
 	public List<String> createPacketList() {
 		
 		List<String> packetList = new ArrayList<String>(); 

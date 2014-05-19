@@ -80,6 +80,7 @@ public class AodvRoutingAlgorithm {
 		Setting gameSettings = getGameSettings();
 		logger.trace("------------adovProcessDataPackets Runde " + gameSettings.getCurrentRoutingRound() + " " + new SimpleDateFormat("dd.MM.yyyy HH:m:ss").format(new Date()) + "----------------");
 		for (Player theNode : dbAccess.getAllActiveNodesInRandomOrder()) {
+			//do not process packets, if node on level three
 			if (theNode.getDifficulty() == null || theNode.getDifficulty() != 3){
 				factory.create(theNode).aodvProcessDataPackets(gameSettings.getCurrentDataRound());
 			}
@@ -99,6 +100,21 @@ public class AodvRoutingAlgorithm {
 
 		gameSettings.incCurrentRoutingRound();
 		gameSettings.save();
+	}
+	
+	/*
+	 * updates packet status for nodes on level three
+	 */
+	public void aodvProcessRoutingStati() {
+		Setting gameSettings = getGameSettings();
+		// alle Knoten bearbeiten welche noch im Spiel sind (zufällige Reihenfolge)
+		logger.trace("------------adovProcessRoutingStati "  + new SimpleDateFormat("dd.MM.yyyy HH:m:ss").format(new Date()) + "------------");
+		for (Player theNode : dbAccess.getAllActiveNodesInRandomOrder()) {
+			//do not process packets, if node on level three
+			if (theNode.getDifficulty() != null || theNode.getDifficulty() == 3){
+				factory.create(theNode).aodvProcessPacketStati();
+			}
+		}
 	}
 
 	/**

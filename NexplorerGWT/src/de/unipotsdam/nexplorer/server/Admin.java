@@ -293,6 +293,24 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 			performance.trace("aodvProcessRoutingMessages took {}ms", end - begin);
 		}
 	}
+	
+	public void aodvProcessRoutingStati() {
+		long begin = System.currentTimeMillis();
+
+		Unit unit = new Unit();
+		try {
+			AodvRoutingAlgorithm aodv = unit.resolve(AodvRoutingAlgorithm.class);
+			aodv.aodvProcessRoutingStati();
+		} catch (Exception e) {
+			unit.cancel();
+			throw new RuntimeException(e);
+		} finally {
+			unit.close();
+
+			long end = System.currentTimeMillis();
+			performance.trace("aodvProcessRoutingStati took {}ms", end - begin);
+		}
+	}
 
 	public boolean placeItems() {
 		long begin = System.currentTimeMillis();
@@ -528,6 +546,9 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 		performance.trace("updateNeighbours took {}ms", end - begin);
 	}
 	
+	/*
+	 * changes player level in db
+	 */
 	public boolean savePlayerLevel(Long playerId, Long level) {
 		long begin = System.currentTimeMillis();
 
