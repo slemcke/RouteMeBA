@@ -24,10 +24,8 @@ public class PacketFooterFragment extends Fragment implements UIFooter {
 
 //	private Button collectItem;
 	private TextView activeItems;
-	private TextView hint;
-//	private TextView nextItemDistance;
+	//	private TextView nextItemDistance;
 	private boolean isCollectingItem;
-	private boolean isSendingPacket;
 	private LinearLayout packetLayout;
 	private View result;
 
@@ -36,7 +34,6 @@ public class PacketFooterFragment extends Fragment implements UIFooter {
 		
 		super.onCreate(savedInstanceState);
 		this.isCollectingItem = false;
-		this.isSendingPacket = false;
 	}
 
 	@Override
@@ -99,6 +96,7 @@ public class PacketFooterFragment extends Fragment implements UIFooter {
 			Byte packetType = packet.getType();
 			//show empty image if no legal type is given
 			//TODO all images
+			//TODO handle null pointer for packettype
 			resId = R.drawable.placeholder;
 			if(packetType == (byte)1){
 				resId =  R.drawable.voip;
@@ -147,9 +145,6 @@ public class PacketFooterFragment extends Fragment implements UIFooter {
 	
 //	@Override
 	public void setIsSendingPackage(boolean isSendingPackage){
-		this.isSendingPacket = isSendingPackage;
-		//TODO don't send more packets while sending (remove function)
-		//TODO don't allow pings while sending packets
 	}
 
 	private void setText(TextView text, final String string, final Integer imageId) {

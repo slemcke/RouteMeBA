@@ -82,18 +82,18 @@ public class LevelThreeNeighbourDrawer extends LevelTwoNeighbourDrawer{
 		}
 	}
 	
-
-	private void surroundWithPing(int playerId, Neighbour neighbour) {
-		if (!neighbourPings.containsKey(playerId)) {
-			NeighbourPing ping = new NeighbourPing(senchaMap, neighbour, host, this, playerId);
-			neighbourPings.put(playerId, ping);
-		} else {
-			NeighbourPing ping = neighbourPings.get(playerId);
-			ping.update(neighbour.getLatitude(), neighbour.getLongitude());
-		}
-	}
-	public void finishedRouting(int playerId) {
-		neighbourSends.remove(playerId);
-	}
+//
+//	private void surroundWithPing(int playerId, Neighbour neighbour) {
+//		if (!neighbourPings.containsKey(playerId)) {
+//			NeighbourPing ping = new NeighbourPing(senchaMap, neighbour, host, this, playerId);
+//			neighbourPings.put(playerId, ping);
+//		} else {
+//			NeighbourPing ping = neighbourPings.get(playerId);
+//			ping.update(neighbour.getLatitude(), neighbour.getLongitude());
+//		}
+//	}
+//	public void finishedRouting(int playerId) {
+//		neighbourSends.remove(playerId);
+//	}
 
 }

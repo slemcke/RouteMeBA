@@ -1,5 +1,7 @@
 package de.unipotsdam.nexplorer.client.android;
 
+import java.util.HashMap;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
@@ -20,6 +22,7 @@ import de.unipotsdam.nexplorer.client.android.js.AppWrapper;
 import de.unipotsdam.nexplorer.client.android.js.FunctionsMobile;
 import de.unipotsdam.nexplorer.client.android.js.RadiusBlinker;
 import de.unipotsdam.nexplorer.client.android.net.RestMobile;
+import de.unipotsdam.nexplorer.client.android.rest.Packet;
 import de.unipotsdam.nexplorer.client.android.sensors.GpsReceiver;
 import de.unipotsdam.nexplorer.client.android.sensors.MapRotator;
 import de.unipotsdam.nexplorer.client.android.sensors.ShakeDetector;
@@ -46,10 +49,14 @@ public class MapActivity extends FragmentActivity {
 
 		UIHeader header = (StatusHeaderFragment) getSupportFragmentManager().findFragmentById(R.id.statusHeader);
 //		ItemFooterFragment footer = addItemFooter();
+		int level = 1;
 //		if(level == 3) TODO cases for level (send level here)
-		PacketFooterFragment footer = addPacketFooter();
-//		UIFooter footer = (ItemFooterFragment) getSupportFragmentManager().findFragmentById(R.id.itemFooter);
-
+		UIFooter footer = null;
+		if(level == 3){
+			footer = addPacketFooter();
+		} else if (level ==1){
+			footer = (ItemFooterFragment) getSupportFragmentManager().findFragmentById(R.id.itemFooter);
+		}
 		loginDialog = new LoginDialog(this);
 		loginDialog.setOnLoginListener(new LoginDialog.LoginCallback() {
 

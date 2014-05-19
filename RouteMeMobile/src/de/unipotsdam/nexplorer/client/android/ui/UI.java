@@ -37,16 +37,12 @@ public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 
 	public void updateStatusHeaderAndFooter(final int score, final int neighbourCount, final long remainingPlayingTime, final double battery, final Integer nextItemDistance, final boolean hasRangeBooster, final boolean itemInCollectionRange, final String hint, final long level, final HashMap<Long,Packet> packages) {
 		header.updateHeader(score, neighbourCount, remainingPlayingTime, battery,level);
-		footer.updateFooter(nextItemDistance, hasRangeBooster, itemInCollectionRange, hint,packages);
+		//we only have a footer at level 3
+		if(level == 3){
+			footer.updateFooter(nextItemDistance, hasRangeBooster, itemInCollectionRange, hint,packages);
+		}
 	}
 	
-	public void removePacketFromUI(Long packetId){
-		//TODO
-	}
-	
-	public void addPacketToUI(Packet packet){
-		//TODO
-	}
 
 	public void disableButtonForItemCollection() {
 		runOnUIThread(new Runnable() {
@@ -63,7 +59,12 @@ public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 
 			@Override
 			public void run() {
+				try{
 				footer.setIsCollectingItem(false);
+				//TODO handle exception
+				} catch(Exception e){
+					
+				}
 			}
 		});
 	}

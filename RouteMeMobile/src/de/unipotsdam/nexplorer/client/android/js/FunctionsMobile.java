@@ -217,13 +217,6 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 			int score = data.node.getScore();
 			int playerRange = data.node.getRange();
 			long level = data.node.getDifficulty();
-//			int level = 1;
-//			try{
-//			level = Integer.parseInt(data.stats.getGameDifficulty());
-//			}catch (NumberFormatException e){
-//				//TODO handle exception
-//			}
-//			int level = 1;
 			java.util.Map<Integer, Neighbour> neighbours = data.node.getNeighbours();
 			java.util.Map<Integer, Item> nearbyItems = data.node.getNearbyItems().getItems();
 			Integer nextItemDistance = data.node.getNextItemDistance();
@@ -255,7 +248,9 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 				
 			}
 
-			updateDisplay(playerRange, itemCollectionRange, neighbours, nearbyItems, gameDifficulty, score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint,level, packages);
+			//TODO use right neighbours for route
+			HashMap<Integer,Neighbour> routeNeighbours = null;
+			updateDisplay(playerRange, itemCollectionRange, neighbours, nearbyItems, gameDifficulty, score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint,level, packages,routeNeighbours);
 		}
 	}
 	
@@ -308,8 +303,8 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 	/**
 	 * updates the display with the new position and the positions of the neighbours
 	 */
-	private void updateDisplay(int playerRange, int itemCollectionRange, java.util.Map<Integer, Neighbour> neighbours, java.util.Map<Integer, Item> nearbyItems, String gameDifficulty, int score, int neighbourCount, long remainingPlayingTime, double battery, Integer nextItemDistance, boolean hasRangeBooster, boolean itemInCollectionRange, String hint, Long level,HashMap<Long,Packet> packages) {
-		mapTasks.updateMap(playerRange, itemCollectionRange, neighbours, nearbyItems, gameDifficulty);
+	private void updateDisplay(int playerRange, int itemCollectionRange, java.util.Map<Integer, Neighbour> neighbours, java.util.Map<Integer, Item> nearbyItems, String gameDifficulty, int score, int neighbourCount, long remainingPlayingTime, double battery, Integer nextItemDistance, boolean hasRangeBooster, boolean itemInCollectionRange, String hint, Long level,HashMap<Long,Packet> packages,HashMap<Integer,Neighbour> routeNeighbours) {
+		mapTasks.updateMap(playerRange, itemCollectionRange, neighbours, nearbyItems, gameDifficulty,routeNeighbours);
 		ui.updateStatusHeaderAndFooter(score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint,level, packages);
 	}
 
@@ -323,6 +318,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 	public void sendPacket(LatLng arg0){
 		RoutingRequest request = new RoutingRequest();
 		Map<Integer, Neighbour> neighbours = data.node.getNeighbours();
+		//TODO catch id=-1
 		long nextHopId = findNeighbour(neighbours, arg0);
 		request.setNextHopId(nextHopId);
 		request.setPacketId(data.node.getCurrentPacketId());
@@ -379,13 +375,13 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 	@Override
 	public void onMapClick(LatLng arg0) {
 		//route if routing is requested
-		if(isSendingPacket){
-			this.sendPacket(arg0);
-		}
-		//or ping if not 
-		else{
+//		if(isSendingPacket){
+//			this.sendPacket(arg0);
+//		}
+//		//or ping if not 
+//		else{
 			this.pingObserver.fire();
-		}
+//		}
 	}
 
 	public int getCurrentPacketId() {
