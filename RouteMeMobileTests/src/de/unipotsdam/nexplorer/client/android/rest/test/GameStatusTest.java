@@ -9,7 +9,7 @@ import de.unipotsdam.nexplorer.client.android.rest.GameStatus;
 
 public class GameStatusTest extends AndroidTestCase {
 
-	private static final String url = "http://routeme.dnsdynamic.com:8080/rest/mobile_test/get_game_status";
+	private static final String url = "http://routeme.cs.uni-potsdam.de:8080/rest/mobile_test/get_game_status";
 	private static final int timeout = 4000;
 
 	private GameStatus status;
@@ -135,5 +135,12 @@ public class GameStatusTest extends AndroidTestCase {
 
 	public void testNeighbourPingDuration() {
 		assertEquals(1000, status.getNode().getNeighbours().get(7).getPingDuration());
+	}
+	
+	public void testPacketList(){
+		
+		assertEquals(1, status.packets.size());
+		assertEquals(1, status.packets.get(1).getId(),(long) 1);
+		assertEquals(1, status.packets.get(1).getType(), (byte) 1);
 	}
 }

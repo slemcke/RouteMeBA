@@ -20,6 +20,7 @@ import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Players;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Settings;
 import de.unipotsdam.nexplorer.server.rest.dto.LoginResultJSON;
 import de.unipotsdam.nexplorer.server.rest.dto.NodeGameSettingsJSON;
+import de.unipotsdam.nexplorer.shared.DataPacket;
 import de.unipotsdam.nexplorer.shared.GameStats;
 import de.unipotsdam.nexplorer.shared.GameStatus;
 import de.unipotsdam.nexplorer.shared.ItemType;
@@ -73,6 +74,13 @@ public class MobileTest {
 		result.gameStats.setGameStatus(GameStatus.ISRUNNING);
 		result.gameStats.setGameDifficulty(2l);
 		result.gameStats.setRemainingPlaytime(1234567890l);
+		
+		result.packets = new HashMap<Long,DataPacket>();
+		DataPacket packet = new DataPacket();
+		packet.setId((long) 0);
+		packet.setType((byte) 1);
+		result.packets.put(packet.getId(), packet);
+		
 
 		return result;
 	}
