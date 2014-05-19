@@ -102,6 +102,7 @@ public class Players extends Messager implements java.io.Serializable, IsSeriali
 				strippedNeighbour.longitude = fullNeighbour.getLongitude();
 				strippedNeighbour.lastPing = fullNeighbour.getLastPing();
 				strippedNeighbour.pingDuration = fullNeighbour.getPingDuration();
+				strippedNeighbour.id = fullNeighbour.getId();
 				result.put(fullNeighbour.getId(), strippedNeighbour);
 			}
 
