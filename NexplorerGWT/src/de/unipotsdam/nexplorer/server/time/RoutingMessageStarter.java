@@ -19,6 +19,7 @@ public class RoutingMessageStarter extends StatelessTimer {
 		try {
 			admin.aodvProcessRoutingMessages();
 			admin.aodvProcessDataPackets();
+			admin.aodvProcessRoutingStati();
 		} catch (Exception e) {
 			// Oh my god, oh my god, the sky is falling!
 			logger.error("Exception while routing", e); // Let the skyfall

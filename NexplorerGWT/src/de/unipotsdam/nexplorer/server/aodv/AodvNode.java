@@ -64,6 +64,24 @@ public class AodvNode implements NeighbourAction {
 			logger.trace("Datenpaket mit sourceId " + packet.getSource().getId() + " und destinationId " + packet.getDestination().getId() + " in Wartestellung setzen.");
 		}
 	}
+	
+	/*
+	 * updates packet status
+	 */
+	void aodvProcessPacketStati() {
+		logger.trace("***Datenpakete bei Knoten " + theNode.getId() + "***");
+
+		List<AodvDataPacket> packets =dbAccess.getAllDataPacketsSortedByDate(theNode);
+		long time = System.currentTimeMillis();
+		for (AodvDataPacket packet : packets) {
+			long packetTime = packet.inner().getCreated();
+			if((time-packetTime)/1000>15){
+				logger.trace("Datenpaket mit sourceId " + packet.getSource().getId() + " und destinationId " + packet.getDestination().getId() + " in Wartestellung setzen.");
+				packet.inner().setStatus(Aodv.DATA_PACKET_STATUS_WAITING_FOR_ROUTE);
+				packet.save();
+			}
+		}
+	}
 
 	void aodvProcessRoutingMessages(AodvRoutingAlgorithm aodvRoutingAlgorithm) {
 		processRREQs(aodvRoutingAlgorithm);
@@ -235,10 +253,8 @@ public class AodvNode implements NeighbourAction {
 			send(message).toDestination();
 		} else {
 			pause(message);
+			sendRREQFor(destination).toNeighbours();
 
-			if (theNode.getDifficulty() == null || theNode.getDifficulty() != 3){
-				sendRREQFor(destination).toNeighbours();
-			}
 		}
 		return Arrays.asList((Object) message);
 	}

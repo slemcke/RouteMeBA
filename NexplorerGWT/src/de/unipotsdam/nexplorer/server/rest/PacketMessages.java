@@ -19,6 +19,9 @@ public class PacketMessages {
 		this.mobile = new de.unipotsdam.nexplorer.server.Mobile();
 	}
 
+	/*
+	 * rest service to send packets
+	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)

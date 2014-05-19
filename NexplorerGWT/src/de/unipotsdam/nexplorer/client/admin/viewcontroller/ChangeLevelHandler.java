@@ -1,5 +1,8 @@
 package de.unipotsdam.nexplorer.client.admin.viewcontroller;
 
+import com.google.gwt.dom.client.ButtonElement;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 
@@ -23,6 +26,9 @@ public class ChangeLevelHandler implements EventListener {
 		saveLevel();
 	}
 
+	/*
+	 * save new player level
+	 */
 	private void saveLevel() {
 		Long playerIdLong = Long.parseLong(adminBinder.getLevelStatsBinder().getPlayerId());
 		Long difficultyLong = Long.parseLong(adminBinder.getLevelStatsBinder().getDifficulty().getValue().trim());
@@ -30,4 +36,5 @@ public class ChangeLevelHandler implements EventListener {
 		
 		this.adminBinder.getAdminService().savePlayerLevel(playerIdLong, difficultyLong, null);
 	}
+	
 }

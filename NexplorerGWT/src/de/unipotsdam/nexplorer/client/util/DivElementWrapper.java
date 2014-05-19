@@ -3,7 +3,6 @@ package de.unipotsdam.nexplorer.client.util;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.UIObject;
 
 public abstract class DivElementWrapper extends Composite {
 

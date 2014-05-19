@@ -115,7 +115,7 @@ public class AdminBinder extends UIObject {
 
 		// wrap canvas
 		this.setMyMapCanvas(new MyMapCanvas1());
-
+		//wrap level view
 		this.levelStatsBinder = new LevelStatsBinder(this);
 		
 		// wrap gamestats
@@ -241,7 +241,9 @@ public class AdminBinder extends UIObject {
 	public void showPlayerStats() {
 		playerStats.appendChild(playerStatsBinder.getElement());
 	}
-	
+	/**
+	 * level view hinzufügen
+	 */
 	public void showLevelStats() {
 		levelStats.appendChild(levelStatsBinder.getElement());
 	}
@@ -270,7 +272,7 @@ public class AdminBinder extends UIObject {
 	}
 
 
-	public void setLevelStats(LevelStatsBinder levelStatsBinder) {
+	public void setLevelStatsBinder(LevelStatsBinder levelStatsBinder) {
 		this.levelStatsBinder = levelStatsBinder;
 	}
 

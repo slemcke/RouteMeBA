@@ -34,7 +34,10 @@ public class LevelStatsBinder extends DivElementWrapper {
 	
 	@UiField
 	ButtonElement changeButton;
-		
+
+
+
+	
 	public LevelStatsBinder(AdminBinder adminBinder) {
 		initWidget(uiBinder.createAndBindUi(this));
 		this.adminBinder = adminBinder;
@@ -45,9 +48,8 @@ public class LevelStatsBinder extends DivElementWrapper {
 
 
 	/**
-	 * fill form with player and available level
+	 * fill form with available player 
 	 * 
-	 * @param result
 	 */
 	public void getPlayer(PlayerStats result) {
 		
@@ -64,7 +66,10 @@ public class LevelStatsBinder extends DivElementWrapper {
 		}
 	}
 	
-
+	/**
+	 * checks, if player already exists in listbox
+	 * 
+	 */
 	boolean containsElement(ListBox selectName, Messager player){
 		for(int i= 0; i < selectName.getItemCount(); i++ ){
 			if(selectName.getItemText(i).equals(player.getName())){
@@ -84,14 +89,24 @@ public class LevelStatsBinder extends DivElementWrapper {
 		divElement.appendChild(button.getElement());
 	}
 	
+	
+	/**
+	 * returns the selected level
+	 * 
+	 */
 	public SelectElement getDifficulty() {
 		return difficulty;
 	}
+
 	
-    
+	/**
+	 * returns the selected player
+	 * 
+	 */
 	public String getPlayerId() {
 		int index = selectName.getSelectedIndex();
 		return selectName.getValue(index);
 	}
+	
 	
 }

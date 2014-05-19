@@ -122,7 +122,6 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 			logger.getLogger().trace("Updating position of {}", location.getPlayerId());
 
 			DatabaseImpl dbAccess = unit.resolve(DatabaseImpl.class);
-			AodvRoutingAlgorithm aodv = unit.resolve(AodvRoutingAlgorithm.class);
 			Player thePlayer = dbAccess.getPlayerById(location.getPlayerId());
 
 			thePlayer.setLocation(location);
@@ -177,17 +176,20 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 
 			Players node = mapper.from(p);
 			GameStats stats = new GameStats(dbAccess.getSettings().inner());
-			
+			// set packets for nodes in json-response
 			Player outdoor = dbAccess.getPlayerById(id);
 			List<AodvDataPacket> packets = new LinkedList<AodvDataPacket>();
-			packets.addAll(dbAccess.getAllDataPacketsSortedByDate(outdoor));
-			
+			if(outdoor.getDifficulty()==3){
+				packets.addAll(dbAccess.getAllDataPacketsLvlThreeSortedByDate(outdoor));
+			} else {
+				packets.addAll(dbAccess.getAllDataPacketsSortedByDate(outdoor));
+			}
 			HashMap<Long, DataPacket> jsonPackets = new HashMap<Long, DataPacket>();
 			for (AodvDataPacket packet : packets) {
 				DataPacket jsonPacket = mapper.toJSON(packet);
 				jsonPackets.put(jsonPacket.getId(), jsonPacket);
 			}
-			
+			//returns the routing table for nodes
 			List<AodvRoutingTableEntries> table = dbAccess.getRoutingTable(id);
 			
 			NodeGameSettingsJSON result = new NodeGameSettingsJSON(stats, node, jsonPackets, table);
@@ -226,6 +228,9 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 		}
 	}
 	
+	/*
+	 * method for level three player to send packets
+	 */
 	public RoutingResponse sendPacket(RoutingRequest request){
 		Unit unit = new Unit();
 		try {

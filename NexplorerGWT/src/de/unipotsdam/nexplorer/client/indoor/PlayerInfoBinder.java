@@ -117,9 +117,11 @@ public class PlayerInfoBinder extends HasTable {
 				this.addStateSwitchListener(new RouteRemover(keeper));
 
 				this.level = level;
+				// Level 3 (depends on level two)
 			} else if (info.getPlayer().getDifficulty() == 3) {
 				LevelThreeRouteSelection level = new LevelThreeRouteSelection();
 				level.addClickHandler(new LevelThreeHandler());
+				//init packets
 				level.addNewPacket();
 				test = true;
 				
@@ -142,6 +144,7 @@ public class PlayerInfoBinder extends HasTable {
 		if (info.getPlayer() != null) {
 			this.currentPlayerName.setInnerText(info.getPlayer().getName());
 			this.currentPlayerScore.setInnerText(info.getPlayer().getScore());
+			//sets picture for level view
 			if(info.getPlayer().getDifficulty() == 1){
 				this.currentPlayerLevelPic.setSrc(media + "lvlone.png");
 			} else if (info.getPlayer().getDifficulty() == 2){
@@ -159,6 +162,7 @@ public class PlayerInfoBinder extends HasTable {
 		} else {
 			this.hintMessage.setInnerHTML(getHintMessage(info));
 		}
+		//update packets
 		if(level instanceof LevelThreeRouteSelection && info.getDataPacketSend() != null){
 			
 			if(info.getDataPacketSend().getStatus().equals(Aodv.DATA_PACKET_STATUS_ARRIVED) && test){

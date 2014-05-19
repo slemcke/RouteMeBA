@@ -1,8 +1,5 @@
 package de.unipotsdam.nexplorer.server.aodv;
 
-import java.sql.Timestamp;
-import java.util.Date;
-
 import org.apache.logging.log4j.Logger;
 
 import com.google.inject.Inject;
@@ -49,6 +46,9 @@ public class Link {
 			src.send(newPacket).toDestination();
 			newPacket.setHopsDone((short) (newPacket.getHopsDone() + 1));
 			newPacket.setProcessingRound(gameSettings.getCurrentDataRound() + 1);
+			if(thePacket.getCurrentNode().player().getDifficulty()==3){
+				newPacket.setStatus(Aodv.DATA_PACKET_STATUS_UNDERWAY);
+			}
 			factory.create(newPacket).setCurrentNode(dest.player());
 			// prüfen ob Paket Ziel erreicht hat
 			if (dest.getId() == thePacket.inner().getPlayersByDestinationId().getId()) {
