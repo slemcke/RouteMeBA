@@ -5,6 +5,7 @@ public class Neighbour {
 	private double latitude;
 	private double longitude;
 	private boolean pingActive;
+	private long id;
 	private long pingDuration;
 
 	public double getLatitude() {
@@ -37,5 +38,13 @@ public class Neighbour {
 
 	public void setPingDuration(long pingDuration) {
 		this.pingDuration = pingDuration;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 }

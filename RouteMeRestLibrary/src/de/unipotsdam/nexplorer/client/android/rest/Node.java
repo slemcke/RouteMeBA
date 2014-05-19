@@ -16,6 +16,8 @@ public class Node {
 	private int itemInCollectionRange;
 	private Integer hasRangeBooster;
 	private boolean pingActive;
+	private boolean sendPacketActive;
+	private int currentPacketId;
 	
 	public Double getBatterieLevel() {
 		return batterieLevel;
@@ -123,5 +125,26 @@ public class Node {
 
 	public void setDifficulty(Long difficulty) {
 		this.difficulty = difficulty;
+	}
+
+	public boolean isSendPacketActive() {
+		return sendPacketActive;
+	}
+
+	public void setSendPacketActive(boolean sendPacketActive) {
+		this.sendPacketActive = sendPacketActive;
+	}
+
+	public int getCurrentPacketId() {
+		return currentPacketId;
+	}
+
+	public void setCurrentPacketId(int currentPacketId) {
+		this.currentPacketId = currentPacketId;
+	}
+	
+	public void setPacketVariables(boolean sendPacketActive, int currentPacketId){
+		this.currentPacketId = currentPacketId;
+		this.sendPacketActive = sendPacketActive;
 	}
 }
