@@ -8,7 +8,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -16,14 +18,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import de.unipotsdam.nexplorer.client.android.callbacks.UIFooter;
 import de.unipotsdam.nexplorer.client.android.rest.Packet;
+import de.unipotsdam.nexplorer.client.android.rest.RoutingRequest;
 
 public class PacketFooterFragment extends Fragment implements UIFooter {
 
-	private Button collectItem;
+//	private Button collectItem;
 	private TextView activeItems;
 	private TextView hint;
-	private TextView nextItemDistance;
+//	private TextView nextItemDistance;
 	private boolean isCollectingItem;
+	private boolean isSendingPacket;
 	private LinearLayout packetLayout;
 	private View result;
 
@@ -32,14 +36,15 @@ public class PacketFooterFragment extends Fragment implements UIFooter {
 		
 		super.onCreate(savedInstanceState);
 		this.isCollectingItem = false;
+		this.isSendingPacket = false;
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		result = inflater.inflate(R.layout.fragment_package_footer, container, false);
+		result = inflater.inflate(R.layout.fragment_packet_footer, container, false);
 		packetLayout= (LinearLayout) result.findViewById(R.id.packages);
 //		collectItem = (Button) result.findViewById(R.id.collectItem);
-//		activeItems = (TextView) result.findViewById(R.id.activeItems);
+		activeItems = (TextView) result.findViewById(R.id.activeItems);
 //		hint = (TextView) result.findViewById(R.id.hint);
 //		nextItemDistance = (TextView) result.findViewById(R.id.nextItemDistance);
 
@@ -57,16 +62,16 @@ public class PacketFooterFragment extends Fragment implements UIFooter {
 //		else
 //			setText(this.nextItemDistance, "Keine Gegenstände in der Nähe.");
 //
-//		int boosterImageElement;
-//		if (hasRangeBooster) {
-//			boosterImageElement = R.drawable.mobile_phone_cast;
-//		} else {
-//			boosterImageElement = R.drawable.mobile_phone_cast_gray;
-//		}
+		int boosterImageElement;
+		if (hasRangeBooster) {
+			boosterImageElement = R.drawable.mobile_phone_cast;
+		} else {
+			boosterImageElement = R.drawable.mobile_phone_cast_gray;
+		}
 //
-//		setText(activeItems, "Aktive Gegenstände: ", boosterImageElement);
+		setText(activeItems, "Aktive Gegenstände: ", boosterImageElement);
 //
-//		if (!this.isCollectingItem) {
+		if (!this.isCollectingItem) {
 //			setText(collectItem, "Gegenstand einsammeln");
 //
 //			boolean isDisabled = !collectItem.isEnabled();
@@ -75,7 +80,7 @@ public class PacketFooterFragment extends Fragment implements UIFooter {
 //			} else if (!itemInCollectionRange && !isDisabled) {
 //				collectItem.setEnabled(false);
 //			}
-//		}
+		}
 
 		
 		//get context
@@ -88,12 +93,13 @@ public class PacketFooterFragment extends Fragment implements UIFooter {
 		
 		//create tree map to sort packets by id -> oldest packet has the lowest key
 		TreeMap<Long,Packet> packetsTree = new TreeMap<Long, Packet>(packages);
+		int resId;
 		
 		for (Packet packet : packetsTree.values()) {
 			Byte packetType = packet.getType();
 			//show empty image if no legal type is given
 			//TODO all images
-			int resId = R.drawable.placeholder;
+			resId = R.drawable.placeholder;
 			if(packetType == (byte)1){
 				resId =  R.drawable.voip;
 			} else if(packetType ==(byte)2){
@@ -107,25 +113,44 @@ public class PacketFooterFragment extends Fragment implements UIFooter {
 			}
 			//create new image view for each packet
 			ImageView newPacket = new ImageView(context);
+			//set packet id as image id to
 			newPacket.setImageResource(resId);
+			newPacket.setId((packet.getId().intValue()));
+			newPacket.setOnTouchListener(new OnTouchListener() {
+				
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					//moving down respectively up means simple tip on screen while we need left/right action to scroll through the view
+					if(MotionEvent.ACTION_DOWN != event.getAction()){
+						return false;
+					}
+					//TODO start sending packet here
+					//initiate packet sending
+					
+					setIsSendingPackage(true);
+					return true;
+				}
+			});
 			packetLayout.addView(newPacket);
 		}
 	}
-
+	   
 	@Override
 	public void setIsCollectingItem(boolean isCollectingItem) {
 		this.isCollectingItem = isCollectingItem;
 
 		if (isCollectingItem) {
-			collectItem.setEnabled(false);
-			collectItem.setText("Gegenstand wird eingesammelt...<img src='media/images/ajax-loader.gif' />");
+//			collectItem.setEnabled(false);
+//			collectItem.setText("Gegenstand wird eingesammelt...<img src='media/images/ajax-loader.gif' />");
 		}
 	}
 	
 //	@Override
-//	public void setIsSendingPackage(boolean isSendingPackage){
-//		
-//	}
+	public void setIsSendingPackage(boolean isSendingPackage){
+		this.isSendingPacket = isSendingPackage;
+		//TODO don't send more packets while sending (remove function)
+		//TODO don't allow pings while sending packets
+	}
 
 	private void setText(TextView text, final String string, final Integer imageId) {
 		if (imageId != null) {

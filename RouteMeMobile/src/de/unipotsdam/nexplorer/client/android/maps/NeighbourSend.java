@@ -30,6 +30,7 @@ public class NeighbourSend extends TimerTask{
 		private Circle inner;
 		private long start;
 
+		//neighbour sends packet to me
 		public NeighbourSend(GoogleMap senchaMap, Neighbour neighbour, Activity host, LevelTwoNeighbourDrawer callback, int playerId) {
 			this.map = senchaMap;
 			this.latlng = new LatLng(neighbour.getLatitude(), neighbour.getLongitude());

@@ -1,10 +1,13 @@
 package de.unipotsdam.nexplorer.client.android.js;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.provider.ContactsContract.Contacts.Data;
 
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.model.LatLng;
@@ -24,6 +27,8 @@ import de.unipotsdam.nexplorer.client.android.rest.Item;
 import de.unipotsdam.nexplorer.client.android.rest.LoginAnswer;
 import de.unipotsdam.nexplorer.client.android.rest.Neighbour;
 import de.unipotsdam.nexplorer.client.android.rest.Packet;
+import de.unipotsdam.nexplorer.client.android.rest.RoutingRequest;
+import de.unipotsdam.nexplorer.client.android.rest.RoutingTable;
 import de.unipotsdam.nexplorer.client.android.sensors.GpsReceiver;
 import de.unipotsdam.nexplorer.client.android.sensors.GpsReceiver.PositionWatcher;
 import de.unipotsdam.nexplorer.client.android.sensors.ShakeDetector.ShakeListener;
@@ -54,9 +59,14 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 	private Long playerId = null;
 	private int playerRange;
 	private int itemCollectionRange;
+	private boolean isSendingPacket;
 
+	private int currentPacketId;
 	private Location currentLocation;
 	private RestMobile rest;
+	
+	private GameStatus data;
+
 
 	private final LocationObserver locationObserver;
 	private final LoginObserver loginObserver;
@@ -105,6 +115,9 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 		
 		this.routeRequestObserver = new RouteRequestObserver();
 		this.routeRequestObserver.add(routePacket);
+		this.isSendingPacket = false;
+		
+		this.data = new GameStatus();
 
 		gpsReceiver.watchPosition(this);
 		mapTasks.setOnMapClickListener(this);
@@ -160,6 +173,8 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 
 	private class UpdateGameStatus extends AsyncTask<Void, Void, GameStatus> {
 
+		private GameStatus data;
+
 		@Override
 		protected void onPreExecute() {
 			gameStatusRequestExecutes = true;
@@ -183,6 +198,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 		@Override
 		protected void onPostExecute(GameStatus data) {
 			gameStatusRequestExecutes = false;
+			this.data=data;
 
 			int oldRange = playerRange;
 
@@ -215,6 +231,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 			boolean hasRangeBooster = data.node.hasRangeBoosterBoolean();
 			String hint = data.getHint();
 			
+			
 			//Pakete
 			
 //			HashMap<Long, DataPacket> packagesMap = data.packets;
@@ -234,8 +251,32 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 			mapTasks.removeInvisibleMarkers(neighbours, nearbyItems, gameDifficulty);
 
 			adjustGameLifecycle(gameExists, gameDidExist, gameDidEnd, gameIsRunning, battery);
+			if(data.node.isSendPacketActive()){
+				
+			}
 
 			updateDisplay(playerRange, itemCollectionRange, neighbours, nearbyItems, gameDifficulty, score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint,level, packages);
+		}
+	}
+	
+	public void sendPacket1(GameStatus data, RoutingRequest request, LatLng neighbourPos){
+		Map<Integer,Neighbour> neighbours = data.node.getNeighbours();
+		double  lat;
+		double lng;
+		RoutingTable table = data.table;
+		double neighbourLat = neighbourPos.latitude;
+		double neighbourLng = neighbourPos.longitude;
+		//find Neighbour
+		for(Neighbour neighbour: neighbours.values()){
+			lat = neighbour.getLatitude();
+			lng = neighbour.getLongitude();
+			//Neighbour is valid for sending packet
+			if(neighbourLat == lat && neighbourLng == lng){
+				if(table.getNextHopId().equals(neighbour.getId())){
+					
+				}
+			}
+			
 		}
 	}
 
@@ -278,7 +319,32 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 	public void collectItem() {
 		this.collectObserver.fire(itemCollectionRange);
 	}
+	
+	public void sendPacket(LatLng arg0){
+		RoutingRequest request = new RoutingRequest();
+		Map<Integer, Neighbour> neighbours = data.node.getNeighbours();
+		long nextHopId = findNeighbour(neighbours, arg0);
+		request.setNextHopId(nextHopId);
+		request.setPacketId(data.node.getCurrentPacketId());
+		//TODO find node
+		this.routeRequestObserver.fire(request);
+	}
 
+	private long findNeighbour(Map<Integer,Neighbour> neighbours, LatLng position){
+		double lat = position.latitude;
+		double lng = position.longitude;
+		double nLat;
+		double nLng;
+		for (Neighbour neighbour: neighbours.values()){
+			nLat = neighbour.getLatitude();
+			nLng = neighbour.getLongitude();
+			if(nLat == lat && nLng == lng){
+				return neighbour.getId();
+			}
+		}
+		return -1;
+		
+	}
 	public void loginSuccess(LoginAnswer data) {
 		playerId = data.id;
 
@@ -312,6 +378,25 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 
 	@Override
 	public void onMapClick(LatLng arg0) {
-		this.pingObserver.fire();
+		//route if routing is requested
+		if(isSendingPacket){
+			this.sendPacket(arg0);
+		}
+		//or ping if not 
+		else{
+			this.pingObserver.fire();
+		}
+	}
+
+	public int getCurrentPacketId() {
+		return currentPacketId;
+	}
+
+	public void setCurrentPacketId(int currentPacketId) {
+		this.currentPacketId = currentPacketId;
+	}
+	
+	public void setIsSendingPacket(boolean isSendingPacket){
+		this.isSendingPacket = isSendingPacket;
 	}
 }

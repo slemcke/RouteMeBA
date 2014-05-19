@@ -13,6 +13,10 @@ import android.widget.TextView;
 import de.unipotsdam.nexplorer.client.android.callbacks.UIFooter;
 import de.unipotsdam.nexplorer.client.android.rest.Packet;
 
+/**
+ * @author Kora
+ *
+ */
 public class ItemFooterFragment extends Fragment implements UIFooter {
 
 	private Button collectItem;
@@ -100,7 +104,11 @@ public class ItemFooterFragment extends Fragment implements UIFooter {
 		setText(text, string, null);
 	}
 	
+	
 	@Override
+	/**
+	 * don't use the given packets in this scope
+	 */
 	public void updateFooter(Integer nextItemDistance, boolean hasRangeBooster,
 			boolean itemInCollectionRange, String hint,
 			HashMap<Long, Packet> packages) {

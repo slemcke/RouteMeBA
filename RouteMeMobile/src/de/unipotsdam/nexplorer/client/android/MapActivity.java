@@ -35,7 +35,6 @@ public class MapActivity extends FragmentActivity {
 	private boolean firstStart;
 	private LoginDialog loginDialog;
 	private ShakeDetector shaker;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -48,7 +47,7 @@ public class MapActivity extends FragmentActivity {
 		UIHeader header = (StatusHeaderFragment) getSupportFragmentManager().findFragmentById(R.id.statusHeader);
 //		ItemFooterFragment footer = addItemFooter();
 //		if(level == 3) TODO cases for level (send level here)
-		PacketFooterFragment footer = addPackageFooter();
+		PacketFooterFragment footer = addPacketFooter();
 //		UIFooter footer = (ItemFooterFragment) getSupportFragmentManager().findFragmentById(R.id.itemFooter);
 
 		loginDialog = new LoginDialog(this);
@@ -95,7 +94,7 @@ public class MapActivity extends FragmentActivity {
 		return footer;
 	}
 	
-	private PacketFooterFragment addPackageFooter() {
+	private PacketFooterFragment addPacketFooter() {
 		FragmentManager manager = getSupportFragmentManager();
 		FragmentTransaction transaction = manager.beginTransaction();
 
@@ -108,6 +107,8 @@ public class MapActivity extends FragmentActivity {
 	public void collectItem(View view) {
 		js.collectItem();
 	}
+	
+	
 
 	@Override
 	protected void onStart() {
