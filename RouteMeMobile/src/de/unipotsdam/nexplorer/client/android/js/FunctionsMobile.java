@@ -188,6 +188,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 			double battery = data.node.getBatterieLevel();
 			int neighbourCount = data.node.getNeighbourCount();
 			int score = data.node.getScore();
+			long level = data.node.getDifficulty();
 			int playerRange = data.node.getRange();
 			java.util.Map<Integer, Neighbour> neighbours = data.node.getNeighbours();
 			java.util.Map<Integer, Item> nearbyItems = data.node.getNearbyItems().getItems();
@@ -204,7 +205,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 
 			adjustGameLifecycle(gameExists, gameDidExist, gameDidEnd, gameIsRunning, battery);
 
-			updateDisplay(playerRange, itemCollectionRange, neighbours, nearbyItems, gameDifficulty, score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
+			updateDisplay(playerRange, itemCollectionRange, neighbours, nearbyItems, gameDifficulty, score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint,level);
 		}
 	}
 
@@ -240,9 +241,9 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 		// updateDisplay(playerRange, itemCollectionRange, neighbours, nearbyItems, gameDifficulty, score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
 	}
 
-	private void updateDisplay(int playerRange, int itemCollectionRange, java.util.Map<Integer, Neighbour> neighbours, java.util.Map<Integer, Item> nearbyItems, String gameDifficulty, int score, int neighbourCount, long remainingPlayingTime, double battery, Integer nextItemDistance, boolean hasRangeBooster, boolean itemInCollectionRange, String hint) {
+	private void updateDisplay(int playerRange, int itemCollectionRange, java.util.Map<Integer, Neighbour> neighbours, java.util.Map<Integer, Item> nearbyItems, String gameDifficulty, int score, int neighbourCount, long remainingPlayingTime, double battery, Integer nextItemDistance, boolean hasRangeBooster, boolean itemInCollectionRange, String hint, Long level) {
 		mapTasks.updateMap(playerRange, itemCollectionRange, neighbours, nearbyItems, gameDifficulty);
-		ui.updateStatusHeaderAndFooter(score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
+		ui.updateStatusHeaderAndFooter(score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint,level);
 	}
 
 	/**

@@ -32,8 +32,8 @@ public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 		this.header = header;
 	}
 
-	public void updateStatusHeaderAndFooter(final int score, final int neighbourCount, final long remainingPlayingTime, final double battery, final Integer nextItemDistance, final boolean hasRangeBooster, final boolean itemInCollectionRange, final String hint) {
-		header.updateHeader(score, neighbourCount, remainingPlayingTime, battery);
+	public void updateStatusHeaderAndFooter(final int score, final int neighbourCount, final long remainingPlayingTime, final double battery, final Integer nextItemDistance, final boolean hasRangeBooster, final boolean itemInCollectionRange, final String hint, final Long level) {
+		header.updateHeader(score, neighbourCount, remainingPlayingTime, battery,level);
 		footer.updateFooter(nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
 	}
 
