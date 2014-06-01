@@ -3,6 +3,7 @@ package de.unipotsdam.nexplorer.server.aodv;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Random;
 
 import org.apache.logging.log4j.Logger;
 
@@ -16,6 +17,7 @@ import de.unipotsdam.nexplorer.server.persistence.Player;
 import de.unipotsdam.nexplorer.server.persistence.Setting;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvDataPackets;
 import de.unipotsdam.nexplorer.shared.Aodv;
+import de.unipotsdam.nexplorer.shared.PacketType;
 
 public class AodvRoutingAlgorithm {
 
@@ -24,12 +26,14 @@ public class AodvRoutingAlgorithm {
 	private final AodvFactory factory;
 	private final DatabaseImpl dbAccess;
 	private Setting settings;
+	private final Random random;
 
 	@Inject
 	public AodvRoutingAlgorithm(AodvFactory factory, DatabaseImpl dbAccess, Locator locator) {
 		this.factory = factory;
 		this.dbAccess = dbAccess;
 		this.settings = null;
+		this.random = new Random();
 	}
 
 	public Collection<Object> aodvInsertNewMessage(Player src, Player dest, Player owner, Byte type) throws PlayerDoesNotExistException {
@@ -45,6 +49,8 @@ public class AodvRoutingAlgorithm {
 		newMessage.setDidReachBonusGoal((byte) 0);
 		if(type != null){
 			newMessage.setType(type);		
+		} else {
+			newMessage.setType(setRandomPacket());
 		}
 		newMessage.setCreated(System.currentTimeMillis());
 		
@@ -106,7 +112,6 @@ public class AodvRoutingAlgorithm {
 	 * updates packet status for nodes on level three
 	 */
 	public void aodvProcessRoutingStati() {
-		Setting gameSettings = getGameSettings();
 		// alle Knoten bearbeiten welche noch im Spiel sind (zufällige Reihenfolge)
 		logger.trace("------------adovProcessRoutingStati "  + new SimpleDateFormat("dd.MM.yyyy HH:m:ss").format(new Date()) + "------------");
 		for (Player theNode : dbAccess.getAllActiveNodesInRandomOrder()) {
@@ -138,5 +143,11 @@ public class AodvRoutingAlgorithm {
 			settings = dbAccess.getSettings();
 		}
 		return settings;
+	}
+	
+	private Byte setRandomPacket(){
+		int pick = random.nextInt(PacketType.values().length);
+
+		return PacketType.values()[pick].getPriority();
 	}
 }
