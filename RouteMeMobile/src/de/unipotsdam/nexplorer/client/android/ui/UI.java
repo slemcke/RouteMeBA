@@ -1,13 +1,18 @@
 package de.unipotsdam.nexplorer.client.android.ui;
 
+import java.util.HashMap;
+
 import android.app.Activity;
+import de.unipotsdam.nexplorer.client.android.PacketFooterFragment;
 import de.unipotsdam.nexplorer.client.android.callbacks.LoginError;
 import de.unipotsdam.nexplorer.client.android.callbacks.RemovalReason;
 import de.unipotsdam.nexplorer.client.android.callbacks.UIFooter;
 import de.unipotsdam.nexplorer.client.android.callbacks.UIGameEvents;
 import de.unipotsdam.nexplorer.client.android.callbacks.UIHeader;
 import de.unipotsdam.nexplorer.client.android.callbacks.UILogin;
+import de.unipotsdam.nexplorer.client.android.callbacks.UIPacketFooter;
 import de.unipotsdam.nexplorer.client.android.callbacks.UISensors;
+import de.unipotsdam.nexplorer.client.android.rest.Packet;
 
 public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 
@@ -19,8 +24,9 @@ public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 	private Overlay noPositionOverlay;
 	private Overlay waitingForGameOverlay;
 	private UIHeader header;
+	private UIPacketFooter packetFooter;
 
-	public UI(Activity host, Button loginButton, Text waitingText, Text beginDialog, UIFooter footer, Overlay loginOverlay, Overlay waitingForGameOverlay, Overlay noPositionOverlay, UIHeader header) {
+	public UI(Activity host, Button loginButton, Text waitingText, Text beginDialog, UIFooter footer, UIPacketFooter packetFooter, Overlay loginOverlay, Overlay waitingForGameOverlay, Overlay noPositionOverlay, UIHeader header) {
 		super(host);
 		this.loginButton = loginButton;
 		this.waitingText = waitingText;
@@ -30,11 +36,13 @@ public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 		this.noPositionOverlay = noPositionOverlay;
 		this.waitingForGameOverlay = waitingForGameOverlay;
 		this.header = header;
+		this.packetFooter = packetFooter;
 	}
 
-	public void updateStatusHeaderAndFooter(final int score, final int neighbourCount, final long remainingPlayingTime, final double battery, final Integer nextItemDistance, final boolean hasRangeBooster, final boolean itemInCollectionRange, final String hint, final Long level) {
+	public void updateStatusHeaderAndFooter(final int score, final int neighbourCount, final long remainingPlayingTime, final double battery, final Integer nextItemDistance, final boolean hasRangeBooster, final boolean itemInCollectionRange, final String hint, final Long level, final HashMap<Long,Packet> packets) {
 		header.updateHeader(score, neighbourCount, remainingPlayingTime, battery,level);
 		footer.updateFooter(nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
+		packetFooter.updateFooter(packets, level);
 	}
 
 	public void disableButtonForItemCollection() {

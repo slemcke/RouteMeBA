@@ -6,6 +6,7 @@
     <string name="default_battery">0%</string>
     <string name="default_time">0</string>
     <string name="collect_item">Gegenstand einsammeln</string>
+    <string name="send_packet"></string>
     <string name="default_level"></string>
     <string name="default_nextitemdistance"></string>
     <string name="default_activeitems"></string>

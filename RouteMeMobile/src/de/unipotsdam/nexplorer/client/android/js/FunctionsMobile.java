@@ -1,5 +1,7 @@
 package de.unipotsdam.nexplorer.client.android.js;
 
+import java.util.HashMap;
+
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -21,6 +23,7 @@ import de.unipotsdam.nexplorer.client.android.rest.GameStatus;
 import de.unipotsdam.nexplorer.client.android.rest.Item;
 import de.unipotsdam.nexplorer.client.android.rest.LoginAnswer;
 import de.unipotsdam.nexplorer.client.android.rest.Neighbour;
+import de.unipotsdam.nexplorer.client.android.rest.Packet;
 import de.unipotsdam.nexplorer.client.android.sensors.GpsReceiver;
 import de.unipotsdam.nexplorer.client.android.sensors.GpsReceiver.PositionWatcher;
 import de.unipotsdam.nexplorer.client.android.sensors.ShakeDetector.ShakeListener;
@@ -196,6 +199,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 			boolean itemInCollectionRange = data.node.isItemInCollectionRangeBoolean();
 			boolean hasRangeBooster = data.node.hasRangeBoosterBoolean();
 			String hint = data.getHint();
+			HashMap<Long,Packet> packets = data.packets;
 
 			if (oldRange != playerRange) {
 				rangeObserver.fire((double) playerRange);
@@ -205,7 +209,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 
 			adjustGameLifecycle(gameExists, gameDidExist, gameDidEnd, gameIsRunning, battery);
 
-			updateDisplay(playerRange, itemCollectionRange, neighbours, nearbyItems, gameDifficulty, score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint,level);
+			updateDisplay(playerRange, itemCollectionRange, neighbours, nearbyItems, gameDifficulty, score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint,level,packets);
 		}
 	}
 
@@ -241,9 +245,9 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 		// updateDisplay(playerRange, itemCollectionRange, neighbours, nearbyItems, gameDifficulty, score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
 	}
 
-	private void updateDisplay(int playerRange, int itemCollectionRange, java.util.Map<Integer, Neighbour> neighbours, java.util.Map<Integer, Item> nearbyItems, String gameDifficulty, int score, int neighbourCount, long remainingPlayingTime, double battery, Integer nextItemDistance, boolean hasRangeBooster, boolean itemInCollectionRange, String hint, Long level) {
+	private void updateDisplay(int playerRange, int itemCollectionRange, java.util.Map<Integer, Neighbour> neighbours, java.util.Map<Integer, Item> nearbyItems, String gameDifficulty, int score, int neighbourCount, long remainingPlayingTime, double battery, Integer nextItemDistance, boolean hasRangeBooster, boolean itemInCollectionRange, String hint, Long level, HashMap<Long,Packet> packets) {
 		mapTasks.updateMap(playerRange, itemCollectionRange, neighbours, nearbyItems, gameDifficulty);
-		ui.updateStatusHeaderAndFooter(score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint,level);
+		ui.updateStatusHeaderAndFooter(score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint,level, packets);
 	}
 
 	/**

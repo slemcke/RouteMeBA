@@ -47,6 +47,7 @@ public class MapActivity extends FragmentActivity {
 
 		UIHeader header = (StatusHeaderFragment) getSupportFragmentManager().findFragmentById(R.id.statusHeader);
 		ItemFooterFragment footer = addItemFooter();
+		PacketFooterFragment packetFooter = addPacketFooter();
 
 		loginDialog = new LoginDialog(this);
 		loginDialog.setOnLoginListener(new LoginDialog.LoginCallback() {
@@ -69,12 +70,22 @@ public class MapActivity extends FragmentActivity {
 
 		RadiusBlinker blinker = new RadiusBlinker(googleMap, this);
 
-		UI ui = createInstance(login, waitingTextText, this, beginText, loginDialog, waitingForGameDialog, noPositionDialog, googleMap, map, header, footer);
+		UI ui = createInstance(login, waitingTextText, this, beginText, loginDialog, waitingForGameDialog, noPositionDialog, googleMap, map, header, footer, packetFooter);
 
 		js = new FunctionsMobile(ui, new AppWrapper(this), new Handler(), mapFragment, new RestMobile(new Settings().getHostAddress()), blinker, new TouchVibrator(this), new GpsReceiver(this, new Settings().isDebugModeOn()));
 
 		shaker = new ShakeDetector(this, 1, 750);
 		shaker.addShakeListener(js);
+	}
+
+	private PacketFooterFragment addPacketFooter() {
+		FragmentManager manager = getSupportFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+
+		PacketFooterFragment footer = new PacketFooterFragment();
+		transaction.replace(R.id.packetFooter, footer);
+		transaction.commit();
+		return footer;
 	}
 
 	/**
@@ -124,7 +135,7 @@ public class MapActivity extends FragmentActivity {
 		return true;
 	}
 
-	public static UI createInstance(android.widget.Button login, android.widget.TextView waitingTextText, Activity host, android.widget.TextView beginText, android.app.Dialog loginDialog, android.app.Dialog waitingForGameDialog, android.app.Dialog noPositionDialog, GoogleMap map, MapRotator rotator, UIHeader header, UIFooter footer) {
+	public static UI createInstance(android.widget.Button login, android.widget.TextView waitingTextText, Activity host, android.widget.TextView beginText, android.app.Dialog loginDialog, android.app.Dialog waitingForGameDialog, android.app.Dialog noPositionDialog, GoogleMap map, MapRotator rotator, UIHeader header, UIFooter footer, PacketFooterFragment packetFooter) {
 		de.unipotsdam.nexplorer.client.android.ui.Button loginButton = new de.unipotsdam.nexplorer.client.android.ui.Button(login, host);
 
 		Text waitingText = new Text(waitingTextText, host);
@@ -135,6 +146,6 @@ public class MapActivity extends FragmentActivity {
 		Overlay waitingForGameOverlay = new Overlay(waitingForGameDialog, host);
 		Overlay noPositionOverlay = new Overlay(noPositionDialog, host);
 
-		return new UI(host, loginButton, waitingText, beginDialog, footer, loginOverlay, waitingForGameOverlay, noPositionOverlay, header);
+		return new UI(host, loginButton, waitingText, beginDialog, footer, packetFooter, loginOverlay, waitingForGameOverlay, noPositionOverlay, header);
 	}
 }
