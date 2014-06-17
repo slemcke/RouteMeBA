@@ -1,6 +1,7 @@
 package de.unipotsdam.nexplorer.server.data;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ import de.unipotsdam.nexplorer.server.persistence.Player;
 import de.unipotsdam.nexplorer.server.persistence.Setting;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.AodvDataPackets;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Items;
+import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Neighbours;
 import de.unipotsdam.nexplorer.server.persistence.hibernate.dto.Players;
 import de.unipotsdam.nexplorer.shared.DataPacketLocatable;
 import de.unipotsdam.nexplorer.shared.MessageDescription;
@@ -99,6 +101,7 @@ public class NodeMapper {
 			node.setRange(player.getRange());
 			node.setScore(p.getScore());
 			node.setDifficulty(p.getDifficulty());
+			node.setNeighbourses(p.getNeighbourses());
 		}
 
 		return existing.get(p.getId());
