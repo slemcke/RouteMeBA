@@ -1,6 +1,7 @@
 package de.unipotsdam.nexplorer.client.android.js;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import android.location.Location;
 import android.os.AsyncTask;
@@ -19,11 +20,13 @@ import de.unipotsdam.nexplorer.client.android.net.CollectItem;
 import de.unipotsdam.nexplorer.client.android.net.RequestPing;
 import de.unipotsdam.nexplorer.client.android.net.RestMobile;
 import de.unipotsdam.nexplorer.client.android.net.SendLocation;
+import de.unipotsdam.nexplorer.client.android.net.SendPacket;
 import de.unipotsdam.nexplorer.client.android.rest.GameStatus;
 import de.unipotsdam.nexplorer.client.android.rest.Item;
 import de.unipotsdam.nexplorer.client.android.rest.LoginAnswer;
 import de.unipotsdam.nexplorer.client.android.rest.Neighbour;
 import de.unipotsdam.nexplorer.client.android.rest.Packet;
+import de.unipotsdam.nexplorer.client.android.rest.RoutingTable;
 import de.unipotsdam.nexplorer.client.android.sensors.GpsReceiver;
 import de.unipotsdam.nexplorer.client.android.sensors.GpsReceiver.PositionWatcher;
 import de.unipotsdam.nexplorer.client.android.sensors.ShakeDetector.ShakeListener;
@@ -33,9 +36,11 @@ import de.unipotsdam.nexplorer.client.android.support.LocationObserver;
 import de.unipotsdam.nexplorer.client.android.support.LoginObserver;
 import de.unipotsdam.nexplorer.client.android.support.PingObserver;
 import de.unipotsdam.nexplorer.client.android.support.RangeObserver;
+import de.unipotsdam.nexplorer.client.android.support.SendPacketObserver;
 import de.unipotsdam.nexplorer.client.android.ui.UI;
 
-public class FunctionsMobile implements PositionWatcher, OnMapClickListener, ShakeListener {
+public class FunctionsMobile implements PositionWatcher, OnMapClickListener,
+		ShakeListener {
 
 	private final NexplorerMap mapTasks;
 	private final Interval intervals;
@@ -53,6 +58,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 	private Long playerId = null;
 	private int playerRange;
 	private int itemCollectionRange;
+	private int packetId;
 
 	private Location currentLocation;
 	private RestMobile rest;
@@ -62,8 +68,15 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 	private final PingObserver pingObserver;
 	private final CollectObserver collectObserver;
 	private final RangeObserver rangeObserver;
+	private final SendPacketObserver sendPacketObserver;
 
-	public FunctionsMobile(UI ui, AppWrapper app, Handler handler, NexplorerMap mapTasks, RestMobile rest, RadiusBlinker blinker, TouchVibrator vibrator, GpsReceiver gpsReceiver) {
+	private Map<Integer, Neighbour> neighbours;
+
+	// private Map<Integer, Neighbour> neighbourhood;
+
+	public FunctionsMobile(UI ui, AppWrapper app, Handler handler,
+			NexplorerMap mapTasks, RestMobile rest, RadiusBlinker blinker,
+			TouchVibrator vibrator, GpsReceiver gpsReceiver) {
 		this.mapTasks = mapTasks;
 		this.intervals = new UpdateGameStatusInterval(handler, this);
 		this.app = app;
@@ -78,6 +91,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 		RadiusBlinker radiusBlinker = blinker;
 		RequestPing requestPing = new RequestPing(rest);
 		CollectItemVibration vibration = new CollectItemVibration(vibrator);
+		SendPacket sendPacket = new SendPacket(rest,ui);
 
 		this.locationObserver = new LocationObserver();
 		this.locationObserver.add(sendLocation);
@@ -88,7 +102,8 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 		this.loginObserver.add(sendLocation);
 		this.loginObserver.add(collectItem);
 		this.loginObserver.add(requestPing);
-
+		this.loginObserver.add(sendPacket);
+		
 		this.pingObserver = new PingObserver();
 		this.pingObserver.add(radiusBlinker);
 		this.pingObserver.add(requestPing);
@@ -100,26 +115,33 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 		this.rangeObserver = new RangeObserver();
 		this.rangeObserver.add(radiusBlinker);
 
+		this.sendPacketObserver = new SendPacketObserver();
+		this.sendPacketObserver.add(sendPacket);
+
 		gpsReceiver.watchPosition(this);
 		mapTasks.setOnMapClickListener(this);
 	}
 
 	/**
-	 * Dise Funktion wird zun‰chst aufgerufen sie loggt den spier ein und zeigt bei existierenden Spiel eine Karte
+	 * Diese Funktion wird zun‰chst aufgerufen. Sie loggt den spieler ein und
+	 * zeigt bei existierendem Spiel eine Karte
 	 * 
 	 * @param name
 	 */
 	public void loginPlayer(final String name) {
 		if (name != "") {
-			new LoginTask(uiLogin, rest, this).executeOnExecutor(LoginTask.THREAD_POOL_EXECUTOR, name);
+			new LoginTask(uiLogin, rest, this).executeOnExecutor(
+					AsyncTask.THREAD_POOL_EXECUTOR, name);
 		}
 	}
 
 	/**
 	 * callback for the geolocation
 	 */
+	@Override
 	public void positionReceived(Location location) {
-		// TODO: Failswitch einbauen, um Warnung bei zu lange ausbleibenden Positionen anzuzeigen
+		// TODO: Failswitch einbauen, um Warnung bei zu lange ausbleibenden
+		// Positionen anzuzeigen
 		if (location.getAccuracy() > minAccuracy) {
 			return;
 		}
@@ -135,18 +157,21 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 	/**
 	 * callback for the geolocation
 	 */
+	@Override
 	public void positionError(Exception error) {
 		uiSensors.noPositionReceived();
 	}
 
 	/**
-	 * diese methode holt sich regelm‰ﬂig (alle 5000ms) ein update from server ob des aktuellen Spielstandes
+	 * diese methode holt sich regelm‰ﬂig (alle 5000ms) ein update from server
+	 * ob des aktuellen Spielstandes
 	 * 
 	 * @param isAsync
 	 */
 	void updateGameStatus(final boolean isAsync) {
 		if (!gameStatusRequestExecutes) {
-			new UpdateGameStatus().executeOnExecutor(UpdateGameStatus.THREAD_POOL_EXECUTOR);
+			new UpdateGameStatus()
+					.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		}
 	}
 
@@ -184,8 +209,10 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 			long remainingPlayingTime = data.stats.getRemainingPlayingTime();
 			boolean gameExists = data.stats.isGameExistingBoolean();
 			boolean gameDidExist = gameExists;
-			int itemCollectionRange = data.stats.settings.getItemCollectionRange();
+			int itemCollectionRange = data.stats.settings
+					.getItemCollectionRange();
 			boolean gameDidEnd = data.stats.hasEndedBoolean();
+			RoutingTable table = data.table;
 
 			// Spielerinformationen
 			double battery = data.node.getBatterieLevel();
@@ -193,27 +220,40 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 			int score = data.node.getScore();
 			long level = data.node.getDifficulty();
 			int playerRange = data.node.getRange();
-			java.util.Map<Integer, Neighbour> neighbours = data.node.getNeighbours();
-			java.util.Map<Integer, Item> nearbyItems = data.node.getNearbyItems().getItems();
+			Map<Integer, Neighbour> neighbours = data.node.getNeighbours();
+			Map<Integer, Item> nearbyItems = data.node.getNearbyItems()
+					.getItems();
 			Integer nextItemDistance = data.node.getNextItemDistance();
-			boolean itemInCollectionRange = data.node.isItemInCollectionRangeBoolean();
+			boolean itemInCollectionRange = data.node
+					.isItemInCollectionRangeBoolean();
 			boolean hasRangeBooster = data.node.hasRangeBoosterBoolean();
 			String hint = data.getHint();
-			HashMap<Long,Packet> packets = data.packets;
+			HashMap<Long, Packet> packets = data.packets;
 
 			if (oldRange != playerRange) {
 				rangeObserver.fire((double) playerRange);
 			}
 
-			mapTasks.removeInvisibleMarkers(neighbours, nearbyItems, gameDifficulty);
+//			mapTasks.removeInvisibleMarkers(neighbours, nearbyItems, level);
+			// TODO remove highlighted neighbours if necessary
+			// if(level == 3){
+			// mapTasks.removeInvisibleMarkers(highlightNeighbours, nearbyItems,
+			// difficulty)
+			// }
+			adjustGameLifecycle(gameExists, gameDidExist, gameDidEnd,
+					gameIsRunning, battery);
 
-			adjustGameLifecycle(gameExists, gameDidExist, gameDidEnd, gameIsRunning, battery);
+			updateDisplay(playerRange, itemCollectionRange, neighbours,
+					nearbyItems, gameDifficulty, score, neighbourCount,
+					remainingPlayingTime, battery, nextItemDistance,
+					hasRangeBooster, itemInCollectionRange, hint, level,
+					packets);
 
-			updateDisplay(playerRange, itemCollectionRange, neighbours, nearbyItems, gameDifficulty, score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint,level,packets);
 		}
 	}
 
-	private void adjustGameLifecycle(boolean gameExists, boolean gameDidExist, boolean gameDidEnd, boolean gameIsRunning, double battery) {
+	private void adjustGameLifecycle(boolean gameExists, boolean gameDidExist,
+			boolean gameDidEnd, boolean gameIsRunning, double battery) {
 		// Spiel entsprechend der erhaltenen Informationen
 		// anpassen
 		if (gameDidEnd) {
@@ -239,15 +279,28 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 	}
 
 	/**
-	 * updates the display with the new position and the positions of the neighbours
+	 * updates the display with the new position and the positions of the
+	 * neighbours
 	 */
 	void updateDisplay() {
-		// updateDisplay(playerRange, itemCollectionRange, neighbours, nearbyItems, gameDifficulty, score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
+		// updateDisplay(playerRange, itemCollectionRange, neighbours,
+		// nearbyItems, gameDifficulty, score, neighbourCount,
+		// remainingPlayingTime, battery, nextItemDistance, hasRangeBooster,
+		// itemInCollectionRange, hint);
 	}
 
-	private void updateDisplay(int playerRange, int itemCollectionRange, java.util.Map<Integer, Neighbour> neighbours, java.util.Map<Integer, Item> nearbyItems, String gameDifficulty, int score, int neighbourCount, long remainingPlayingTime, double battery, Integer nextItemDistance, boolean hasRangeBooster, boolean itemInCollectionRange, String hint, Long level, HashMap<Long,Packet> packets) {
-		mapTasks.updateMap(playerRange, itemCollectionRange, neighbours, nearbyItems, gameDifficulty);
-		ui.updateStatusHeaderAndFooter(score, neighbourCount, remainingPlayingTime, battery, nextItemDistance, hasRangeBooster, itemInCollectionRange, hint,level, packets);
+	private void updateDisplay(int playerRange, int itemCollectionRange,
+			java.util.Map<Integer, Neighbour> neighbours,
+			java.util.Map<Integer, Item> nearbyItems, String gameDifficulty,
+			int score, int neighbourCount, long remainingPlayingTime,
+			double battery, Integer nextItemDistance, boolean hasRangeBooster,
+			boolean itemInCollectionRange, String hint, Long level,
+			HashMap<Long, Packet> packets) {
+		mapTasks.updateMap(playerRange, itemCollectionRange, neighbours,
+				nearbyItems, level);
+		ui.updateStatusHeaderAndFooter(score, neighbourCount,
+				remainingPlayingTime, battery, nextItemDistance,
+				hasRangeBooster, itemInCollectionRange, hint, level, packets);
 	}
 
 	/**
@@ -262,6 +315,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 
 		updateGameStatus(false);
 		intervals.start();
+		System.out.println("[REST] Setting playerId to " + String.valueOf(playerId));
 		loginObserver.fire(playerId);
 	}
 
@@ -283,12 +337,40 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener, Sha
 		return Integer.parseInt(value);
 	}
 
+	@Override
 	public void shakeDetected(float accel) {
 		collectItem();
 	}
 
 	@Override
 	public void onMapClick(LatLng arg0) {
-		this.pingObserver.fire();
+		// if send packet is selected
+		HashMap<String, Integer> parameters = new HashMap<String, Integer>();
+//		if (neighbours.size() > 0) {
+//			int targetId = findNeighbour(neighbours, arg0);
+//			int packetId = this.packetId;
+//			parameters.put("targetId", targetId);
+//			parameters.put("packetId", packetId);
+//		}
+//		this.pingObserver.fire();
+		System.out.println("Trying to send packet...");
+		this.sendPacketObserver.fire(parameters);
+	}
+
+	private int findNeighbour(Map<Integer, Neighbour> neighbours,
+			LatLng position) {
+		double lat = position.latitude;
+		double lng = position.longitude;
+		double nLat;
+		double nLng;
+		for (Neighbour neighbour : neighbours.values()) {
+			nLat = neighbour.getLatitude();
+			nLng = neighbour.getLongitude();
+			if (nLat == lat && nLng == lng) {
+				return (int) neighbour.getId();
+			}
+		}
+		return -1;
+
 	}
 }

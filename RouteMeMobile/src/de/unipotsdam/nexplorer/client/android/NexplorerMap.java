@@ -18,6 +18,7 @@ import de.unipotsdam.nexplorer.client.android.js.Marker;
 import de.unipotsdam.nexplorer.client.android.js.MarkerImage;
 import de.unipotsdam.nexplorer.client.android.js.PlayerRadius;
 import de.unipotsdam.nexplorer.client.android.maps.LevelOneNeighbourDrawer;
+import de.unipotsdam.nexplorer.client.android.maps.LevelThreeNeighbourDrawer;
 import de.unipotsdam.nexplorer.client.android.maps.LevelTwoNeighbourDrawer;
 import de.unipotsdam.nexplorer.client.android.maps.NeighbourDrawer;
 import de.unipotsdam.nexplorer.client.android.rest.Item;
@@ -47,6 +48,7 @@ public class NexplorerMap extends RotatingMapFragment {
 
 		playerMarker = new Marker(getActivity()) {
 
+			@Override
 			protected void setData() {
 				MarkerImage image = new MarkerImage(R.drawable.home_network);
 				this.icon = image;
@@ -63,9 +65,20 @@ public class NexplorerMap extends RotatingMapFragment {
 		collectionRadius = new PlayerRadius(getActivity(), strokeColor, strokeWeight, fillColor);
 	}
 
-	public void drawMarkers(Map<Integer, Neighbour> neighbours, Map<Integer, Item> nearbyItems, String difficulty) {
+	public void drawMarkers(Map<Integer, Neighbour> neighbours, Map<Integer, Item> nearbyItems, Long difficulty) {
 		ensureNeighbourDrawer(difficulty);
+		if (neighbours != null && neighbourDrawer != null) {
+			neighbourDrawer.draw(neighbours);
+		}
 
+		if (nearbyItems != null) {
+			for (Map.Entry<Integer, Item> entry : nearbyItems.entrySet()) {
+				drawNearbyItemMarkerAtLatitudeLongitude(entry.getKey(), entry.getValue().getItemType(), entry.getValue().getLatitude(), entry.getValue().getLongitude());
+			}
+		}
+	}
+	
+	public void highlightMarkers(Map<Integer, Neighbour> neighbours, Map<Integer, Item> nearbyItems, Long difficulty){
 		if (neighbours != null && neighbourDrawer != null) {
 			neighbourDrawer.draw(neighbours);
 		}
@@ -77,7 +90,7 @@ public class NexplorerMap extends RotatingMapFragment {
 		}
 	}
 
-	private void ensureNeighbourDrawer(String difficulty) {
+	private void ensureNeighbourDrawer(Long difficulty) {
 		if (neighbourDrawer != null) {
 			return;
 		}
@@ -86,10 +99,12 @@ public class NexplorerMap extends RotatingMapFragment {
 			return;
 		}
 
-		if (difficulty.equals("1")) {
+		if (difficulty == 1) {
 			neighbourDrawer = new LevelOneNeighbourDrawer(googleMap, getActivity());
-		} else if (difficulty.equals("2")) {
+		} else if (difficulty== 2) {
 			neighbourDrawer = new LevelTwoNeighbourDrawer(googleMap, getActivity());
+		} else if (difficulty== 3) {
+			neighbourDrawer = new LevelThreeNeighbourDrawer(googleMap, getActivity());
 		}
 	}
 
@@ -116,6 +131,7 @@ public class NexplorerMap extends RotatingMapFragment {
 		if (nearbyItemMarkersArray.get(itemId) == null) {
 			Marker marker = new Marker(getActivity()) {
 
+				@Override
 				protected void setData() {
 					position = latlng;
 					map = googleMap;
@@ -133,9 +149,8 @@ public class NexplorerMap extends RotatingMapFragment {
 		}
 	}
 
-	public void removeInvisibleMarkers(final java.util.Map<Integer, Neighbour> neighbours, final java.util.Map<Integer, Item> nearbyItems, String difficulty) {
+	public void removeInvisibleMarkers(final java.util.Map<Integer, Neighbour> neighbours, final java.util.Map<Integer, Item> nearbyItems, Long difficulty) {
 		ensureNeighbourDrawer(difficulty);
-
 		if (neighbours != null && neighbourDrawer != null) {
 			neighbourDrawer.removeInvisible(neighbours);
 		}
@@ -213,8 +228,11 @@ public class NexplorerMap extends RotatingMapFragment {
 		});
 	}
 
-	public void updateMap(int playerRange, int itemCollectionRange, Map<Integer, Neighbour> neighbours, Map<Integer, Item> nearbyItems, String gameDifficulty) {
+	public void updateMap(int playerRange, int itemCollectionRange, Map<Integer, Neighbour> neighbours, Map<Integer, Item> nearbyItems, Long gameDifficulty) {
 		updateMarkerSizes(playerRange, itemCollectionRange);
 		drawMarkers(neighbours, nearbyItems, gameDifficulty);
+		if(gameDifficulty.equals("3")){
+			highlightMarkers(neighbours, nearbyItems, gameDifficulty);
+		}
 	}
 }

@@ -8,14 +8,18 @@ public class Node {
 	private Integer neighbourCount;
 	private Integer score;
 	private Integer range;
+	private Long difficulty;
 	private Map<Integer, Neighbour> neighbours;
+	private Map<Integer, Neighbour> neighbourhood;
 	private Integer nearbyItemsCount;
 	private NearbyItems nearbyItems;
 	private Integer nextItemDistance;
 	private int itemInCollectionRange;
 	private Integer hasRangeBooster;
 	private boolean pingActive;
-
+	private boolean sendPacketActive;
+	private int currentPacketId;
+	
 	public Double getBatterieLevel() {
 		return batterieLevel;
 	}
@@ -114,5 +118,42 @@ public class Node {
 
 	public boolean isPingActive() {
 		return pingActive;
+	}
+
+	public Long getDifficulty() {
+		return difficulty;
+	}
+
+	public void setDifficulty(Long difficulty) {
+		this.difficulty = difficulty;
+	}
+
+	public boolean isSendPacketActive() {
+		return sendPacketActive;
+	}
+
+	public void setSendPacketActive(boolean sendPacketActive) {
+		this.sendPacketActive = sendPacketActive;
+	}
+
+	public int getCurrentPacketId() {
+		return currentPacketId;
+	}
+
+	public void setCurrentPacketId(int currentPacketId) {
+		this.currentPacketId = currentPacketId;
+	}
+	
+	public void setPacketVariables(boolean sendPacketActive, int currentPacketId){
+		this.currentPacketId = currentPacketId;
+		this.sendPacketActive = sendPacketActive;
+	}
+
+	public Map<Integer, Neighbour> getNeighbourhood() {
+		return neighbourhood;
+	}
+
+	public void setNeighbourhood(Map<Integer, Neighbour> neighbourhood) {
+		this.neighbourhood = neighbourhood;
 	}
 }

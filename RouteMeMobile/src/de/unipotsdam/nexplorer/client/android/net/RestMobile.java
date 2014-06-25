@@ -5,12 +5,15 @@ import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import android.location.Location;
+import android.provider.ContactsContract.Data;
 import de.unipotsdam.nexplorer.client.android.callbacks.AjaxResult;
 import de.unipotsdam.nexplorer.client.android.rest.GameStatus;
 import de.unipotsdam.nexplorer.client.android.rest.LoginAnswer;
 import de.unipotsdam.nexplorer.client.android.rest.Options;
 import de.unipotsdam.nexplorer.client.android.rest.PingRequest;
 import de.unipotsdam.nexplorer.client.android.rest.PingResponse;
+import de.unipotsdam.nexplorer.client.android.rest.RoutingRequest;
+import de.unipotsdam.nexplorer.client.android.rest.RoutingResponse;
 
 public class RestMobile {
 
@@ -31,9 +34,11 @@ public class RestMobile {
 		return template.getForObject(url, GameStatus.class);
 	}
 
-	public void getGameStatus(final long playerId, final boolean isAsync, final AjaxResult<GameStatus> result) {
+	public void getGameStatus(final long playerId, final boolean isAsync,
+			final AjaxResult<GameStatus> result) {
 		ajax(new Options<GameStatus>(GameStatus.class) {
 
+			@Override
 			protected void setData() {
 				this.dataType = "json";
 				this.url = "/rest/mobile/get_game_status";
@@ -42,54 +47,68 @@ public class RestMobile {
 				this.timeout = 5000;
 			}
 
+			@Override
 			public void success(GameStatus data) {
 				result.success(data);
 			}
 
+			@Override
 			public void error(Exception data) {
 				result.error(data);
 			}
 		});
 	}
 
-	public void updatePlayerPosition(final long playerId, final Location currentLocation, final AjaxResult<Object> ajaxResult) {
+	public void updatePlayerPosition(final long playerId,
+			final Location currentLocation, final AjaxResult<Object> ajaxResult) {
 		ajax(new Options<Object>(Object.class) {
 
 			@Override
 			protected void setData() {
 				this.type = "POST";
 				this.url = "/rest/mobile/update_player_position";
-				this.data = "latitude=" + currentLocation.getLatitude() + "&longitude=" + currentLocation.getLongitude() + "&accuracy=" + currentLocation.getAccuracy() + "&playerId=" + playerId + "&speed=" + currentLocation.getSpeed() + "&heading=" + currentLocation.getBearing();
+				this.data = "latitude=" + currentLocation.getLatitude()
+						+ "&longitude=" + currentLocation.getLongitude()
+						+ "&accuracy=" + currentLocation.getAccuracy()
+						+ "&playerId=" + playerId + "&speed="
+						+ currentLocation.getSpeed() + "&heading="
+						+ currentLocation.getBearing();
 				this.timeout = 5000;
 			}
 
+			@Override
 			public void success(Object result) {
 				ajaxResult.success(result);
 			}
 		});
 	}
 
-	public void collectItem(final long playerId, final AjaxResult<Object> ajaxResult) {
+	public void collectItem(final long playerId,
+			final AjaxResult<Object> ajaxResult) {
 		ajax(new Options<Object>(Object.class) {
 
+			@Override
 			protected void setData() {
 				this.type = "POST";
 				this.url = "/rest/mobile/collect_item";
 				this.data = "playerId=" + playerId;
 			}
 
+			@Override
 			public void success() {
 				ajaxResult.success();
 			}
 		});
 	}
 
-	public void login(final String name, final AjaxResult<LoginAnswer> ajaxResult) {
+	public void login(final String name,
+			final AjaxResult<LoginAnswer> ajaxResult) {
 		String url = host + "/rest/loginManager/login_player_mobile";
 		String request = "name=" + name + "&isMobile=" + true;
 
 		try {
-			LoginAnswer result = template.postForObject(url, request, LoginAnswer.class);
+			LoginAnswer result = template.postForObject(url, request,
+					LoginAnswer.class);
 			ajaxResult.success(result);
 		} catch (Exception e) {
 			ajaxResult.error(e);
@@ -103,7 +122,9 @@ public class RestMobile {
 		return template.postForObject(url, request, LoginAnswer.class);
 	}
 
-	public void requestPing(final long playerId, final Location currentLocation, final AjaxResult<PingResponse> ajaxResult) {
+	public void requestPing(final long playerId,
+			final Location currentLocation,
+			final AjaxResult<PingResponse> ajaxResult) {
 		new Thread(new Runnable() {
 
 			@Override
@@ -116,7 +137,8 @@ public class RestMobile {
 					data.setLatitude(currentLocation.getLatitude());
 					data.setLongitude(currentLocation.getLongitude());
 
-					PingResponse result = template.postForObject(url, data, PingResponse.class);
+					PingResponse result = template.postForObject(url, data,
+							PingResponse.class);
 					ajaxResult.success(result);
 				} catch (Exception e) {
 					ajaxResult.error(e);
@@ -124,6 +146,66 @@ public class RestMobile {
 			}
 		}).start();
 	}
+
+	public void sendPacket(final long targetId, final Long packetId,
+			final AjaxResult<RoutingResponse> ajaxResult) {
+		// TODO test this part
+		System.out.println("Sending Packet to " + String.valueOf(packetId));
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					System.out.println("I'm in the Thread");
+					// ajax(new Options<Object>(Object.class) {
+					System.out.println("Values: " + packetId + ", " + targetId);
+					final RoutingRequest data = new RoutingRequest();
+					final String url = host + "/rest/packet";
+					data.setNextHopId(targetId);
+					data.setPacketId(packetId);
+
+					RoutingResponse response = template.postForObject(url,
+							data, RoutingResponse.class);
+					ajaxResult.success(response);
+
+					System.out.println("Punkte: " + response.getScore());
+				} catch (Exception e) {
+					ajaxResult.error(e);
+				}
+
+			}
+		}).start();
+	}
+
+	// public void sendPacket(final long targetId, final Long packetId, final
+	// AjaxResult<RoutingResponse> ajaxResult){
+
+	// new Thread(new Runnable() {
+	//
+	// //TODO Fehlerbehandlung (Routing zu Knoten, der nicht in Routingtabelle
+	// ist - wo?)
+	//
+	// @Override
+	// public void run() { //TODO do we need a thread here?
+	// try {
+	// final String url = host + "/rest/packet";
+	// final RoutingRequest data = new RoutingRequest();
+	//
+	// data.setNextHopId(targetId);
+	// data.setPacketId(packetId);
+	// //TODO do i need position of packet in this place?
+	// // packet.setLatitude(targetLocation.getLatitude());
+	// // packet.setLongitude(targetLocation.getLongitude());
+	//
+	// RoutingResponse result = template.postForObject(url, data,
+	// RoutingResponse.class);
+	// ajaxResult.success(result);
+	// } catch (Exception e) {
+	// ajaxResult.error(e);
+	// }
+	// }
+	// }).start();
+	//
+	// }
 
 	private <T> void ajax(final Options<T> options) {
 		Runnable job = new Runnable() {
@@ -146,14 +228,17 @@ public class RestMobile {
 		}
 	}
 
-	private <T> Object call(String host, RestTemplate template, Options<T> options) {
+	private <T> Object call(String host, RestTemplate template,
+			Options<T> options) {
 		String url = host + options.getUrl();
 
 		try {
 			if (options.getType().equals("POST")) {
-				return (T) template.postForObject(url, options.getData(), options.getResponseType());
+				return template.postForObject(url, options.getData(),
+						options.getResponseType());
 			} else {
-				return (T) template.getForObject(url + "?" + options.getData(), options.getResponseType());
+				return template.getForObject(url + "?" + options.getData(),
+						options.getResponseType());
 			}
 		} catch (Exception e) {
 			return e;

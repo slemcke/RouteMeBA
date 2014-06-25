@@ -1,5 +1,6 @@
 package de.unipotsdam.nexplorer.client.android.sensors;
 
+import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -30,7 +31,7 @@ public class MapRotator implements SensorEventListener {
 
 	public void setUpMapIfNeeded(boolean in3d) {
 		if (in3d) {
-			SensorManager sensorManager = (SensorManager) host.getSystemService(MapActivity.SENSOR_SERVICE);
+			SensorManager sensorManager = (SensorManager) host.getSystemService(Context.SENSOR_SERVICE);
 			sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_GAME);
 		}
 	}

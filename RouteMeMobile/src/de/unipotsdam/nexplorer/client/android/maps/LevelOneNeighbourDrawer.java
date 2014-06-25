@@ -34,17 +34,18 @@ public class LevelOneNeighbourDrawer implements NeighbourDrawer {
 	protected void drawNeighbourMarkerAtLatitudeLongitude(final int playerId, Neighbour neighbour) {
 		final LatLng latlng = new LatLng(neighbour.getLatitude(), neighbour.getLongitude());
 		final MarkerImage image = new MarkerImage(drawable.network_wireless_small);
-
+		//no markers set for actual player
 		if (neighbourMarkersArray.get(playerId) == null) {
 			Marker marker = new Marker(host) {
 
+				@Override
 				protected void setData() {
 					position = latlng;
 					map = senchaMap;
 					title = "(" + playerId + ") ";
 					icon = image;
 					zIndex = 1;
-				}
+				}										
 			};
 
 			neighbourMarkersArray.put(playerId, marker);

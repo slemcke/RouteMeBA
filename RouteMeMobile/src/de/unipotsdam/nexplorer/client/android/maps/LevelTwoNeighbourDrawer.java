@@ -12,9 +12,9 @@ import de.unipotsdam.nexplorer.client.android.rest.Neighbour;
 
 public class LevelTwoNeighbourDrawer extends LevelOneNeighbourDrawer implements NeighbourDrawer {
 
-	private GoogleMap senchaMap;
-	private Map<Integer, NeighbourPing> neighbourPings = new HashMap<Integer, NeighbourPing>();
-	private Activity host;
+	protected GoogleMap senchaMap;
+	protected Map<Integer, NeighbourPing> neighbourPings = new HashMap<Integer, NeighbourPing>();
+	protected Activity host;
 
 	public LevelTwoNeighbourDrawer(GoogleMap senchaMap, Activity host) {
 		super(senchaMap, host);

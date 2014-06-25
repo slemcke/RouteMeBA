@@ -3,7 +3,6 @@ package de.unipotsdam.nexplorer.client.android.ui;
 import java.util.HashMap;
 
 import android.app.Activity;
-import de.unipotsdam.nexplorer.client.android.PacketFooterFragment;
 import de.unipotsdam.nexplorer.client.android.callbacks.LoginError;
 import de.unipotsdam.nexplorer.client.android.callbacks.RemovalReason;
 import de.unipotsdam.nexplorer.client.android.callbacks.UIFooter;
@@ -61,6 +60,27 @@ public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 			@Override
 			public void run() {
 				footer.setIsCollectingItem(false);
+			}
+		});
+	}
+	
+	//using packetid-Button for indicating packet sending 
+	public void disableButtonForPacketSending(){
+		runOnUIThread(new Runnable() {
+
+			@Override
+			public void run() {
+				packetFooter.isSendingPacket(true);
+			}
+		});
+	}
+	
+	public void enableButtonForPacketSending(){
+		runOnUIThread(new Runnable() {
+
+			@Override
+			public void run() {
+				packetFooter.isSendingPacket(false);
 			}
 		});
 	}
@@ -143,7 +163,7 @@ public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 
 			@Override
 			public void run() {
-				waitingText.setText("Das Spiel wurde Pausiert");
+				waitingText.setText("Das Spiel wurde pausiert");
 				waitingForGameOverlay.show();
 			}
 		});
@@ -188,7 +208,7 @@ public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 			break;
 		case CAUSE_UNKNOWN:
 		default:
-			showLoginError("Exception wurde ausgelößt - Kein Spiel gestartet?");
+			showLoginError("Exception wurde ausgelöst - Kein Spiel gestartet?");
 			break;
 		}
 

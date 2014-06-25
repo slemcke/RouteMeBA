@@ -4,16 +4,17 @@ import java.util.HashMap;
 import java.util.TreeMap;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
+import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ToggleButton;
 import de.unipotsdam.nexplorer.client.android.callbacks.UIPacketFooter;
 import de.unipotsdam.nexplorer.client.android.rest.Packet;
 
@@ -22,21 +23,25 @@ public class PacketFooterFragment extends Fragment implements UIPacketFooter{
 	//	private TextView nextItemDistance;
 	private boolean isSendingPacket;
 	private LinearLayout packetLayout;
-	private FrameLayout map;
+	private ViewGroup container;
 	private View result;
+	private ToggleButton packetid;
 	
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		
 		super.onCreate(savedInstanceState);
+		//no send requested
 		this.isSendingPacket = false;
 	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		result = inflater.inflate(R.layout.fragment_packet_footer, container, false);
-		map = (FrameLayout) result.getParent();
+//		map = inflater.inflate(R.layout.activity_map, container,false);
+		this.container = container;
+		packetid = (ToggleButton) result.findViewById(R.id.packetid);
 		packetLayout= (LinearLayout) result.findViewById(R.id.packages);
 		return result;
 	}
@@ -47,8 +52,11 @@ public class PacketFooterFragment extends Fragment implements UIPacketFooter{
 		//only update footer if level 3 is active
 		if(level != 3){
 			//hide fragment and return
-			map.findViewById(R.id.packetFooter).setVisibility(View.GONE);
+			container.findViewById(R.id.packetFooter).setVisibility(View.GONE);
+//			map.findViewById(R.id.packetFooter).setVisibility(View.GONE);
 			return;
+		} else {
+			container.findViewById(R.id.packetFooter).setVisibility(View.VISIBLE);
 		}
 		
 		//get context
@@ -66,38 +74,54 @@ public class PacketFooterFragment extends Fragment implements UIPacketFooter{
 		for (Packet packet : packetsTree.values()) {
 			Byte packetType = packet.getType();
 			//show empty image if no legal type is given
-			//TODO all images
-			//TODO handle null pointer for packettype
 			resId = R.drawable.placeholder;
 			if(packetType == (byte)1){
-				resId =  R.drawable.voip;
+				resId =  R.drawable.mail;
 			} else if(packetType ==(byte)2){
-				resId =  R.drawable.voip;
+				resId =  R.drawable.html;
 			}else if(packetType==(byte)3){
 				resId =  R.drawable.chat;
 			}else if(packetType==(byte)4){
-				resId =  R.drawable.voip;
+				resId =  R.drawable.navigation;
 			}else if(packetType==(byte)5){
 				resId =  R.drawable.voip;
+			} else {
+				//TODO is this really necessary?
+				resId = R.drawable.placeholder;
 			}
 			//create new image view for each packet
-			ImageView newPacket = new ImageView(context);
-			//set packet id as image id to
+			ImageButton newPacket = new ImageButton(context);
+			//set packet id as image id
 			newPacket.setImageResource(resId);
 			newPacket.setId((packet.getId().intValue()));
-			newPacket.setOnTouchListener(new OnTouchListener() {
+			newPacket.setBackgroundColor(Color.TRANSPARENT);
+			newPacket.setOnClickListener(new OnClickListener() {
 				
 				@Override
-				public boolean onTouch(View v, MotionEvent event) {
-					//moving down respectively up means simple tip on screen while we need left/right action to scroll through the view
-					if(MotionEvent.ACTION_DOWN != event.getAction()){
-						return false;
-					}
-					//TODO start sending packet here
-					//initiate packet sending
+				public void onClick(View button) {
+					// TODO change picture (highlight it)
+//					ImageButton button = (ImageButton) (container.findViewById(v.getId()));
+//					button.setImageResource(resId);
 					
-					isSendingPacket(true);
-					return true;
+					//toggle
+					
+//					if(((ToggleButton) button).isChecked()){ //button was clicked second time
+////						button.setEnabled(false);
+////						packetid.setEnabled(false);
+//						packetid.setText(R.string.default_packet);
+////						System.out.println("Button-ID: " + button.getId() + ", Paket: "  + packetid.getText());
+//					} else {
+//						if(packetid.isEnabled()){
+//							//TODO set enabled-value to false for all buttons
+//						}
+//						button.setEnabled(true);
+//						packetid.setEnabled(true);
+//						System.out.println("Old: " + packetid.getText());
+
+						packetid.setText(String.valueOf(button.getId()));
+//						System.out.println("New: " + packetid.getText());
+//					}
+						System.out.println("ID: " + packetid.getText());
 				}
 			});
 			packetLayout.addView(newPacket);
@@ -107,6 +131,10 @@ public class PacketFooterFragment extends Fragment implements UIPacketFooter{
 		@Override
 		public void isSendingPacket(boolean isSendingPacket) {
 			this.isSendingPacket = isSendingPacket;
+			if(isSendingPacket){
+				packetid.setChecked(false);
+				packetid.setText(R.string.default_packet);
+			}
 			
 		}
 }
