@@ -326,7 +326,7 @@ public class Settings implements java.io.Serializable {
 			return GameStatus.ISRUNNING;
 		} else if (getIsRunning() == 1 && getDidEnd() == null) {
 			return GameStatus.ISRUNNING;
-		} else if (getDidEnd() == 0) {
+		} else if (getIsRunning() == 0 && getDidEnd() == 0) {
 			return GameStatus.ISPAUSED;
 		} else {
 			return GameStatus.HASENDED;

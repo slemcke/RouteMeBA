@@ -23,6 +23,9 @@
                 <include name="**/deploy/**" />
                 <include name="**/settings.xml" />
             </webinf>
+        	<zipfileset dir="../RouteMeRestLibrary/bin/" prefix="WEB-INF/" >
+        	    	<include name="**/classes/de/unipotsdam/nexplorer/client/**"/>
+        	</zipfileset>
         </war>
     </target>
 

@@ -61,7 +61,7 @@ public class SettingsUpdateStarter extends StatelessTimer {
 
 			settings.inner().setGameState(GameStatus.ISRUNNING);
 			settings.inner().setLastPause(new Date().getTime());
-			// settings.save();
+			settings.save();
 		} catch (Exception e) {
 			logger.catching(e);
 		} finally {

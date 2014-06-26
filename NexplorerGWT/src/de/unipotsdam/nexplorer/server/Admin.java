@@ -395,6 +395,7 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 					} else {
 						// aufräumen wenn Knoten ausgefallen (AODV)
 						dbAccess.cleanRoutingEntriesFor(theNode);
+						
 					}
 				}
 
@@ -422,12 +423,13 @@ public class Admin extends RemoteServiceServlet implements AdminService {
 		try {
 			Setting settings = unit.resolve(DatabaseImpl.class).getSettings();
 
-			settings.decreasePlayingTimeBy(delta);
+			
 			if (settings.noTimeLeft()) {
 				stopGame();
 			}
-
+			settings.decreasePlayingTimeBy(delta);
 			settings.save();
+			
 		} catch (Exception e) {
 			unit.cancel();
 			throw new RuntimeException(e);

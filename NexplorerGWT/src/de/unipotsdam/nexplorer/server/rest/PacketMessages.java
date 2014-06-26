@@ -1,6 +1,7 @@
 package de.unipotsdam.nexplorer.server.rest;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -23,9 +24,12 @@ public class PacketMessages {
 	 * rest service to send packets
 	 */
 	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public RoutingResponse sendPacket(RoutingRequest request) {
+	@Path("send_packet")
+	@Produces("application/json")
+	public RoutingResponse sendPacket(@FormParam("nextHopId") Long nextHopId, @FormParam("packetId") Long packetId) {
+		RoutingRequest request = new RoutingRequest();
+		request.setNextHopId(nextHopId);
+		request.setPacketId(packetId);
 		return mobile.sendPacket(request);
 	}
 }

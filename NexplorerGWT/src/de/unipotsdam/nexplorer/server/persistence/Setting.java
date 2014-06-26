@@ -28,7 +28,7 @@ public class Setting {
 	}
 
 	public boolean noTimeLeft() {
-		return inner().getPlayingTime() <= 0;
+		return inner().getRemainingPlayingTime() <= 0;
 	}
 
 	/**

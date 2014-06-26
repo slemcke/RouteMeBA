@@ -51,7 +51,7 @@ public class PlayerInfoUpdater implements AsyncCallback<PlayerInfo> {
 				}
 				buttonSetShown = ButtonSetShown.NewMessage;
 			}
-		}
+		} 
 	}
 
 	private void updateUiWith(PlayerInfo result) {
