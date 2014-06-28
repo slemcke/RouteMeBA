@@ -5,6 +5,7 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import de.unipotsdam.nexplorer.client.android.rest.RoutingRequest;
@@ -26,7 +27,7 @@ public class PacketMessages {
 	@POST
 	@Path("send_packet")
 	@Produces("application/json")
-	public RoutingResponse sendPacket(@FormParam("nextHopId") Long nextHopId, @FormParam("packetId") Long packetId) {
+	public RoutingResponse sendPacket(@QueryParam("nextHopId") Long nextHopId, @QueryParam("packetId") Long packetId) {
 		RoutingRequest request = new RoutingRequest();
 		request.setNextHopId(nextHopId);
 		request.setPacketId(packetId);

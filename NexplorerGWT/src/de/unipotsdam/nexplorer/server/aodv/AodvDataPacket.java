@@ -144,15 +144,24 @@ public class AodvDataPacket implements ProcessableDataPacket {
 		Player destination = data.create(inner.getPlayersByDestinationId());
 		AodvNode dest = factory.create(destination);
 		RoutingTable table = new RoutingTable(currentNode, dbAccess);
-		AodvNode nextNode= table.getNextHop(dest);
-		if (table.hasRouteTo(dest) && nextHop.getId().equals(nextNode.getId())) {
-			// Packet weitersenden
-			Link conn = factory.create(currentNode,nextHop);
-			conn.transmit(this);
 		
-			// Packet löschen
-			logger.trace("Datenpaket mit sourceId " + inner.getPlayersBySourceId().getId() + " und destinationId " + inner.getPlayersByDestinationId().getId() + " löschen, weil fertig bearbeitet.");
-			delete();
+		if (table.hasRouteTo(dest)) {
+			AodvNode nextNode= table.getNextHop(dest);
+			if(nextHop.getId().equals(nextNode.getId())){
+				// Packet weitersenden
+				Link conn = factory.create(currentNode,nextHop);
+				conn.transmit(this);
+			
+				// Packet löschen
+				logger.trace("Datenpaket mit sourceId " + inner.getPlayersBySourceId().getId() + " und destinationId " + inner.getPlayersByDestinationId().getId() + " löschen, weil fertig bearbeitet.");
+				delete();
+			} else {
+				// gegebener NextHop stimmt nicht mit RoutingTable überein
+				logger.trace("Datenpacket mit sourceId {} und destinationId {} nicht zustellbar, da gegebener Node mit Id {} nicht RoutingTable als next Hop angegeben ist", inner.getPlayersBySourceId().getId(), inner.getPlayersByDestinationId().getId(), nextHop.getId());
+				inner.setStatus(Aodv.DATA_PACKET_STATUS_ERROR);
+				save();
+			}
+			
 		} else {
 			// RERRs senden (jemand denkt irrtümlich ich würde eine Route kennen)
 			currentNode.sendRERRToNeighbours(destination);
