@@ -112,31 +112,6 @@ public class Players extends Messager implements java.io.Serializable, IsSeriali
 		}
 	}
 	
-	@JsonProperty("neighbourhood")
-	@Transient
-	public HashMap<Long, Players> getNeighbourhood() {
-		try {
-			HashMap<Long, Players> result = new HashMap<Long, Players>();
-			if (getNeighbours() == null) {
-				return result;
-			}
-
-			for (Players fullNeighbour : getNeighbours()) {
-				Players strippedNeighbour = new Players();
-
-				strippedNeighbour.latitude = fullNeighbour.getLatitude();
-				strippedNeighbour.longitude = fullNeighbour.getLongitude();
-				strippedNeighbour.lastPing = fullNeighbour.getLastPing();
-				strippedNeighbour.pingDuration = fullNeighbour.getPingDuration();
-				strippedNeighbour.id = fullNeighbour.getId();
-				result.put(fullNeighbour.getId(), strippedNeighbour);
-			}
-
-			return result;
-		} catch (NullPointerException e) {
-			throw e;
-		}
-	}
 
 	@JsonIgnore
 	@Transient

@@ -245,11 +245,12 @@ public class Player implements Locatable {
 	/**
 	 * Adds itself as known neighbour to all nodes within range. Does not add the neighbours within range to its own known neighbours. Result: All neighbours know this node, but this node does not know its neighbours.
 	 */
-	public void pingNeighbourhood() {
+	public void pingNeighbourhood(NeighbourAction routing) {
 		inner.setLastPing(new Date().getTime());
 		List<Player> reachableNodes = dbAccess.getNeighboursWithinRange(this);
 		for (Player neighbour : reachableNodes) {
 			neighbour.receivePingFrom(this);
+			routing.aodvNeighbourFound(neighbour);
 		}
 	}
 
@@ -271,6 +272,7 @@ public class Player implements Locatable {
 			Neighbours neigh = new Neighbours(player.inner, inner);
 			neigh.setLastPing(player.inner.getLastPing());
 			inner.getNeighbourses().add(neigh);
+			
 		}
 	}
 

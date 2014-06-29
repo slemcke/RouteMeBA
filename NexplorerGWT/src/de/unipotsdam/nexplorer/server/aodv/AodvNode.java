@@ -277,6 +277,6 @@ public class AodvNode implements NeighbourAction {
 	}
 
 	public void pingNeighbourhood() {
-		theNode.pingNeighbourhood();
+		theNode.pingNeighbourhood(this);
 	}
 }

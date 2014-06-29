@@ -191,7 +191,6 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 			}
 			//returns the routing table for nodes
 			List<AodvRoutingTableEntries> table = dbAccess.getRoutingTable(id);
-			
 			NodeGameSettingsJSON result = new NodeGameSettingsJSON(stats, node, jsonPackets, table);
 			return result;
 		} catch (Exception e) {
