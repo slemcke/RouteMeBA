@@ -8,5 +8,6 @@ public interface UIPacketFooter {
 
 	public void updateFooter(final HashMap<Long,Packet> packets, Long level);
 
-	public void isSendingPacket(boolean isSendingPacket);
+	public void setIsSendingPacket(boolean isSendingPacket);
+
 }

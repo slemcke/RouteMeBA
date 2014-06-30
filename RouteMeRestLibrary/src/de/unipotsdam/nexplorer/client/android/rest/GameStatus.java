@@ -1,6 +1,7 @@
 package de.unipotsdam.nexplorer.client.android.rest;
 
 import java.util.HashMap;
+import java.util.List;
 
 
 public class GameStatus {
@@ -9,7 +10,7 @@ public class GameStatus {
 	public Node node;
 	private String hint;
 	public HashMap<Long,Packet> packets;
-	public RoutingTable table;
+	public List<RoutingTable> routingTable;
 
 	public Stats getStats() {
 		return stats;
@@ -33,5 +34,13 @@ public class GameStatus {
 
 	public void setHint(String hint) {
 		this.hint = hint;
+	}
+	
+	public List<RoutingTable> getRoutingTable(){
+		return routingTable;
+	}
+	
+	public void setRoutingTable(List<RoutingTable> table){
+		this.routingTable = table;
 	}
 }

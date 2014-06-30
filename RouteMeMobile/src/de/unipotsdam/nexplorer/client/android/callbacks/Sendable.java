@@ -1,7 +1,8 @@
 package de.unipotsdam.nexplorer.client.android.callbacks;
 
-import java.util.Map;
+import de.unipotsdam.nexplorer.client.android.rest.Packet;
+
 
 public interface Sendable {
-	public void sendRequested(Map<String,Integer> parameters);
+	public void sendRequested(Packet packet);
 }

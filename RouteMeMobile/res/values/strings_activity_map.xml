@@ -8,7 +8,7 @@
     <string name="collect_item">Gegenstand einsammeln</string>
     <string name="send_packet"></string>
     <string name="default_level"></string>
-    <string name="default_packet"></string>
+    <string name="default_packet">0</string>
     <string name="default_nextitemdistance"></string>
     <string name="default_activeitems"></string>
     <string name="default_hint"></string>

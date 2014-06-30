@@ -79,14 +79,9 @@ public class NexplorerMap extends RotatingMapFragment {
 	}
 	
 	public void highlightMarkers(Map<Integer, Neighbour> neighbours, Map<Integer, Item> nearbyItems, Long difficulty){
-		if (neighbours != null && neighbourDrawer != null) {
-			neighbourDrawer.draw(neighbours);
-		}
-
-		if (nearbyItems != null) {
-			for (Map.Entry<Integer, Item> entry : nearbyItems.entrySet()) {
-				drawNearbyItemMarkerAtLatitudeLongitude(entry.getKey(), entry.getValue().getItemType(), entry.getValue().getLatitude(), entry.getValue().getLongitude());
-			}
+		((LevelThreeNeighbourDrawer)neighbourDrawer).highlightNeighbours(neighbours);
+		if (neighbours != null && neighbourDrawer != null && neighbourDrawer instanceof LevelThreeNeighbourDrawer) {
+			((LevelThreeNeighbourDrawer)neighbourDrawer).highlightNeighbours(neighbours);
 		}
 	}
 
@@ -228,11 +223,11 @@ public class NexplorerMap extends RotatingMapFragment {
 		});
 	}
 
-	public void updateMap(int playerRange, int itemCollectionRange, Map<Integer, Neighbour> neighbours, Map<Integer, Item> nearbyItems, Long gameDifficulty) {
+	public void updateMap(int playerRange, int itemCollectionRange, Map<Integer, Neighbour> neighbours,Map<Integer, Neighbour> neighboursWithRoutes, Map<Integer, Item> nearbyItems, Long gameDifficulty) {
 		updateMarkerSizes(playerRange, itemCollectionRange);
 		drawMarkers(neighbours, nearbyItems, gameDifficulty);
 		if(gameDifficulty.equals("3")){
-			highlightMarkers(neighbours, nearbyItems, gameDifficulty);
+			highlightMarkers(neighboursWithRoutes, nearbyItems, gameDifficulty);
 		}
 	}
 }

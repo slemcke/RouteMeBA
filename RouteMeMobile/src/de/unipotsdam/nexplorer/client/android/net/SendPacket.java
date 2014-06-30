@@ -1,60 +1,57 @@
 package de.unipotsdam.nexplorer.client.android.net;
 
-import java.util.Map;
-
-import android.location.Location;
-import de.unipotsdam.nexplorer.client.android.callbacks.AjaxResult;
-import de.unipotsdam.nexplorer.client.android.callbacks.Locatable;
 import de.unipotsdam.nexplorer.client.android.callbacks.Loginable;
 import de.unipotsdam.nexplorer.client.android.callbacks.Sendable;
-import de.unipotsdam.nexplorer.client.android.rest.RoutingResponse;
+import de.unipotsdam.nexplorer.client.android.rest.Packet;
 import de.unipotsdam.nexplorer.client.android.ui.UI;
 
-public class SendPacket implements Locatable, Sendable, Loginable{
+public class SendPacket implements Sendable, Loginable{
 
 	private final RestMobile rest;
 	private final UI ui;
-	private Long packetId;
-	private Long targetId;
-	private Location neighbourLocation;
+	private Packet packet;
 	private Long playerId;
 	private boolean isSendingPacket;
 	
 	public SendPacket(RestMobile rest, UI ui){
 		this.ui = ui;
 		this.rest = rest;
-		this.packetId = null;
-		this.targetId = null;
-		this.neighbourLocation = null;
+		this.packet = null;
 		this.playerId = null;
-		this.isSendingPacket = false; 
+//		this.isSendingPacket = false; 
 		
 	}
 	@Override
-	public void sendRequested(Map<String,Integer> parameters) {
-		System.out.println("Am I sending? " + isSendingPacket + ". I am " + playerId);
-		if(!isSendingPacket && playerId != null){
+	public void sendRequested(Packet packet) {
+//		System.out.println("Am I sending? " + isSendingPacket + ". I am " + playerId);
+		if(playerId != null && packet != null){
+			//prevent sending more than one packet at a time
+//			isSendingPacket=true;
+//			ui.disableButtonForPacketSending();
 			//TODO remove syso
-			System.out.println("start sending packet...");
-			targetId = (long)146;
-			packetId = (long)73;
+//			targetId = (long)12;
+			this.packet = packet;
+//			packetId = (long)32;
 //			targetId = Long.valueOf(parameters.get("next"));
 //			packetId = Long.valueOf(parameters.get("packetId"));
-			
-			rest.sendPacket(targetId, packetId, new AjaxResult<RoutingResponse>(){
-				@Override
-				public void success(){
-					isSendingPacket = false;
-					ui.enableButtonForPacketSending();
-				}
-				@Override
-				public void error() {
-					isSendingPacket = false;
-					ui.enableButtonForPacketSending();
-				}
-			});
+			System.out.println("Saving packetId " + packet.getId());
+
+			//save packetID
+			ui.setPacket(packet);
+//			rest.sendPacket(targetId, packetId, new AjaxResult<RoutingResponse>(){
+//				@Override
+//				public void success(){
+//					isSendingPacket = false;
+//					ui.enableButtonForPacketSending();
+//				}
+//				@Override
+//				public void error() {
+//					isSendingPacket = false;
+//					ui.enableButtonForPacketSending();
+//				}
+//			});
 		} else {
-			System.out.println("I'm not sending this");
+			System.out.println("I'm not saving packet " + packet.getId() + "for player " + playerId);
 		}
 		//TODO exception handling
 //		if (playerId != null && location != null) {
@@ -62,10 +59,6 @@ public class SendPacket implements Locatable, Sendable, Loginable{
 //		}
 	}
 
-	@Override
-	public void locationChanged(Location location) {
-		this.neighbourLocation = location;
-	}
 	@Override
 	public void loggedIn(long playerId) {
 		this.playerId = playerId;

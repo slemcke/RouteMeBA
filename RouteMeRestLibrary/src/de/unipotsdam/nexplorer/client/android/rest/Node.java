@@ -10,6 +10,7 @@ public class Node {
 	private Integer range;
 	private Long difficulty;
 	private Map<Integer, Neighbour> neighbours;
+	private Map<Integer, Neighbour> neighboursWithRoutes;
 	private Map<Integer, Neighbour> neighbourhood;
 	private Integer nearbyItemsCount;
 	private NearbyItems nearbyItems;
@@ -58,6 +59,14 @@ public class Node {
 
 	public void setNeighbours(Map<Integer, Neighbour> neighbours) {
 		this.neighbours = neighbours;
+	}
+
+	public Map<Integer, Neighbour> getNeighboursWithRoutes() {
+		return neighboursWithRoutes;
+	}
+
+	public void setNeighboursWithRoutes(Map<Integer, Neighbour> neighboursWithRoutes) {
+		this.neighboursWithRoutes = neighboursWithRoutes;
 	}
 
 	public Integer getNearbyItemsCount() {

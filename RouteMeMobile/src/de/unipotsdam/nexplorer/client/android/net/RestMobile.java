@@ -59,6 +59,47 @@ public class RestMobile {
 		});
 	}
 
+	// TODO needs to be implemented in backend
+	// saves packetID to Node in RestLibrary and generates NeighboursWithRoutes
+	// for Node
+	public void savePacketId(final long playerId, final int packetId,
+			final AjaxResult<Object> ajaxResult) {
+		ajax(new Options<Object>(Object.class) {
+
+			@Override
+			protected void setData() {
+				this.type = "POST";
+				this.url = "/rest/mobile/save_packet_id";
+				this.data = "playerId=" + playerId+ "&packetId=" + packetId;
+			}
+
+			@Override
+			public void success(Object result) {
+				ajaxResult.success(result);
+			}
+		});
+	}
+
+	// TODO needs to be implemented in backend
+	// routes packet in node->packet to nextHopId
+	public void routePacket(final long playerId, final long nextHopId,
+			final AjaxResult<Object> ajaxResult) {
+		ajax(new Options<Object>(Object.class) {
+
+			@Override
+			protected void setData() {
+				this.type = "POST";
+				this.url = "/rest/mobile/route_packet";
+				this.data = "playerId=" + playerId + "&nextHopId" + nextHopId;
+			}
+
+			@Override
+			public void success(Object result) {
+				ajaxResult.success(result);
+			}
+		});
+	}
+
 	public void updatePlayerPosition(final long playerId,
 			final Location currentLocation, final AjaxResult<Object> ajaxResult) {
 		ajax(new Options<Object>(Object.class) {
@@ -149,63 +190,24 @@ public class RestMobile {
 
 	public void sendPacket(final long targetId, final Long packetId,
 			final AjaxResult<RoutingResponse> ajaxResult) {
-		// TODO test this part
-		System.out.println("Sending Packet to " + String.valueOf(packetId));
-		new Thread(new Runnable() {
+		ajax(new Options<Object>(Object.class) {
+
 			@Override
-			public void run() {
-				try {
-					System.out.println("I'm in the Thread");
-					// ajax(new Options<Object>(Object.class) {
-					System.out.println("Values: " + packetId + ", " + targetId);
-					final RoutingRequest data = new RoutingRequest();
-					final String url = host + "/rest/packet";
-					data.setNextHopId(targetId);
-					data.setPacketId(packetId);
-
-					RoutingResponse response = template.postForObject(url,
-							data, RoutingResponse.class);
-					ajaxResult.success(response);
-
-					System.out.println("Punkte: " + response.getScore());
-				} catch (Exception e) {
-					ajaxResult.error(e);
-				}
-
+			protected void setData() {
+				this.type = "POST";
+				this.url = "/rest/packet/send_packet";
+				this.data = "nextHopId=" + targetId + "&packetId=" + packetId;
 			}
-		}).start();
+
+			@Override
+			public void success(Object result) {
+				System.out.println("Sent packet " + packetId
+						+ " successfully to " + targetId + ". Score: "
+						+ ((RoutingResponse) result).getScore());
+				ajaxResult.success((RoutingResponse) result);
+			}
+		});
 	}
-
-	// public void sendPacket(final long targetId, final Long packetId, final
-	// AjaxResult<RoutingResponse> ajaxResult){
-
-	// new Thread(new Runnable() {
-	//
-	// //TODO Fehlerbehandlung (Routing zu Knoten, der nicht in Routingtabelle
-	// ist - wo?)
-	//
-	// @Override
-	// public void run() { //TODO do we need a thread here?
-	// try {
-	// final String url = host + "/rest/packet";
-	// final RoutingRequest data = new RoutingRequest();
-	//
-	// data.setNextHopId(targetId);
-	// data.setPacketId(packetId);
-	// //TODO do i need position of packet in this place?
-	// // packet.setLatitude(targetLocation.getLatitude());
-	// // packet.setLongitude(targetLocation.getLongitude());
-	//
-	// RoutingResponse result = template.postForObject(url, data,
-	// RoutingResponse.class);
-	// ajaxResult.success(result);
-	// } catch (Exception e) {
-	// ajaxResult.error(e);
-	// }
-	// }
-	// }).start();
-	//
-	// }
 
 	private <T> void ajax(final Options<T> options) {
 		Runnable job = new Runnable() {

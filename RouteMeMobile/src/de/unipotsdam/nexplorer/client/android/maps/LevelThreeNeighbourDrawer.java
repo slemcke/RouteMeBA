@@ -24,7 +24,7 @@ public class LevelThreeNeighbourDrawer extends LevelTwoNeighbourDrawer implement
 //		this.host = host;
 	}
 	
-	protected void highlightNeighbours(HashMap<Integer,Neighbour> neighbours){
+	public void highlightNeighbours(Map<Integer, Neighbour> neighbours){
 		for (Map.Entry<Integer, Neighbour> entry : neighbours.entrySet()) {
 			highlightNeighbourMarkerAtLatitudeLongitude(entry.getKey(), entry.getValue());
 		}
