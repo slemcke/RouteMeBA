@@ -145,9 +145,7 @@ public class AodvDataPacket implements ProcessableDataPacket {
 		AodvNode dest = factory.create(destination);
 		RoutingTable table = new RoutingTable(currentNode, dbAccess);
 		
-		if (table.hasRouteTo(dest)) {
-			AodvNode nextNode= table.getNextHop(dest);
-			if(nextHop.getId().equals(nextNode.getId())){
+		if (table.hasRouteTo(dest, nextHop)) {
 				// Packet weitersenden
 				Link conn = factory.create(currentNode,nextHop);
 				conn.transmit(this);
@@ -155,12 +153,6 @@ public class AodvDataPacket implements ProcessableDataPacket {
 				// Packet löschen
 				logger.trace("Datenpaket mit sourceId " + inner.getPlayersBySourceId().getId() + " und destinationId " + inner.getPlayersByDestinationId().getId() + " löschen, weil fertig bearbeitet.");
 				delete();
-			} else {
-				// gegebener NextHop stimmt nicht mit RoutingTable überein
-				logger.trace("Datenpacket mit sourceId {} und destinationId {} nicht zustellbar, da gegebener Node mit Id {} nicht RoutingTable als next Hop angegeben ist", inner.getPlayersBySourceId().getId(), inner.getPlayersByDestinationId().getId(), nextHop.getId());
-				inner.setStatus(Aodv.DATA_PACKET_STATUS_ERROR);
-				save();
-			}
 			
 		} else {
 			// RERRs senden (jemand denkt irrtümlich ich würde eine Route kennen)

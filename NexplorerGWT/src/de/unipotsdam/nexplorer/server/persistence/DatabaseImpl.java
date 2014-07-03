@@ -153,6 +153,12 @@ public class DatabaseImpl {
 
 		return entries.isEmpty() ? null : factory.create(entries.get(0));
 	}
+	
+	public AodvRoutingTableEntry getRouteToDestination(Long destinationId, Long nextHopId, Long nodeId) {
+		List<AodvRoutingTableEntries> entries = session.createCriteria(AodvRoutingTableEntries.class).add(eq("nodeId", nodeId)).add(eq("nextHopId", nextHopId)).add(eq("destinationId", destinationId)).addOrder(Order.asc("hopCount")).list();
+
+		return entries.isEmpty() ? null : factory.create(entries.get(0));
+	}
 
 	public List<AodvRoutingMessage> getRoutingErrors(Player theNode) {
 		Setting gameSettings = getSettings();

@@ -22,9 +22,22 @@ public class RoutingTable {
 	public boolean hasRouteTo(Player destination) {
 		return hasRouteTo(destination.getId());
 	}
+	
+	public boolean hasRouteTo(Player destination, Player nextHop) {
+		return hasRouteTo(destination.getId(), nextHop.getId());
+	}
 
 	public boolean hasRouteTo(long destination) {
 		AodvRoutingTableEntry theRoute = dbAccess.getRouteToDestination(destination, node.getId());
+		return theRoute != null;
+	}
+	
+	public boolean hasRouteTo(AodvNode destination, AodvNode nextHop) {
+		return hasRouteTo(destination.getId(), nextHop.getId());
+	}
+	
+	public boolean hasRouteTo(long destination, long nextHop) {
+		AodvRoutingTableEntry theRoute = dbAccess.getRouteToDestination(destination, nextHop, node.getId());
 		return theRoute != null;
 	}
 

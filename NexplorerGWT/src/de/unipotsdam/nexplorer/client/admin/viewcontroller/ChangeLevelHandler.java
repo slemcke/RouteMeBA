@@ -1,8 +1,5 @@
 package de.unipotsdam.nexplorer.client.admin.viewcontroller;
 
-import com.google.gwt.dom.client.ButtonElement;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 

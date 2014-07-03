@@ -2,11 +2,9 @@ package de.unipotsdam.nexplorer.client.admin;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 
 import de.unipotsdam.nexplorer.client.util.DivElementWrapper;
-import de.unipotsdam.nexplorer.shared.GameStats;
 import de.unipotsdam.nexplorer.shared.PlayingField;
 
 /**

@@ -15,6 +15,7 @@ import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
+import de.unipotsdam.nexplorer.server.aodv.AodvNode;
 import de.unipotsdam.nexplorer.server.data.NeighbourAction;
 import de.unipotsdam.nexplorer.server.data.PlayerDoesNotExistException;
 import de.unipotsdam.nexplorer.server.di.InjectLogger;
@@ -245,12 +246,11 @@ public class Player implements Locatable {
 	/**
 	 * Adds itself as known neighbour to all nodes within range. Does not add the neighbours within range to its own known neighbours. Result: All neighbours know this node, but this node does not know its neighbours.
 	 */
-	public void pingNeighbourhood(NeighbourAction routing) {
+	public void pingNeighbourhood() {
 		inner.setLastPing(new Date().getTime());
 		List<Player> reachableNodes = dbAccess.getNeighboursWithinRange(this);
 		for (Player neighbour : reachableNodes) {
 			neighbour.receivePingFrom(this);
-			routing.aodvNeighbourFound(neighbour);
 		}
 	}
 
@@ -294,5 +294,22 @@ public class Player implements Locatable {
 				routing.aodvNeighbourLost(data.create(neighbour.getNeighbour()));
 			}
 		}
+	}
+	
+	public void updateRoutingTable(NeighbourAction routing){
+		
+		Set<Neighbours> knownNeighbours = inner.getNeighbourses();
+		Iterator<Neighbours> neighIterator = knownNeighbours.iterator();
+		while (neighIterator.hasNext()) {
+			Neighbours neighbour = neighIterator.next();
+			if(true){
+				neighIterator.remove();
+				dbAccess.persist(inner);
+				routing.aodvNeighbourFound(data.create(neighbour.getNeighbour()));
+				logger.trace("Node {} added neighbour {}", getId(), neighbour.getId());
+			}
+				
+		}
+		
 	}
 }

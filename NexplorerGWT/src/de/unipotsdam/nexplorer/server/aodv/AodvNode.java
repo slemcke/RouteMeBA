@@ -201,7 +201,7 @@ public class AodvNode implements NeighbourAction {
 		// Route rückwärts gehen
 		List<Long> backwardsRoute = new PassedNodes(theRequest.inner().getPassedNodes());
 		Collections.reverse(backwardsRoute);
-
+		
 		Long lastNodeId = getId();
 		for (Long theNodeId : backwardsRoute) {
 			long dest = theRequest.inner().getDestinationId();
@@ -233,9 +233,11 @@ public class AodvNode implements NeighbourAction {
 	}
 
 	public void aodvNeighbourFound(Player destination) {
-		table.add(new NeighbourRoute(destination));
-		theNode.save();
-		destination.save();
+		if(!table.hasRouteTo(destination, destination)){
+			table.add(new NeighbourRoute(destination));
+			theNode.save();
+			destination.save();
+		}
 	}
 
 	public void aodvNeighbourLost(Player exNeighbour) {
@@ -277,6 +279,6 @@ public class AodvNode implements NeighbourAction {
 	}
 
 	public void pingNeighbourhood() {
-		theNode.pingNeighbourhood(this);
+		theNode.pingNeighbourhood();
 	}
 }
