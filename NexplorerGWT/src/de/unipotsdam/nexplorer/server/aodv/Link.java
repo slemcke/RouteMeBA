@@ -60,26 +60,10 @@ public class Link {
 			long newTime = System.currentTimeMillis();
 			newPacket.setCreated(newTime);
 			dbAccess.persist(newPacket);
-
-			if(thePacket.getCurrentNode().player().getDifficulty() != null && thePacket.getCurrentNode().player().getDifficulty() == 3){
-			//	Berechnung für Level 3 anhand Paketpriorität und verstrichener Zeit
-				long oldTime = thePacket.inner().getCreated();
-				long diff = (oldTime - newTime)%1000; // in Sekunden				
-				long type = thePacket.inner().getType();
-				
-				//Startwert: 20fache Paketwert
-				long points = 20*type;
-				//ersten 60 Sekunden passiert nicht, dann werden alle 20 sekunden der dreifache Paketwert abgezogen
-				long time = ((diff-60)/20)*type;
-				if(time > 0){
-					points =- time*type;
-				}
-				
-				src.player().increaseScoreBy(100 + points);
-			} else {
-				src.player().increaseScoreBy(100);
-				
-			}
+			
+			//points for Outdoor player
+			referee.sendPacket(src, thePacket, newTime);
+			
 			src.player().decreaseBatteryBy(.5);
 			src.player().save();
 		} else {

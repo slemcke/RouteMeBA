@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import com.google.inject.Inject;
 
 import de.unipotsdam.nexplorer.server.aodv.AodvDataPacket;
+import de.unipotsdam.nexplorer.server.aodv.AodvNode;
 import de.unipotsdam.nexplorer.server.di.InjectLogger;
 import de.unipotsdam.nexplorer.server.persistence.DatabaseImpl;
 import de.unipotsdam.nexplorer.server.persistence.Setting;
@@ -32,23 +33,52 @@ public class Referee {
 		for (int i = 1; i <= packet.inner().getHopsDone(); i++) {
 			points += (i * 10);
 		}
+		int hopPoints= points;
+		Players owner = packet.inner().getPlayersByOwnerId();
 		// Punkte für Indoorspieler hängen auch von Pakettyp ab (Level 3)
-		if(packet.inner().getType() != null){
+		if(packet.inner().getType() != null && owner.getDifficulty() == 3){
 			int packetBonus = packet.inner().getType().byteValue();
-			points += Math.round((points * packetBonus)/10);
+			points += Math.round((hopPoints * packetBonus)/10);
 		} 
 
 		if (packet.inner().getDidReachBonusGoal() != 0) {
-			points += Math.round(points * 0.5);
+			points += Math.round(hopPoints * 0.5);
 		}
 		
 		packet.inner().setAwardedScore(points);
 		packet.save();
 		
 		logger.trace("Packet from {} to {} ({} hops, {} bonus goal) is worth {} points", packet.getSource().getId(), packet.getDestination().getId(), packet.inner().getHopsDone(), packet.inner().getDidReachBonusGoal(), points);
-		Players owner = packet.inner().getPlayersByOwnerId();
+
 		owner.setScore(owner.getScore() + points);
 		logger.trace("Score of player {} inreased to {}", owner.getId(), owner.getScore());
 		dbAccess.persist(owner);
+	}
+	
+	
+	// calculates points for outdoor player (Level three) after sending the packet to next hop
+	public void sendPacket(AodvNode src, AodvDataPacket thePacket, long newTime) {
+		
+		if(thePacket.getCurrentNode().player().getDifficulty() != null && thePacket.getCurrentNode().player().getDifficulty() == 3){
+			//	Berechnung für Level 3 anhand Paketpriorität und verstrichener Zeit
+				long oldTime = thePacket.inner().getCreated();
+				long diff = (oldTime - newTime)%1000; // in Sekunden				
+				long type = thePacket.inner().getType();
+				
+				//Startwert: 20fache Paketwert
+				long points = 20*type;
+				//ersten 60 Sekunden passiert nicht, dann werden alle 20 sekunden der dreifache Paketwert abgezogen
+				long time = ((diff-60)/20)*type;
+				if(time > 0){
+					points =- time*type;
+				}
+				
+				src.player().increaseScoreBy(100 + points);
+			} else {
+				src.player().increaseScoreBy(100);
+				
+			}
+		src.player().save();
+		
 	}
 }
