@@ -1,6 +1,7 @@
 package de.unipotsdam.nexplorer.server.rest;
 
 
+import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -25,10 +26,10 @@ public class PacketMessages {
 	@POST
 	@Path("send_packet")
 	@Produces("application/json")
-	public RoutingResponse sendPacket(@QueryParam("nextHopId") Long nextHopId, @QueryParam("packetId") Long packetId) {
+	public RoutingResponse sendPacket(@FormParam("nextHopId") String nextHopId, @FormParam("packetId") String packetId) {
 		RoutingRequest request = new RoutingRequest();
-		request.setNextHopId(nextHopId);
-		request.setPacketId(packetId);
+		request.setNextHopId(Long.parseLong(nextHopId));
+		request.setPacketId(Long.parseLong(packetId));
 		return mobile.sendPacket(request);
 	}
 }
