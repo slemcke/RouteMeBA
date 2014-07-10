@@ -247,7 +247,17 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 			
 			long newScore = currentNode.player().getScore();
 			RoutingResponse response = new RoutingResponse();
-			response.setScore(newScore - currentScore - 100);
+
+			// lediglich Basispunkte oder weniger erhalten
+			if(newScore - currentScore <= 100){
+				response.setFeedback("bad");
+			// innerhalb der ersten 60 sekunden gesendet, also: Punkte=Basispunkte(100) + 20facher Paketwert
+			} else if(newScore - currentScore >= (long)packet.inner().getType()*20 +100){
+				response.setFeedback("good");
+			} else {
+				response.setFeedback("ok");
+			}
+			
 			return response;
 			
 		} catch (Throwable e) {

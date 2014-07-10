@@ -64,19 +64,18 @@ public class Referee {
 				long oldTime = thePacket.inner().getCreated();
 				long diff = (oldTime - newTime)%1000; // in Sekunden				
 				long type = thePacket.inner().getType();
-				
+				String feedback;
 				//Startwert: 20fache Paketwert
 				long points = 20*type;
-				//ersten 60 Sekunden passiert nicht, dann werden alle 20 sekunden der dreifache Paketwert abgezogen
-				long time = ((diff-60)/20)*type;
-				if(time > 0){
-					points =- time*type;
+				//ersten 60 Sekunden passiert nicht, dann werden alle sekunden der vierfache Paketwert abgezogen
+				long timemalus = ((diff-60)/20);
+				if(timemalus > 0){
+					points =- timemalus*type*4;
 				}
 				
 				src.player().increaseScoreBy(100 + points);
 			} else {
 				src.player().increaseScoreBy(100);
-				
 			}
 		src.player().save();
 		
