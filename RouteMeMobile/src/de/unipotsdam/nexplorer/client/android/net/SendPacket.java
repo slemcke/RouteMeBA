@@ -7,22 +7,23 @@ import de.unipotsdam.nexplorer.client.android.ui.UI;
 
 public class SendPacket implements Sendable, Loginable{
 
-	private final RestMobile rest;
-	private final UI ui;
+//	private final RestMobile rest;
+//	private final UI ui;
 	private Packet packet;
 	private Long playerId;
-	private boolean isSendingPacket;
+//	private boolean isSendingPacket;
 	
 	public SendPacket(RestMobile rest, UI ui){
-		this.ui = ui;
-		this.rest = rest;
-		this.packet = null;
+//		this.ui = ui;
+//		this.rest = rest;
+		this.setPacket(null);
 		this.playerId = null;
 //		this.isSendingPacket = false; 
 		
 	}
 	@Override
 	public void sendRequested(Packet packet) {
+		this.setPacket(packet);
 //		System.out.println("Am I sending? " + isSendingPacket + ". I am " + playerId);
 		if(playerId != null && packet != null){
 			//prevent sending more than one packet at a time
@@ -30,14 +31,15 @@ public class SendPacket implements Sendable, Loginable{
 //			ui.disableButtonForPacketSending();
 			//TODO remove syso
 //			targetId = (long)12;
-			this.packet = packet;
+			this.setPacket(packet);
 //			packetId = (long)32;
 //			targetId = Long.valueOf(parameters.get("next"));
 //			packetId = Long.valueOf(parameters.get("packetId"));
 			System.out.println("Saving packetId " + packet.getId());
 
 			//save packetID
-			ui.setPacket(packet);
+//			ui.setPacket(packet);
+//			ui.setPacketId(packet.getId());
 //			rest.sendPacket(targetId, packetId, new AjaxResult<RoutingResponse>(){
 //				@Override
 //				public void success(){
@@ -62,6 +64,12 @@ public class SendPacket implements Sendable, Loginable{
 	@Override
 	public void loggedIn(long playerId) {
 		this.playerId = playerId;
+	}
+	public Packet getPacket() {
+		return packet;
+	}
+	public void setPacket(Packet packet) {
+		this.packet = packet;
 	}
 
 }

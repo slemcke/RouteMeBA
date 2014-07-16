@@ -12,8 +12,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
-import de.unipotsdam.nexplorer.client.android.MapActivity;
-
 public class MapRotator implements SensorEventListener {
 
 	private final GoogleMap mMap;
@@ -29,6 +27,7 @@ public class MapRotator implements SensorEventListener {
 		this.currentLocation = location;
 	}
 
+	@SuppressWarnings("deprecation")
 	public void setUpMapIfNeeded(boolean in3d) {
 		if (in3d) {
 			SensorManager sensorManager = (SensorManager) host.getSystemService(Context.SENSOR_SERVICE);
@@ -36,6 +35,7 @@ public class MapRotator implements SensorEventListener {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		// Handle the events for which we registered

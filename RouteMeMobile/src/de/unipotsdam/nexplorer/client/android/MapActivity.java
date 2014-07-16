@@ -92,9 +92,9 @@ public class MapActivity extends FragmentActivity {
 		js.sendPacket(v);
 	}
 	
-	public void routePacket(View v){
-		js.routePacket(v);
-	}
+//	public void routePacket(View v){
+//		js.routePacket(v);
+//	}
 
 	/**
 	 * Based on <a href="http://stackoverflow.com/questions/7431516/how-to-change-fragments-class-dynamically">stackoverflow</a>

@@ -67,4 +67,12 @@ public class Marker extends UIElement {
 			}
 		});
 	}
+
+	public MarkerImage getIcon() {
+		return icon;
+	}
+
+	public void setIcon(MarkerImage icon) {
+		this.icon = icon;
+	}
 }

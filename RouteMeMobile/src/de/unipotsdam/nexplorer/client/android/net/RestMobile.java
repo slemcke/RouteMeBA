@@ -2,17 +2,19 @@ package de.unipotsdam.nexplorer.client.android.net;
 
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import com.google.gson.internal.StringMap;
+
 import android.location.Location;
-import android.provider.ContactsContract.Data;
 import de.unipotsdam.nexplorer.client.android.callbacks.AjaxResult;
 import de.unipotsdam.nexplorer.client.android.rest.GameStatus;
 import de.unipotsdam.nexplorer.client.android.rest.LoginAnswer;
 import de.unipotsdam.nexplorer.client.android.rest.Options;
 import de.unipotsdam.nexplorer.client.android.rest.PingRequest;
 import de.unipotsdam.nexplorer.client.android.rest.PingResponse;
-import de.unipotsdam.nexplorer.client.android.rest.RoutingRequest;
 import de.unipotsdam.nexplorer.client.android.rest.RoutingResponse;
 
 public class RestMobile {
@@ -70,7 +72,7 @@ public class RestMobile {
 			protected void setData() {
 				this.type = "POST";
 				this.url = "/rest/mobile/save_packet_id";
-				this.data = "playerId=" + playerId+ "&packetId=" + packetId;
+				this.data = "playerId=" + playerId + "&packetId=" + packetId;
 			}
 
 			@Override
@@ -188,8 +190,22 @@ public class RestMobile {
 		}).start();
 	}
 
-	public void sendPacket(final long targetId, final Long packetId,
+	public void sendPacket(final long targetId, final long packetId,
 			final AjaxResult<RoutingResponse> ajaxResult) {
+		System.out.println("REST parameters: nextHopId: " + targetId
+				+ " packetId: " + packetId);
+		// String url = host + "/rest/packet/send_packet";
+		// MultiValueMap<String, String> data = new LinkedMultiValueMap<String,
+		// String>();
+		// data.add("nextHopId", String.valueOf(targetId));
+		// data.add("packetId", String.valueOf(packetId));
+		// //// String url = host + "/rest/loginManager/login_player_mobile";
+		// // String request = "nextHopId=" + targetId+ "&packetId=" + packetId;
+		// //
+		// template.postForObject(url, data, RoutingResponse.class);
+		//
+
+		// return template.getForObject(url, RoutingResponse.class);
 		ajax(new Options<Object>(Object.class) {
 
 			@Override
@@ -197,14 +213,22 @@ public class RestMobile {
 				this.type = "POST";
 				this.url = "/rest/packet/send_packet";
 				this.data = "nextHopId=" + targetId + "&packetId=" + packetId;
+				System.out.println("TYPE " + this.type + " URL: " + this.url
+						+ " DATA " + this.data);
 			}
 
 			@Override
 			public void success(Object result) {
-				System.out.println("Sent packet " + packetId
-						+ " successfully to " + targetId + ". Score: "
-						+ ((RoutingResponse) result).getScore());
-				ajaxResult.success((RoutingResponse) result);
+
+				System.out.println("I got: " + result);
+				if (result instanceof StringMap) {
+					StringMap<?> res = (StringMap<?>) result;
+					System.out.println("Sent packet " + packetId
+							+ " successfully to " + targetId + ". Score: "
+							+ res.get("score"));
+				}
+				//nicht score sondern "feedback"
+				ajaxResult.success();
 			}
 		});
 	}
@@ -212,6 +236,7 @@ public class RestMobile {
 	private <T> void ajax(final Options<T> options) {
 		Runnable job = new Runnable() {
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public void run() {
 				Object result = call(host, template, options);

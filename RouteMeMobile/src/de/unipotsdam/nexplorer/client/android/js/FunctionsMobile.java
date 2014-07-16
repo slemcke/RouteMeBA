@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.annotation.SuppressLint;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -44,6 +45,7 @@ import de.unipotsdam.nexplorer.client.android.support.RoutePacketObserver;
 import de.unipotsdam.nexplorer.client.android.support.SendPacketObserver;
 import de.unipotsdam.nexplorer.client.android.ui.UI;
 
+@SuppressLint("UseSparseArrays")
 public class FunctionsMobile implements PositionWatcher, OnMapClickListener,
 		ShakeListener {
 
@@ -84,10 +86,13 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener,
 	private Map<Integer, Neighbour> neighbours;
 
 	// TODO neighbours with routes to packet that needs to be sent
-	private Map<Integer, Neighbour> neighboursWithRoutes;
+	// private Map<Long, Neighbour> neighboursWithRoutes;
 
 	// private Map<Integer, Neighbour> neighbourhood;
 
+	private boolean debug = true;
+
+	@SuppressLint("UseSparseArrays")
 	public FunctionsMobile(UI ui, AppWrapper app, Handler handler,
 			NexplorerMap mapTasks, RestMobile rest, RadiusBlinker blinker,
 			TouchVibrator vibrator, GpsReceiver gpsReceiver) {
@@ -143,32 +148,76 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener,
 		this.playerId = null;
 		this.table = new ArrayList<RoutingTable>();
 		this.packets = new HashMap<Long, Packet>();
+		// this.neighboursWithRoutes = new HashMap<Long, Neighbour>();
 		gpsReceiver.watchPosition(this);
 		mapTasks.setOnMapClickListener(this);
 	}
 
 	/**
 	 */
-	private Map<Long, Neighbour> computeNeighboursWithRoutes(
-			List<RoutingTable> table, Packet packet,
-			Map<Integer, Neighbour> neighbours) {
-		System.out.println("Searching for neighbours...");
-		HashMap<Long, Neighbour> neighboursWithRoutes = new HashMap<Long, Neighbour>();
-		// iterate over all known neighbours
-		for (Neighbour neighbour : neighbours.values()) {
-			for (RoutingTable tableEntry : table) {
-				// neighbour has route to destination of packet
-				if (tableEntry.getDestinationId() == packet
-						.getMessageDescription().getDestinationNodeId()
-						&& neighbour.getId() == tableEntry.getNextHopId()) {
-					System.out.println("Found neighbour with route: " + neighbour.getId());
-					neighboursWithRoutes.put(neighbour.getId(), neighbour);
+	// TODO remove unused function parameters as we now use only global
+	// variables
+	private void computeNeighboursWithRoutes(List<RoutingTable> table,
+			Packet packet, Map<Integer, Neighbour> neighbours) {
+		if (packets != null && !(packets.isEmpty()) && sendMode) {
+			// iterate over all known neighbours
+			if (!(this.neighbours == null)) {
+				for (Neighbour neighbour : this.neighbours.values()) {
+					if (this.table != null) {
+						for (RoutingTable tableEntry : this.table) {
+							// neighbour has route to destination of packet
+							System.out.println("Route to: "
+									+ tableEntry.getDestinationId());
+							try {
+								if (debug)
+									System.out
+											.println("Packet wants to go to: "
+													+ packets
+															.get((long) packetId)
+															.getMessageDescription()
+															.getDestinationNodeId());
+							} catch (Exception e) {
+
+							}
+							if (tableEntry.getDestinationId() == packets
+									.get((long) packetId)
+									.getMessageDescription()
+									.getDestinationNodeId()
+									&& neighbour.getId() == tableEntry
+											.getNextHopId()) {
+								if(debug)
+									System.out
+										.println("Found neighbour with route to "
+												+ packets
+														.get((long) packetId)
+														.getMessageDescription()
+														.getDestinationNodeId()
+												+ ": " + neighbour.getId());
+								// change neighbour
+								neighbour.setHasRoute(true);
+								if (debug)
+									System.out.println("setting boolean...");
+								neighbours.put((int) neighbour.getId(),
+										neighbour);
+								// neighboursWithRoutes.put(neighbour.getId(),
+								// neighbour);
+							} else {
+								if (debug)
+									System.out.println("Neighbour "
+											+ neighbour.getId()
+											+ " has no route to packet "
+											+ packetId);
+							}
+						}
+					}
+
 				}
 			}
-
+			// globally update neighbours with routes
+			// this.neighboursWithRoutes = neighboursWithRoutes;
+			// return neighboursWithRoutes;
 		}
-		return neighboursWithRoutes;
-
+		// return new HashMap<Long, Neighbour>();
 	}
 
 	/**
@@ -283,15 +332,17 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener,
 
 			// Packet related stuff
 
-			packets = data.packets;
+			packets = data.packets; // globally set packets
 
 			table = data.routingTable;
 			if (table != null) {
 				for (RoutingTable tableEntry : table) {
-					System.out.println("Tabelleneintrag: "
-							+ tableEntry.getNodeId() + " Node: "
-							+ tableEntry.getNodeId() + " next Hop: "
-							+ tableEntry.getNextHopId());
+					if (debug) {
+						System.out.println("Tabelleneintrag: "
+								+ tableEntry.getNodeId() + " Destination: "
+								+ tableEntry.getDestinationId() + " next Hop: "
+								+ tableEntry.getNextHopId());
+					}
 				}
 			}
 
@@ -302,17 +353,25 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener,
 			mapTasks.removeInvisibleMarkers(neighbours, nearbyItems, level);
 			// TODO remove highlighted neighbours if necessary
 			// if(level == 3){
-			// mapTasks.removeInvisibleMarkers(highlightNeighbours, nearbyItems,
-			// difficulty)
+			// cast map to match <integer,neighbour>...
+			// if (neighboursWithRoutesInt != null) {
+			// for (Neighbour n : neighboursWithRoutes.values()) {
+			// neighboursWithRoutesInt.put((int) n.getId(), n);
 			// }
+			//
+			// mapTasks.removeInvisibleMarkers(neighboursWithRoutesInt,
+			// nearbyItems, level);
+			// }
+			computeNeighboursWithRoutes(table, packets.get(packetId),
+					neighbours);
 			adjustGameLifecycle(gameExists, gameDidExist, gameDidEnd,
 					gameIsRunning, battery);
 
 			updateDisplay(playerRange, itemCollectionRange, neighbours,
-					neighboursWithRoutes, nearbyItems, gameDifficulty, score,
-					neighbourCount, remainingPlayingTime, battery,
-					nextItemDistance, hasRangeBooster, itemInCollectionRange,
-					hint, level, packets);
+					nearbyItems, gameDifficulty, score, neighbourCount,
+					remainingPlayingTime, battery, nextItemDistance,
+					hasRangeBooster, itemInCollectionRange, hint, level,
+					packets);
 
 		}
 	}
@@ -347,25 +406,25 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener,
 	 * updates the display with the new position and the positions of the
 	 * neighbours
 	 */
-	void updateDisplay() {
-		// updateDisplay(playerRange, itemCollectionRange, neighbours,
-		// nearbyItems, gameDifficulty, score, neighbourCount,
-		// remainingPlayingTime, battery, nextItemDistance, hasRangeBooster,
-		// itemInCollectionRange, hint);
-	}
-
-	private void updateDisplay(int playerRange, int itemCollectionRange,
+	private void updateDisplay(
+			int playerRange,
+			int itemCollectionRange,
 			java.util.Map<Integer, Neighbour> neighbours,
-			Map<Integer, Neighbour> neighboursWithRoutes,
+			// Map<Long, Neighbour> neighboursWithRoutes,
 			java.util.Map<Integer, Item> nearbyItems, String gameDifficulty,
 			int score, int neighbourCount, long remainingPlayingTime,
 			double battery, Integer nextItemDistance, boolean hasRangeBooster,
 			boolean itemInCollectionRange, String hint, Long level,
 			HashMap<Long, Packet> packets) {
 		this.neighbours = neighbours;
-		this.neighboursWithRoutes = neighboursWithRoutes;
+		// this.neighboursWithRoutes = neighboursWithRoutes;
+		// if (!(this.neighboursWithRoutes.isEmpty())
+		// || !(neighboursWithRoutes.isEmpty())) {
+		// System.out.println("global: " + this.neighboursWithRoutes
+		// + " lokal: " + neighboursWithRoutes);
+		// }
 		mapTasks.updateMap(playerRange, itemCollectionRange, neighbours,
-				neighboursWithRoutes, nearbyItems, level);
+				nearbyItems, level);
 		ui.updateStatusHeaderAndFooter(score, neighbourCount,
 				remainingPlayingTime, battery, nextItemDistance,
 				hasRangeBooster, itemInCollectionRange, hint, level, packets);
@@ -379,18 +438,13 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener,
 	}
 
 	public void sendPacket(View v) {
+		// save packet id
+		this.packetId = v.getId();
+		System.out.println("start sending packet " + this.packetId);
+		this.sendPacketObserver.fire(packets.get((long) v.getId()));
 		computeNeighboursWithRoutes(table, packets.get((long) v.getId()),
 				neighbours);
-		this.sendPacketObserver.fire(packets.get((long) v.getId()));
 		this.sendMode = true;
-	}
-
-	
-	//unused
-	public void routePacket(View v) {
-		System.out.println("routing packet...");
-		// this.routePacketObserver.fire(parameter);
-		this.sendMode = false;
 	}
 
 	public void loginSuccess(LoginAnswer data) {
@@ -432,60 +486,135 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener,
 			// // if send packet is selected
 			// HashMap<String, Integer> parameters = new HashMap<String,
 			// Integer>();
-			if (neighboursWithRoutes.size() > 0) {
-				System.out.println("start routing...");
-				int targetId = findNeighbour(neighboursWithRoutes, arg0);
-				if (targetId > 0) {
-					System.out.println("Found neighbour " + targetId);
-					routePacketObserver.fire(Long.valueOf(targetId));
-				}
+			System.out.println("start routing...");
+			int targetId = findNeighbour(arg0);
+			if (targetId > 0) {
+				System.out.println("Found neighbour " + targetId);
+				routePacketObserver.fire(Long.valueOf(targetId));
+				this.removeRoutes();
 			}
 			// // this.pingObserver.fire();
 			// System.out.println("Trying to send packet...");
 			// // this.sendPacketObserver.fire(parameters);
 			this.sendMode = false;
+			// TODO remove highlight from packet
 		} else {
 			this.pingObserver.fire();
 		}
 	}
 
+	private void removeRoutes() {
+		for (Neighbour n : neighbours.values()) {
+			System.out.println("removing Routes...");
+			n.setHasRoute(false);
+			neighbours.put((int) n.getId(), n);
+		}
+	}
+
 	// TODO return list of neighbours
-	private int findNeighbour(Map<Integer, Neighbour> neighbours,
-			LatLng position) {
+	private int findNeighbour(LatLng position) {
 		double lat = position.latitude;
 		double lng = position.longitude;
 		double nLat;
 		double nLng;
 		for (Neighbour neighbour : neighbours.values()) {
-			// for each neighbour call isPosition... and if true return with
-			// neighbour
-			// TODO what if two neighbours are in one circle?
-			nLat = neighbour.getLatitude();
-			nLng = neighbour.getLongitude();
-			if (getDistanceFromLatLonInKm(lat, lng,
-					nLat, nLng) < 0.001) {
-				return (int) neighbour.getId();
+			if (neighbour.hasRoute()) {
+				// for each neighbour call isPosition... and if true return with
+				// neighbour
+				// TODO what if two neighbours are in one circle?
+				nLat = neighbour.getLatitude();
+				nLng = neighbour.getLongitude();
+				if (getDistanceFromLatLonInKm(lat, lng, nLat, nLng) < 0.001) {
+					System.out.println("Neighbour " + neighbour.getId()
+							+ " was clicked.");
+					return (int) neighbour.getId();
+				}
+
+				System.out.println("Neighbour " + neighbour.getId()
+						+ " was not clicked.");
 			}
 		}
 		return -1;
 
 	}
 
-	private double getDistanceFromLatLonInKm(double lat1,double lon1,double lat2,double lon2) {
-		  double r = 6371; // Radius of the earth in km
-		  double dLat = deg2rad(lat2-lat1);  // deg2rad below
-		  double dLon = deg2rad(lon2-lon1); 
-		  double a = 
-		    Math.sin(dLat/2) * Math.sin(dLat/2) +
-		    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
-		    Math.sin(dLon/2) * Math.sin(dLon/2)
-		    ; 
-		  double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-		  double d = r * c; // Distance in km
-		  return d;
+	// Entfernung zu anderem Knoten in km in Item-Colletion-Funktion im Backend
+	private double calculateDistance(LatLng src, LatLng dest) {
+		double R = 6371; // Erdradius in km
+
+		double lat1 = Math.toRadians(src.latitude);
+		double lat2 = Math.toRadians(dest.latitude);
+		double lon1 = Math.toRadians(src.longitude);
+		double lon2 = Math.toRadians(dest.longitude);
+		if (lat2 == 0 && lon2 == 0) {
+			return Double.MAX_VALUE;
 		}
 
-		private double deg2rad(double deg) {
-		  return deg * (Math.PI/180);
-		}
+		double a = Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1)
+				* Math.cos(lat2) * Math.cos(lon2 - lon1));
+		double d = R * a;
+
+		return d;
+	}
+
+	// public List<Item> getAllItemsNear(LatLng location) {
+	// List<Neighbours> neighbours = neighboursWithRoutes.entrySet();
+	//
+	// // Filter by distance
+	// List<Items> nearItems = new LinkedList<Items>();
+	// for (Items item : items) {
+	// if (locator.distance(location, item) <= playerRange / 1000) {
+	// nearItems.add(item);
+	// }
+	// }
+	//
+	// // Order by distance
+	// ItemDistanceComparator byDistance = new ItemDistanceComparator(location,
+	// locator);
+	// Collections.sort(nearItems, byDistance);
+	//
+	// // Return result
+	// List<Item> result = new LinkedList<Item>();
+	// for (Items item : nearItems) {
+	// result.add(data.create(item));
+	// }
+	//
+	// return result;
+	// }
+	//
+	// public class ItemDistanceComparator implements Comparator<LatLng> {
+	//
+	// private Locatable location;
+	// private Locator locator;
+	//
+	// public ItemDistanceComparator(Locatable location, Locator locator) {
+	// this.location = location;
+	// this.locator = locator;
+	// }
+	//
+	// @Override
+	// public int compare(Items o1, Items o2) {
+	// double d1 = locator.distance(location, o1);
+	// double d2 = locator.distance(location, o2);
+	//
+	// double delta = d1 - d2;
+	// return Math.round(new Float(delta));
+	// }
+	private double getDistanceFromLatLonInKm(double lat1, double lon1,
+			double lat2, double lon2) {
+		// return 0.00001;
+		double r = 6371; // Radius of the earth in km
+		double dLat = deg2rad(lat2 - lat1); // deg2rad below
+		double dLon = deg2rad(lon2 - lon1);
+		double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+				+ Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2))
+				* Math.sin(dLon / 2) * Math.sin(dLon / 2);
+		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+		double d = r * c; // Distance in km
+		return d;
+	}
+
+	private double deg2rad(double deg) {
+		return deg * (Math.PI / 180);
+	}
 }

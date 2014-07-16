@@ -24,8 +24,7 @@ public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 	private Overlay waitingForGameOverlay;
 	private UIHeader header;
 	private UIPacketFooter packetFooter;
-	private Packet packet;
-
+	
 	public UI(Activity host, Button loginButton, Text waitingText, Text beginDialog, UIFooter footer, UIPacketFooter packetFooter, Overlay loginOverlay, Overlay waitingForGameOverlay, Overlay noPositionOverlay, UIHeader header) {
 		super(host);
 		this.loginButton = loginButton;
@@ -37,7 +36,6 @@ public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 		this.waitingForGameOverlay = waitingForGameOverlay;
 		this.header = header;
 		this.packetFooter = packetFooter;
-		this.packet = null;
 	}
 
 	public void updateStatusHeaderAndFooter(final int score, final int neighbourCount, final long remainingPlayingTime, final double battery, final Integer nextItemDistance, final boolean hasRangeBooster, final boolean itemInCollectionRange, final String hint, final Long level, final HashMap<Long,Packet> packets) {
@@ -248,10 +246,5 @@ public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 		default:
 			showBatteryEmpty();
 		}
-	}
-
-	public void setPacket(Packet packet) {
-		this.packet = packet;
-		
 	}
 }

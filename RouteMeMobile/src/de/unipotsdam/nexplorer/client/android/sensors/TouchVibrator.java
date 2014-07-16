@@ -1,7 +1,6 @@
 package de.unipotsdam.nexplorer.client.android.sensors;
 
 import android.app.Activity;
-import android.app.Service;
 import android.content.Context;
 import android.os.Vibrator;
 
