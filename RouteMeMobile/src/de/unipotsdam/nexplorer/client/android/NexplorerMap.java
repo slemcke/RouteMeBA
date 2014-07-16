@@ -267,4 +267,9 @@ public class NexplorerMap extends RotatingMapFragment {
 //			}
 //		}
 	}
+	
+	public void drawFeedbackText(LatLng position, String feedback){
+		
+	
+	}
 }

@@ -191,7 +191,7 @@ public class RestMobile {
 	}
 
 	public void sendPacket(final long targetId, final long packetId,
-			final AjaxResult<RoutingResponse> ajaxResult) {
+			final AjaxResult<String> ajaxResult) {
 		System.out.println("REST parameters: nextHopId: " + targetId
 				+ " packetId: " + packetId);
 		// String url = host + "/rest/packet/send_packet";
@@ -213,8 +213,6 @@ public class RestMobile {
 				this.type = "POST";
 				this.url = "/rest/packet/send_packet";
 				this.data = "nextHopId=" + targetId + "&packetId=" + packetId;
-				System.out.println("TYPE " + this.type + " URL: " + this.url
-						+ " DATA " + this.data);
 			}
 
 			@Override
@@ -225,13 +223,15 @@ public class RestMobile {
 					StringMap<?> res = (StringMap<?>) result;
 					System.out.println("Sent packet " + packetId
 							+ " successfully to " + targetId + ". Score: "
-							+ res.get("score"));
+							+ res.get("feedback"));
+
+					ajaxResult.success((String)res.get("feedback"));
 				}
-				//nicht score sondern "feedback"
-				ajaxResult.success();
+				ajaxResult.error();
 			}
 		});
 	}
+	
 
 	private <T> void ajax(final Options<T> options) {
 		Runnable job = new Runnable() {

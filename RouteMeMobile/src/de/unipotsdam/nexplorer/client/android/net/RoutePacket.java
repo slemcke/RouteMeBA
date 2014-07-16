@@ -85,17 +85,24 @@ public class RoutePacket implements Sendable, Loginable, Routable {
 		if(playerId!=null){
 	
 		isSendingPacket = true;
-		System.out.println("calling REST function...");
-		rest.sendPacket(nextHopId, packet.getId(), new AjaxResult<RoutingResponse>(){
+		rest.sendPacket(nextHopId, packet.getId(), new AjaxResult<String>(){
+			public void success(String result){
+				success();
+				System.out.println(result);
+				ui.showFeedback(result);
+			}
 			public void success(){
 				System.out.println("Succeeded!");
 				isSendingPacket = false;
 				ui.enableButtonForPacketSending();
+				
 
 			}
 			public void error(){
-				isSendingPacket = false;
-				ui.enableButtonForPacketSending();
+				//try again?
+				
+				isSendingPacket = true;
+//				ui.enableButtonForPacketSending();
 			}
 		});
 		System.out.println("Node " + playerId + " successfully sent packet " + packet.getId() + " to Node " + nextHopId + "...");

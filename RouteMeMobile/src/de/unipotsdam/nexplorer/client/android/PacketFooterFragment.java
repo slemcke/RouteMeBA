@@ -9,12 +9,14 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.InputFilter.LengthFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import de.unipotsdam.nexplorer.client.android.callbacks.UIPacketFooter;
 import de.unipotsdam.nexplorer.client.android.rest.Packet;
 
@@ -96,9 +98,11 @@ public class PacketFooterFragment extends Fragment implements UIPacketFooter {
 			newPacket.setImageResource(resId);
 			newPacket.setId((packet.getId().intValue()));
 			// packet is packet to be sent
-			if (((String)packetid.getText()).equals(String.valueOf(packet.getId()))) {
-				//TODO set previosly highlighted packets background to transparent
-				
+			if (((String) packetid.getText()).equals(String.valueOf(packet
+					.getId()))) {
+				// TODO set previosly highlighted packets background to
+				// transparent
+
 				newPacket.setBackgroundColor(Color.CYAN);
 			} else {
 				newPacket.setBackgroundColor(Color.TRANSPARENT);
@@ -106,90 +110,88 @@ public class PacketFooterFragment extends Fragment implements UIPacketFooter {
 			newPacket.setOnClickListener(new View.OnClickListener() {
 
 				private Method handler;
-				
+
 				@Override
 				public void onClick(View v) {
-					//simply unselect button if it was selected before
-					if(((String)packetid.getText()).equals(String.valueOf(v.getId()))){
-						packetid.setEnabled(false);
-						packetid.setText(R.string.default_packet);
-						v.setBackgroundColor(Color.TRANSPARENT);
-					} else{
-						
-					v.setBackgroundColor(Color.CYAN);
-					packetid.setEnabled(true);
-					packetid.setText(String.valueOf(v.getId()));
-					try {
-						//using reflections for calling method in MapActivity
-						handler = v.getContext().getClass().getMethod("sendPacket", View.class);
-					} catch (NoSuchMethodException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+					// simply unselect button if it was selected before
+					if (((String) packetid.getText()).equals(String.valueOf(v
+							.getId()))) {
+						disablePacketButton(v);
+						// packetid.setEnabled(false);
+						// packetid.setText(R.string.default_packet);
+						// v.setBackgroundColor(Color.TRANSPARENT);
+						try {
+							// using reflections for calling method in
+							// MapActivity
+							handler = v.getContext().getClass()
+									.getMethod("abortSending", View.class);
+						} catch (NoSuchMethodException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						try {
+							handler.invoke(v.getContext(), v);
+							// if(result != null){
+							// disablePacketButton(v);
+							// }
+						} catch (IllegalArgumentException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IllegalAccessException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (InvocationTargetException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					} else {
+
+						enablePacketButton(v);
+						// v.setBackgroundColor(Color.CYAN);
+						// packetid.setEnabled(true);
+						// packetid.setText(String.valueOf(v.getId()));
+						try {
+							// using reflections for calling method in
+							// MapActivity
+							handler = v.getContext().getClass()
+									.getMethod("sendPacket", View.class);
+						} catch (NoSuchMethodException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						try {
+							handler.invoke(v.getContext(), v);
+							// if(result != null){
+							// disablePacketButton(v);
+							// }
+						} catch (IllegalArgumentException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IllegalAccessException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (InvocationTargetException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
-					try {
-						handler.invoke(v.getContext(), v);
-						System.out.println("successfully called method");
-					} catch (IllegalArgumentException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IllegalAccessException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (InvocationTargetException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
 				}
 			});
-//			newPacket.setOnClickListener(new OnClickListener() {
-//
-//				@Override
-//				public void onClick(View button) {
-//					// TODO change picture (highlight it)
-//					// ImageButton button = (ImageButton)
-//					// (container.findViewById(v.getId()));
-//					// button.setImageResource(resId);
-//
-//					// toggle
-//
-//					// if(((ToggleButton) button).isChecked()){ //button was
-//					// clicked second time
-//					// // button.setEnabled(false);
-//					// // packetid.setEnabled(false);
-//					// packetid.setText(R.string.default_packet);
-//					// // System.out.println("Button-ID: " + button.getId() +
-//					// ", Paket: " + packetid.getText());
-//					// } else {
-//					// if(packetid.isEnabled()){
-//					// //TODO set enabled-value to false for all buttons
-//					// }
-//					// button.setEnabled(true);
-//					// packetid.setEnabled(true);
-//					// System.out.println("Old: " + packetid.getText());
-//
-//					// packetid.setText(String.valueOf(button.getId()));
-//
-//					// System.out.println("New: " + packetid.getText());
-//					// }
-//					// System.out.println("ID: " + packetid.getText());
-//					if (!isSendingPacket) {
-//						System.out
-//								.println("Not sending packet, so I can send one now");
-//						packetid.setEnabled(true);
-//						packetid.setText(String.valueOf(button.getId()));
-//						System.out.println("ID: " + packetid.getText());
-//						
-//					} else {
-//						System.out.println("Already sending packet.");
-//						packetid.setEnabled(false);
-//						packetid.setText(R.string.default_packet);
-//					}
-//
-//				}
-//			});
 			packetLayout.addView(newPacket);
 		}
+	}
+
+	private void enablePacketButton(View v) {
+		packetid.setEnabled(true);
+		packetid.setText(String.valueOf(v.getId()));
+		v.setBackgroundColor(Color.CYAN);
+	}
+
+	private void disablePacketButton(View v) {
+		// call GUI
+		packetid.setEnabled(false);
+		packetid.setText(R.string.default_packet);
+		v.setBackgroundColor(Color.TRANSPARENT);
 	}
 
 	@Override
@@ -200,5 +202,12 @@ public class PacketFooterFragment extends Fragment implements UIPacketFooter {
 			packetid.setText(R.string.default_packet);
 		}
 
+	}
+	
+	@Override
+	public void showToast(String info){
+		Context context = getActivity();
+		Toast toast = Toast.makeText(context, info, Toast.LENGTH_LONG);
+		toast.show();
 	}
 }

@@ -92,6 +92,10 @@ public class MapActivity extends FragmentActivity {
 		js.sendPacket(v);
 	}
 	
+	public void abortSending(View v){
+		js.abortSending(v);
+	}
+	
 //	public void routePacket(View v){
 //		js.routePacket(v);
 //	}

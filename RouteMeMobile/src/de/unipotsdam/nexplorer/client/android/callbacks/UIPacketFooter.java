@@ -10,4 +10,6 @@ public interface UIPacketFooter {
 
 	public void setIsSendingPacket(boolean isSendingPacket);
 
+	void showToast(String info);
+
 }

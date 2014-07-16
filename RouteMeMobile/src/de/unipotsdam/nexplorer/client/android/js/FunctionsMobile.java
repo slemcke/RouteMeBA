@@ -90,7 +90,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener,
 
 	// private Map<Integer, Neighbour> neighbourhood;
 
-	private boolean debug = true;
+	private boolean debug = false;
 
 	@SuppressLint("UseSparseArrays")
 	public FunctionsMobile(UI ui, AppWrapper app, Handler handler,
@@ -179,20 +179,24 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener,
 							} catch (Exception e) {
 
 							}
-							if (tableEntry.getDestinationId() == packets
-									.get((long) packetId)
+							long tableDest = tableEntry.getDestinationId();
+							long packetDest = packets.get((long) packetId)
 									.getMessageDescription()
-									.getDestinationNodeId()
-									&& neighbour.getId() == tableEntry
-											.getNextHopId()) {
-								if(debug)
+									.getDestinationNodeId();
+							long neighbourId = neighbour.getId();
+							long tableNext = tableEntry.getNextHopId();
+
+							if ((tableDest == packetDest)
+									&& (neighbourId == tableNext)) {
+								if (debug) {
 									System.out
-										.println("Found neighbour with route to "
-												+ packets
-														.get((long) packetId)
-														.getMessageDescription()
-														.getDestinationNodeId()
-												+ ": " + neighbour.getId());
+											.println("Found neighbour with route to "
+													+ packets
+															.get((long) packetId)
+															.getMessageDescription()
+															.getDestinationNodeId()
+													+ ": " + neighbour.getId());
+								}
 								// change neighbour
 								neighbour.setHasRoute(true);
 								if (debug)
@@ -492,11 +496,11 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener,
 				System.out.println("Found neighbour " + targetId);
 				routePacketObserver.fire(Long.valueOf(targetId));
 				this.removeRoutes();
+				this.sendMode = false;
 			}
 			// // this.pingObserver.fire();
 			// System.out.println("Trying to send packet...");
 			// // this.sendPacketObserver.fire(parameters);
-			this.sendMode = false;
 			// TODO remove highlight from packet
 		} else {
 			this.pingObserver.fire();
@@ -616,5 +620,15 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener,
 
 	private double deg2rad(double deg) {
 		return deg * (Math.PI / 180);
+	}
+
+	public void abortSending(View v) {
+		// remove packet id
+		if (debug)
+			System.out.println("aborted sending packet " + this.packetId);
+		this.packetId = -1;
+		removeRoutes();
+		this.sendMode = false;
+
 	}
 }

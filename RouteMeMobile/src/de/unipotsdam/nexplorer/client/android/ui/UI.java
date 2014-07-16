@@ -3,6 +3,8 @@ package de.unipotsdam.nexplorer.client.android.ui;
 import java.util.HashMap;
 
 import android.app.Activity;
+import android.content.Context;
+import android.widget.Toast;
 import de.unipotsdam.nexplorer.client.android.callbacks.LoginError;
 import de.unipotsdam.nexplorer.client.android.callbacks.RemovalReason;
 import de.unipotsdam.nexplorer.client.android.callbacks.UIFooter;
@@ -135,6 +137,16 @@ public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 			}
 		});
 	}
+	
+	private void showResult(final String result){
+		runOnUIThread(new Runnable() {
+
+			@Override
+			public void run() {
+				packetFooter.showToast("That was " + result);
+			}
+		});
+	}
 
 	private void showGameEnded() {
 		runOnUIThread(new Runnable() {
@@ -246,5 +258,10 @@ public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 		default:
 			showBatteryEmpty();
 		}
+	}
+
+	public void showFeedback(String result) {
+		showResult(result);
+		
 	}
 }
