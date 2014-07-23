@@ -13,7 +13,6 @@ public class Aodv {
 	public static final byte DATA_PACKET_STATUS_WAITING_FOR_ROUTE = 4;
 	public static final byte DATA_PACKET_STATUS_NODE_BUSY = 5;
 	public static final byte DATA_PACKET_STATUS_CANCELLED = 6;
-	public static final byte NO_DATA_PACKET = 7;
 
 	public static final String ROUTING_MESSAGE_TYPE_RREQ = "RREQ";
 	public static final String ROUTING_MESSAGE_TYPE_RERR = "RERR";

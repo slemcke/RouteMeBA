@@ -38,7 +38,7 @@ public class Referee {
 		// Punkte für Indoorspieler hängen auch von Pakettyp ab (Level 3)
 		if(packet.inner().getType() != null && owner.getDifficulty() == 3){
 			int packetBonus = packet.inner().getType().byteValue();
-			points += Math.round((hopPoints * packetBonus)/10);
+			points += Math.round(( packet.inner().getHopsDone() * packetBonus));
 		} 
 
 		if (packet.inner().getDidReachBonusGoal() != 0) {
@@ -62,13 +62,13 @@ public class Referee {
 		if(thePacket.getCurrentNode().player().getDifficulty() != null && thePacket.getCurrentNode().player().getDifficulty() == 3){
 			//	Berechnung für Level 3 anhand Paketpriorität und verstrichener Zeit
 				long oldTime = thePacket.inner().getCreated();
-				long diff = (oldTime - newTime)%1000; // in Sekunden				
+				long diff = Math.round((oldTime - newTime)/1000); // in Sekunden				
 				long type = thePacket.inner().getType();
 				String feedback;
 				//Startwert: 20fache Paketwert
 				long points = 20*type;
 				//ersten 60 Sekunden passiert nicht, dann werden alle sekunden der vierfache Paketwert abgezogen
-				long timemalus = ((diff-60)/20);
+				long timemalus = (long) Math.floor((diff-60)/20);
 				if(timemalus > 0){
 					points =- timemalus*type*4;
 				}
