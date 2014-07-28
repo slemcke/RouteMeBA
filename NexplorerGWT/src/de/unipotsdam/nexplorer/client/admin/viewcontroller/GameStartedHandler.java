@@ -26,13 +26,29 @@ public class GameStartedHandler implements EventListener {
 	}
 
 	private void transferGameData() {
+		long numberItems = Long.parseLong(adminBinder.getNumberOfBoosters().getValue().trim()) + Long.parseLong(adminBinder.getNumberOfBatteries().getValue().trim());
+		long reductionBooster = 0;
+		long reductionBattery = 0;
+		
+		//nicht mehr als 80 Items, falls angegeben, werden beide Werte gleichmäßig verringert (sofern das möglich ist)
+		if (numberItems > 80){
+			if(Long.parseLong(adminBinder.getNumberOfBoosters().getValue().trim()) < (long)Math.ceil((numberItems-80)/2)){
+				reductionBattery = (long)numberItems-80; 
+			} else if (Long.parseLong(adminBinder.getNumberOfBatteries().getValue().trim()) < (long)Math.ceil((numberItems-80)/2)) {
+				reductionBooster = (long)numberItems-80; 
+			} else {
+				reductionBooster = (long)Math.ceil((numberItems-80)/2);
+				reductionBattery = (long)Math.ceil((numberItems-80)/2);
+			}
+		}
+			
 		Long updateDisplayTime = Long.parseLong(adminBinder.getUpdateDisplayIntervalTime().getValue().trim());
 		Long updatePositionTime = Long.parseLong(adminBinder.getUpdatePositionIntervalTime().getValue().trim());
 		Long difficultyLong = Long.parseLong(adminBinder.getDifficulty().getValue().trim());
 		Long playingTimeLong = Long.parseLong(adminBinder.getTimeToPlay().getValue().trim());
-		Long maxBoosterLong = Long.parseLong(adminBinder.getNumberOfBoosters().getValue().trim());
+		Long maxBoosterLong = Long.parseLong(adminBinder.getNumberOfBoosters().getValue().trim())-reductionBooster;
 		Long timeStarted = null;
-		Long maxBatteries = Long.parseLong(adminBinder.getNumberOfBatteries().getValue().trim());
+		Long maxBatteries = Long.parseLong(adminBinder.getNumberOfBatteries().getValue().trim())-reductionBattery;
 		Long baseNodeRangeLong = Long.parseLong(adminBinder.getBaseNodeRange().getValue().trim());
 		Long itemCollectionLong = Long.parseLong(adminBinder.getRangeForCollectingStuff().getValue().trim());
 		Double playingFieldLeftUpperLatitude = Double.parseDouble(adminBinder.getPlayingFieldUpperLeftLatitude().getValue().trim());

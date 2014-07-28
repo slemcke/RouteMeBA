@@ -404,7 +404,7 @@ public class DatabaseImpl {
 		// Filter by distance
 		List<Items> nearItems = new LinkedList<Items>();
 		for (Items item : items) {
-			if (locator.distance(location, item) <= itemCollectionRange / 1000) {
+			if (locator.distance(location, item) <= itemCollectionRange / 1400) {
 				nearItems.add(item);
 			}
 		}
