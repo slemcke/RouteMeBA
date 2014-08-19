@@ -162,13 +162,13 @@ function initialize(playerId, latitude, longitude) {
         center : latlng,
         disableDefaultUI : true,
         disableDoubleClickZoom : true,
-        draggable : false,
-        scrollwheel : false,
+        draggable : true,
+        scrollwheel : true,
         mapTypeId : google.maps.MapTypeId.ROADMAP
     };
 
     map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-	
+    
 	playerMarkerObservers = new ObservableCollection();
 	var neighbour = new NeighbourObserver();
 	neighbour.subscribe(new NeighbourLine(map));

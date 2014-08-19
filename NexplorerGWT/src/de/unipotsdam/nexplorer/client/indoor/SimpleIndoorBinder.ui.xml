@@ -15,7 +15,7 @@
 		<span id="loginReady" style="display:none">
 			Bitte geben Sie ihren gewünschten Spielernamen ein. Wenn sie ein unterbrochenes Spiel wieder aufnehmen wollen, benutzen Sie bitte den gleichen Namen wie zuvor.
 			<br/><br/>
-			<input id="playerName" type="text" />
+			<input id="playerName" type="text" onkeydown="if (event.keyCode == 13) document.getElementById('loginButton').click()"/>
 			<br/><br/>
 			<button id="loginButton" type="button" onclick="loginPlayer($('#playerName').val(), false)">anmelden</button>
 		</span>
