@@ -40,7 +40,7 @@ public class MapActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_map);
-
+		
 		NexplorerMap mapFragment = (NexplorerMap) getSupportFragmentManager().findFragmentById(R.id.map);
 		GoogleMap googleMap = mapFragment.getGoogleMap();
 		MapRotator map = mapFragment.getMapRotator();
@@ -144,14 +144,14 @@ public class MapActivity extends FragmentActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
+		System.out.println("Created menu...");
 		getMenuInflater().inflate(R.menu.activity_map, menu);
 		return true;
 	}
 
 	public static UI createInstance(android.widget.Button login, android.widget.TextView waitingTextText, Activity host, android.widget.TextView beginText, android.app.Dialog loginDialog, android.app.Dialog waitingForGameDialog, android.app.Dialog noPositionDialog, GoogleMap map, MapRotator rotator, UIHeader header, UIFooter footer, PacketFooterFragment packetFooter) {
 		de.unipotsdam.nexplorer.client.android.ui.Button loginButton = new de.unipotsdam.nexplorer.client.android.ui.Button(login, host);
-
+		
 		Text waitingText = new Text(waitingTextText, host);
 		Text beginDialog = new Text(beginText, host);
 

@@ -1,5 +1,6 @@
 package de.unipotsdam.nexplorer.client.android;
 
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -16,7 +17,7 @@ public class StatusHeaderFragment extends Fragment implements UIHeader {
 	private TextView remainingPlayingTime;
 	private TextView battery;
 	private ImageView level;
-
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View result = inflater.inflate(R.layout.fragment_status_header, container, false);
@@ -25,7 +26,7 @@ public class StatusHeaderFragment extends Fragment implements UIHeader {
 		neighbourCount = (TextView) result.findViewById(R.id.neighbours);
 		remainingPlayingTime = (TextView) result.findViewById(R.id.time);
 		battery = (TextView) result.findViewById(R.id.battery);
-
+		
 		return result;
 	}
 

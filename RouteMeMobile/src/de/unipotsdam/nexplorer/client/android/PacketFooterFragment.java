@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import de.unipotsdam.nexplorer.client.android.callbacks.UIPacketFooter;
 import de.unipotsdam.nexplorer.client.android.rest.Packet;
@@ -28,6 +29,7 @@ public class PacketFooterFragment extends Fragment implements UIPacketFooter {
 	private ViewGroup container;
 	private View result;
 	private Button packetid;
+	private TextView packetText;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,7 @@ public class PacketFooterFragment extends Fragment implements UIPacketFooter {
 		// map = inflater.inflate(R.layout.activity_map, container,false);
 		this.container = container;
 		packetid = (Button) result.findViewById(R.id.packetid);
+		packetText = (TextView) result.findViewById(R.id.packetText);
 		packetLayout = (LinearLayout) result.findViewById(R.id.packages);
 		return result;
 	}
@@ -74,6 +77,9 @@ public class PacketFooterFragment extends Fragment implements UIPacketFooter {
 		// key
 		TreeMap<Long, Packet> packetsTree = new TreeMap<Long, Packet>(packages);
 		int resId;
+		if(packetsTree.size()>0){
+			packetText.setText(R.string.packetText_notSelected);
+		}
 		for (Packet packet : packetsTree.values()) {
 			Byte packetType = packet.getType();
 			// show empty image if no legal type is given
@@ -100,12 +106,13 @@ public class PacketFooterFragment extends Fragment implements UIPacketFooter {
 			// packet is packet to be sent
 			if (((String) packetid.getText()).equals(String.valueOf(packet
 					.getId()))) {
-				// TODO set previosly highlighted packets background to
 				// transparent
 
 				newPacket.setBackgroundColor(Color.CYAN);
+				packetText.setText(R.string.packetText_selected);
 			} else {
 				newPacket.setBackgroundColor(Color.TRANSPARENT);
+
 			}
 			newPacket.setOnClickListener(new View.OnClickListener() {
 
@@ -185,12 +192,14 @@ public class PacketFooterFragment extends Fragment implements UIPacketFooter {
 		packetid.setEnabled(true);
 		packetid.setText(String.valueOf(v.getId()));
 		v.setBackgroundColor(Color.CYAN);
+		packetText.setText(R.string.packetText_selected);
 	}
 
 	private void disablePacketButton(View v) {
 		// call GUI
 		packetid.setEnabled(false);
 		packetid.setText(R.string.default_packet);
+		packetText.setText(R.string.packetText_notSelected);
 		v.setBackgroundColor(Color.TRANSPARENT);
 	}
 

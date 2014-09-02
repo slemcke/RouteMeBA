@@ -39,11 +39,16 @@ public class UI extends UIElement implements UILogin, UISensors, UIGameEvents {
 		this.header = header;
 		this.packetFooter = packetFooter;
 	}
+	
+	public void updatePacketFooter(final HashMap<Long,Packet> packets, Long level){
+		packetFooter.updateFooter(packets, level);
+		
+	}
 
 	public void updateStatusHeaderAndFooter(final int score, final int neighbourCount, final long remainingPlayingTime, final double battery, final Integer nextItemDistance, final boolean hasRangeBooster, final boolean itemInCollectionRange, final String hint, final Long level, final HashMap<Long,Packet> packets) {
 		header.updateHeader(score, neighbourCount, remainingPlayingTime, battery,level);
 		footer.updateFooter(nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
-		packetFooter.updateFooter(packets, level);
+		updatePacketFooter(packets, level);
 	}
 
 	public void disableButtonForItemCollection() {

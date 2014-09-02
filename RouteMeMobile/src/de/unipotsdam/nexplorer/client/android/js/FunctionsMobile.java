@@ -6,10 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.model.LatLng;
@@ -70,6 +72,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener,
 
 	// TODO packetId of packet to be sent (-1 if no send requested)
 	private int packetId;
+	private long level;
 	private boolean sendMode;
 
 	private Location currentLocation;
@@ -319,7 +322,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener,
 			double battery = data.node.getBatterieLevel();
 			int neighbourCount = data.node.getNeighbourCount();
 			int score = data.node.getScore();
-			long level = data.node.getDifficulty();
+			level = data.node.getDifficulty();
 			int playerRange = data.node.getRange();
 			Map<Integer, Neighbour> neighbours = data.node.getNeighbours();
 			Map<Integer, Item> nearbyItems = data.node.getNearbyItems()
@@ -329,6 +332,14 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener,
 					.isItemInCollectionRangeBoolean();
 			boolean hasRangeBooster = data.node.hasRangeBoosterBoolean();
 			String hint = data.getHint();
+
+			boolean isPingActive = data.node.isPingActive();
+
+//			if (gameIsRunning) {
+//				if (!isPingActive) {
+//					mapTasks.showToast("Kein ping aktiv");
+//				}
+//			}
 
 			if (oldRange != playerRange) {
 				rangeObserver.fire((double) playerRange);
@@ -497,6 +508,7 @@ public class FunctionsMobile implements PositionWatcher, OnMapClickListener,
 				routePacketObserver.fire(Long.valueOf(targetId));
 				this.removeRoutes();
 				this.sendMode = false;
+				ui.updatePacketFooter(packets, level);
 			}
 			// // this.pingObserver.fire();
 			// System.out.println("Trying to send packet...");

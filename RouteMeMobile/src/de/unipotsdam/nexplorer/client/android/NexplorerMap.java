@@ -2,14 +2,19 @@ package de.unipotsdam.nexplorer.client.android;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.widget.Toast;
+
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+
 import de.unipotsdam.nexplorer.client.android.R.drawable;
 import de.unipotsdam.nexplorer.client.android.js.LatLng;
 import de.unipotsdam.nexplorer.client.android.js.Marker;
@@ -268,8 +273,9 @@ public class NexplorerMap extends RotatingMapFragment {
 //		}
 	}
 	
-	public void drawFeedbackText(LatLng position, String feedback){
-		
-	
+	public void showToast(String info){
+		Context context = getActivity();
+		Toast toast = Toast.makeText(context, info, Toast.LENGTH_LONG);
+		toast.show();
 	}
 }

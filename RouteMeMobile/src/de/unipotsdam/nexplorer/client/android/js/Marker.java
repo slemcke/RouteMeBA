@@ -15,6 +15,7 @@ public class Marker extends UIElement {
 	protected String title = "";
 	protected MarkerImage icon;
 	protected int zIndex;
+	protected String text = "";
 
 	public Marker(Activity context) {
 		super(context);
@@ -74,5 +75,10 @@ public class Marker extends UIElement {
 
 	public void setIcon(MarkerImage icon) {
 		this.icon = icon;
+	}
+	
+	public void setText(String text){
+		this.text = text;
+		
 	}
 }
