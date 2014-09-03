@@ -41,7 +41,22 @@ public class LevelThreeRouteSelection extends LevelTwoRouteSelection {
 	 */
 	private void removeObsoletePacket() {
 		int index = packet.getSelectedIndex();
-		packet.remove(index);
+		String response =packet.getOptions().getItem(index).getText();
+		String value = packet.getOptions().getItem(index).getValue();
+		OptionElement nextElement = packet.getOptions().getItem(index +1);
+		String [] splited = response.split(":\\s+");
+		int count = Integer.valueOf(splited[1]);
+		if(count>1){
+			packet.remove(index);
+			count--;
+			OptionElement newElement = DOM.createOption().cast();
+			newElement.setText(splited[0] + ": " + count);
+			newElement.setValue(value);
+			packet.add(newElement, nextElement);
+		} else {
+			packet.remove(index);
+
+		}
 	}
 
 	/*
@@ -54,9 +69,6 @@ public class LevelThreeRouteSelection extends LevelTwoRouteSelection {
 			Integer value = 0;
 			for(String singlePacket : newPackets){
 				OptionElement newElement = DOM.createOption().cast();
-//				Image image = new Image("media/images/icons/user.png");
-//				image.setTitle("blubb");
-//				newElement.setInnerHTML(image.toString());
 				newElement.setText(singlePacket);
 				newElement.setValue(value.toString());
 
@@ -67,17 +79,6 @@ public class LevelThreeRouteSelection extends LevelTwoRouteSelection {
 		}
 	}
 	
-//	public void createPacketView(String singlePacket, Integer value) {
-//		OptionElement newElement = DOM.createOption().cast();
-//		Image image = new Image("media/images/icons/user.png");
-//		image.setTitle("blubb");
-//		//newElement.setText(singlePacket);
-//		//newElement.setValue(value.toString());
-//		newElement.setInnerText(singlePacket);
-//		newElement.setInnerHTML(image.toString());
-//		packet.add(newElement, null);
-//	}
-	
 	
 	
 	/*
@@ -87,7 +88,8 @@ public class LevelThreeRouteSelection extends LevelTwoRouteSelection {
 	public String getPacket(){
 		int index = packet.getSelectedIndex();
 		String response =packet.getOptions().getItem(index).getText();
-		return response;
+		String [] splited = response.split(":\\s+");
+		return splited[0];
 	}
 	
 }

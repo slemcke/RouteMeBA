@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.gwt.soyc.Settings;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import de.unipotsdam.nexplorer.client.IndoorService;
@@ -53,7 +54,16 @@ public class Indoor extends RemoteServiceServlet implements IndoorService {
 			if (playerId == -1) {
 				return new PlayerInfo(null, settings.inner(), null);
 			} else {
-				Player player = dbAccess.getPlayerById(playerId);
+				Player player;
+				try {
+					player = dbAccess.getPlayerById(playerId);
+				} catch (PlayerDoesNotExistException e) {
+					if(settings.inner().getIsRunning() == null || settings.inner().getIsRunning() == 0){
+						return new PlayerInfo(null, settings.inner(), null);
+					} else {
+						throw new PlayerNotFoundException(e);
+					}
+				}
 				AodvDataPacket packet = dbAccess.getDataPacketByOwnerId(player);
 
 				AodvDataPackets transmittablePacket = packet != null ? packet.inner() : null;
@@ -65,7 +75,7 @@ public class Indoor extends RemoteServiceServlet implements IndoorService {
 				}
 				return new PlayerInfo(internal.get(), settings.inner(), transmittablePacket);
 			}
-		} catch (Exception e) {
+		} catch (Exception e){
 			unit.cancel();
 			throw new RuntimeException(e);
 		} finally {

@@ -296,17 +296,21 @@ public class Player implements Locatable {
 		}
 	}
 	
-	public void updateRoutingTable(NeighbourAction routing){
-		
+	public void addNewNeighbours(NeighbourAction routing){	
+		int allowedHelloLosses = 8;
+		long tooOld = new Date().getTime() - allowedHelloLosses * inner.getPingDuration();
+
 		Set<Neighbours> knownNeighbours = inner.getNeighbourses();
 		Iterator<Neighbours> neighIterator = knownNeighbours.iterator();
 		while (neighIterator.hasNext()) {
 			Neighbours neighbour = neighIterator.next();
-			if(true){
+			//nur die, die aktuellen Ping haben
+			if (neighbour.getLastPing() != null && neighbour.getLastPing() >= tooOld) {
 				neighIterator.remove();
 				dbAccess.persist(inner);
 				routing.aodvNeighbourFound(data.create(neighbour.getNeighbour()));
-				logger.trace("Node {} added neighbour {}", getId(), neighbour.getId());
+			
+				logger.trace("Node {} updated routingTable", getId());
 			}
 				
 		}

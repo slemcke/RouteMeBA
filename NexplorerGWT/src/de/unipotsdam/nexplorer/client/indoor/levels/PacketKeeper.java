@@ -9,7 +9,6 @@ import de.unipotsdam.nexplorer.shared.PacketType;
 public class PacketKeeper {
 
 	private int i;
-	private int j;
 
 	public PacketKeeper() {
 	}
@@ -19,9 +18,7 @@ public class PacketKeeper {
 		
 		List<String> packetList = new ArrayList<String>(); 
 		for(i = 0; i<5; i++){
-			for (j = 0; j<3; j++){
-				packetList.add(PacketType.values()[i].toString());
-			}
+				packetList.add(PacketType.values()[i].toString() + ": " +3);
 		}
 		
 		return packetList;

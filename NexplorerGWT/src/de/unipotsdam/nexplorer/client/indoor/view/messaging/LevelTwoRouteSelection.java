@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
@@ -57,10 +58,41 @@ public class LevelTwoRouteSelection extends RoutingLevel implements RouteListene
 			if (!routesModel.containsKey(route)) {
 				RouteBinder view = new RouteBinder(route);
 				view.setClickHandler(new Notify(clickObservers), this);
-				this.routes.appendChild(view.getElement());
+				
+				Route nextChildKey = getNextChild(routesModel.keySet(), route);
+				if(nextChildKey != null){
+					RouteBinder nextChild = routesModel.get(nextChildKey);
+					this.routes.insertBefore(view.getElement(), nextChild.getElement());
+				} else {
+					this.routes.appendChild(view.getElement());
+				}
 				routesModel.put(route, view);
 			}
 		}
+	}
+	
+	private Route getNextChild(Set<Route> routes, Route route){
+		Route response = null;
+		Iterator<Route> iter = routes.iterator();
+	    while (iter.hasNext()) {
+	      Route nextRoute = (Route)iter.next();
+	      //sortieren der Liste, ziemlich simpel gehalt, aber fuer kleine Listen ausreichend
+	      if(Integer.parseInt(nextRoute.getSource()) > Integer.parseInt(route.getSource())
+	    		  || (Integer.parseInt(nextRoute.getSource()) == Integer.parseInt(route.getSource())
+	    		  && Integer.parseInt(nextRoute.getDestination()) > Integer.parseInt(route.getDestination()))){
+	    	  
+	    		  if(response == null){
+	    			  response = nextRoute;
+	    		  } else if(Integer.parseInt(nextRoute.getSource()) < Integer.parseInt(response.getSource())){
+	    			  response = nextRoute;
+	    		  } else if(Integer.parseInt(nextRoute.getSource()) == Integer.parseInt(response.getSource()) && Integer.parseInt(nextRoute.getDestination()) < Integer.parseInt(response.getDestination())){
+	    			  response = nextRoute;
+	    		  }
+	    	  }
+	    	  
+	      } 
+	
+		return response;
 	}
 
 	public void addClickHandler(final RouteClickListener listener) {

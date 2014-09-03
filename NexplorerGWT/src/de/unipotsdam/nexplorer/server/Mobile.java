@@ -214,7 +214,11 @@ public class Mobile extends RemoteServiceServlet implements MobileService {
 			AodvNode node = unit.resolve(AodvFactory.class).create(player);
 
 			node.pingNeighbourhood();
-			node.player().decreaseBatteryBy(5);
+			if(node.player().getDifficulty() == 2){
+				node.player().decreaseBatteryBy(5);
+			} else if (node.player().getDifficulty() == 3){
+				node.player().decreaseBatteryBy(1);
+			}
 
 			PingResponse result = new PingResponse();
 			result.setPingId(0);

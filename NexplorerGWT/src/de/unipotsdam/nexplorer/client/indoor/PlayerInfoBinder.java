@@ -165,10 +165,12 @@ public class PlayerInfoBinder extends HasTable {
 		//update packets
 		if(level instanceof LevelThreeRouteSelection && info.getDataPacketSend() != null){
 			
-			if(info.getDataPacketSend().getStatus().equals(Aodv.DATA_PACKET_STATUS_ARRIVED) && test){
+			if((info.getDataPacketSend().getStatus().equals(Aodv.DATA_PACKET_STATUS_ARRIVED) 
+					|| info.getDataPacketSend().getStatus().equals(Aodv.DATA_PACKET_STATUS_CANCELLED))&& test){
 				((LevelThreeRouteSelection)this.level).updatePackets();
 				test=false;
-			} else if (!info.getDataPacketSend().getStatus().equals(Aodv.DATA_PACKET_STATUS_ARRIVED)){
+			} else if (!(info.getDataPacketSend().getStatus().equals(Aodv.DATA_PACKET_STATUS_ARRIVED)
+					|| info.getDataPacketSend().getStatus().equals(Aodv.DATA_PACKET_STATUS_CANCELLED))){
 				test=true;
 			}
 		}

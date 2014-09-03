@@ -3,7 +3,7 @@
 	<div>
 		<table style="width:100%" ui:field="messageTable">
 			<th colspan="3" style="text-align:center; width:300px">
-				Start- und Zielknoten wählen
+				Start- und Zielknoten
 			</th>
 			<tr>
 				<td>
