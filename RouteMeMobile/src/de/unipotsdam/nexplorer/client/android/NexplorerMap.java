@@ -3,9 +3,12 @@ package de.unipotsdam.nexplorer.client.android;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -21,16 +24,14 @@ import de.unipotsdam.nexplorer.client.android.maps.LevelOneNeighbourDrawer;
 import de.unipotsdam.nexplorer.client.android.maps.LevelThreeNeighbourDrawer;
 import de.unipotsdam.nexplorer.client.android.maps.LevelTwoNeighbourDrawer;
 import de.unipotsdam.nexplorer.client.android.maps.NeighbourDrawer;
-import de.unipotsdam.nexplorer.client.android.maps.NeighbourHighlighter;
 import de.unipotsdam.nexplorer.client.android.rest.Item;
 import de.unipotsdam.nexplorer.client.android.rest.Neighbour;
 
+@SuppressLint("UseSparseArrays")
 public class NexplorerMap extends RotatingMapFragment {
 
-	private Map<Integer, Marker> nearbyItemMarkersArray = new HashMap<Integer, Marker>();
+	private java.util.Map<Integer, Marker> nearbyItemMarkersArray = new HashMap<Integer, Marker>();
 	private NeighbourDrawer neighbourDrawer;
-	private NeighbourHighlighter neighbourHighlighter;
-	private Map<Integer, Marker> routeNeighboursArray = new HashMap<Integer,Marker>();
 
 	private Marker playerMarker;
 	private PlayerRadius playerRadius;
@@ -61,48 +62,67 @@ public class NexplorerMap extends RotatingMapFragment {
 		int strokeColor = Color.parseColor("#5A0000FF");
 		int strokeWeight = 2;
 		int fillColor = Color.parseColor("#330000FF");
-		playerRadius = new PlayerRadius(getActivity(), strokeColor, strokeWeight, fillColor);
+		playerRadius = new PlayerRadius(getActivity(), strokeColor,
+				strokeWeight, fillColor);
 		strokeColor = Color.parseColor("#5AFF0000");
 		strokeWeight = 1;
 		fillColor = Color.parseColor("#40FF0000");
-		collectionRadius = new PlayerRadius(getActivity(), strokeColor, strokeWeight, fillColor);
+		collectionRadius = new PlayerRadius(getActivity(), strokeColor,
+				strokeWeight, fillColor);
 	}
 
-	public void drawMarkers(Map<Integer, Neighbour> neighbours, Map<Integer, Item> nearbyItems, String difficulty,Map <Integer,Neighbour> routeNeighbours) {
+	public void drawMarkers(Map<Integer, Neighbour> neighbours,
+			Map<Integer, Item> nearbyItems, Long difficulty) {
 		ensureNeighbourDrawer(difficulty);
-
 		if (neighbours != null && neighbourDrawer != null) {
 			neighbourDrawer.draw(neighbours);
-		}
-		
-		if(routeNeighbours != null && neighbourHighlighter != null){
-			neighbourHighlighter.addMarks(routeNeighbours);
 		}
 
 		if (nearbyItems != null) {
 			for (Map.Entry<Integer, Item> entry : nearbyItems.entrySet()) {
-				drawNearbyItemMarkerAtLatitudeLongitude(entry.getKey(), entry.getValue().getItemType(), entry.getValue().getLatitude(), entry.getValue().getLongitude());
+				drawNearbyItemMarkerAtLatitudeLongitude(entry.getKey(), entry
+						.getValue().getItemType(), entry.getValue()
+						.getLatitude(), entry.getValue().getLongitude());
 			}
 		}
 	}
+//
+//	public void highlightMarkers(Map<Long, Neighbour> neighbours,
+//			Map<Integer, Item> nearbyItems, Long difficulty) {
+//		neighbourDrawer
+//				.highlightNeighbours(neighbours);
+//		if (neighbours != null && neighbourDrawer != null
+//				&& neighbourDrawer instanceof LevelThreeNeighbourDrawer) {
+//			System.out.println("Highlighting...");
+//			((LevelThreeNeighbourDrawer) neighbourDrawer)
+//					.highlightNeighbours(neighbours);
+//		}
+//	}
 
-	private void ensureNeighbourDrawer(String difficulty) {
+	private void ensureNeighbourDrawer(Long difficulty) {
 		if (neighbourDrawer != null) {
-			return;
+			if( difficulty ==1 && neighbourDrawer instanceof LevelOneNeighbourDrawer)
+				return;
+			else if( difficulty ==2 && neighbourDrawer instanceof LevelTwoNeighbourDrawer)
+				return;
+			else if( difficulty ==3 && neighbourDrawer instanceof LevelThreeNeighbourDrawer)
+				return;
 		}
 
 		if (difficulty == null) {
 			return;
 		}
 
-		if (difficulty.equals("1")) {
-			neighbourDrawer = new LevelOneNeighbourDrawer(googleMap, getActivity());
-		} else if (difficulty.equals("2")) {
-			neighbourDrawer = new LevelTwoNeighbourDrawer(googleMap, getActivity());
-		} else if (difficulty.equals("3")){
-			neighbourDrawer = new LevelThreeNeighbourDrawer(googleMap, getActivity());
+		if (difficulty == 1) {
+			neighbourDrawer = new LevelOneNeighbourDrawer(googleMap,
+					getActivity());
+		} else if (difficulty == 2) {
+			neighbourDrawer = new LevelTwoNeighbourDrawer(googleMap,
+					getActivity());
+		} else if (difficulty == 3) {
+			neighbourDrawer = new LevelThreeNeighbourDrawer(googleMap,
+					getActivity());
 		}
-		
 	}
 
 	/**
@@ -113,7 +133,8 @@ public class NexplorerMap extends RotatingMapFragment {
 	 * @param latitude
 	 * @param longitude
 	 */
-	void drawNearbyItemMarkerAtLatitudeLongitude(int itemId, String type, double latitude, double longitude) {
+	void drawNearbyItemMarkerAtLatitudeLongitude(int itemId, String type,
+			double latitude, double longitude) {
 		final LatLng latlng = new LatLng(latitude, longitude);
 
 		int imagePath = 0;
@@ -146,15 +167,18 @@ public class NexplorerMap extends RotatingMapFragment {
 		}
 	}
 
-	public void removeInvisibleMarkers(final java.util.Map<Integer, Neighbour> neighbours, final java.util.Map<Integer, Item> nearbyItems, String difficulty) {
+	public void removeInvisibleMarkers(
+			final java.util.Map<Integer, Neighbour> neighbours,
+			final java.util.Map<Integer, Item> nearbyItems, Long difficulty) {
 		ensureNeighbourDrawer(difficulty);
-
 		if (neighbours != null && neighbourDrawer != null) {
 			neighbourDrawer.removeInvisible(neighbours);
 		}
 
-		for (Map.Entry<Integer, Marker> entry : nearbyItemMarkersArray.entrySet()) {
-			if (entry.getValue() != null && nearbyItems.get(entry.getKey()) == null) {
+		for (Map.Entry<Integer, Marker> entry : nearbyItemMarkersArray
+				.entrySet()) {
+			if (entry.getValue() != null
+					&& nearbyItems.get(entry.getKey()) == null) {
 				nearbyItemMarkersArray.get(entry.getKey()).setMap(null);
 			}
 		}
@@ -168,15 +192,18 @@ public class NexplorerMap extends RotatingMapFragment {
 				if (map != null) {
 					map.setCurrentLocation(latLng.create());
 				} else {
-					CameraUpdate update = CameraUpdateFactory.newLatLng(latLng.create());
+					CameraUpdate update = CameraUpdateFactory.newLatLng(latLng
+							.create());
 					googleMap.moveCamera(update);
 				}
 			}
 		});
 	}
 
-	public void updateMarkerSizes(final Integer playerRange, final Integer itemCollectionRange) {
-		if (playerRange.equals(oldPlayerRange) && itemCollectionRange.equals(oldItemRange)) {
+	public void updateMarkerSizes(final Integer playerRange,
+			final Integer itemCollectionRange) {
+		if (playerRange.equals(oldPlayerRange)
+				&& itemCollectionRange.equals(oldItemRange)) {
 			return;
 		}
 
@@ -219,15 +246,36 @@ public class NexplorerMap extends RotatingMapFragment {
 		googleMap.setOnMarkerClickListener(new OnMarkerClickListener() {
 
 			@Override
-			public boolean onMarkerClick(com.google.android.gms.maps.model.Marker marker) {
+			public boolean onMarkerClick(
+					com.google.android.gms.maps.model.Marker marker) {
 				listener.onMapClick(marker.getPosition());
 				return true;
 			}
 		});
 	}
 
-	public void updateMap(int playerRange, int itemCollectionRange, Map<Integer, Neighbour> neighbours, Map<Integer, Item> nearbyItems, String gameDifficulty,Map<Integer,Neighbour> routeNeighbours) {
+	public void updateMap(int playerRange, int itemCollectionRange,
+			Map<Integer, Neighbour> neighbours,
+			Map<Integer, Item> nearbyItems, Long gameDifficulty) {
 		updateMarkerSizes(playerRange, itemCollectionRange);
-		drawMarkers(neighbours, nearbyItems, gameDifficulty,routeNeighbours);
+		drawMarkers(neighbours, nearbyItems, gameDifficulty);
+//		if (gameDifficulty == 3) {
+//			if (neighboursWithRoutes != null && !neighboursWithRoutes.isEmpty()) {
+//				System.out.println("Highlighting...");
+//				for (Neighbour neighbour : neighboursWithRoutes.values()) {
+//					System.out.println("Nachbar: " + neighbour.getId());
+//				}
+//				if (!neighboursWithRoutes.isEmpty()) {
+//					highlightMarkers(neighboursWithRoutes, nearbyItems,
+//							gameDifficulty);
+//				}
+//			}
+//		}
+	}
+	
+	public void showToast(String info){
+		Context context = getActivity();
+		Toast toast = Toast.makeText(context, info, Toast.LENGTH_LONG);
+		toast.show();
 	}
 }

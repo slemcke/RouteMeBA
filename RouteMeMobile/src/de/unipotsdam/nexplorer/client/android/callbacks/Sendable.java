@@ -1,6 +1,8 @@
 package de.unipotsdam.nexplorer.client.android.callbacks;
 
-public interface Sendable {
+import de.unipotsdam.nexplorer.client.android.rest.Packet;
 
-	public void sendRequested(Long packageId, Long nextHopId);
+
+public interface Sendable {
+	public void sendRequested(Packet packet);
 }

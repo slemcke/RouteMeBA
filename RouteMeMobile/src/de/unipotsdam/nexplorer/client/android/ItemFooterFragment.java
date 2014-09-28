@@ -1,7 +1,5 @@
 package de.unipotsdam.nexplorer.client.android;
 
-import java.util.HashMap;
-
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,12 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import de.unipotsdam.nexplorer.client.android.callbacks.UIFooter;
-import de.unipotsdam.nexplorer.client.android.rest.Packet;
 
-/**
- * @author Kora
- *
- */
 public class ItemFooterFragment extends Fragment implements UIFooter {
 
 	private Button collectItem;
@@ -43,9 +36,9 @@ public class ItemFooterFragment extends Fragment implements UIFooter {
 		return result;
 	}
 
-	private void updateFooter(Integer nextItemDistance, boolean hasRangeBooster, boolean itemInCollectionRange, String hint) {
+	@Override
+	public void updateFooter(Integer nextItemDistance, boolean hasRangeBooster, boolean itemInCollectionRange, String hint) {
 		this.hint.setText(hint);
-		//dont show hints at lvl 3
 
 		if (nextItemDistance != null)
 			setText(this.nextItemDistance, "Entfernung zum nächsten Gegenstand " + nextItemDistance + " Meter.");
@@ -82,11 +75,6 @@ public class ItemFooterFragment extends Fragment implements UIFooter {
 			collectItem.setText("Gegenstand wird eingesammelt...<img src='media/images/ajax-loader.gif' />");
 		}
 	}
-	
-//	@Override
-//	public void setIsSendingPackage(boolean isSendingPackage){
-//		
-//	}
 
 	private void setText(TextView text, final String string, final Integer imageId) {
 		if (imageId != null) {
@@ -102,17 +90,5 @@ public class ItemFooterFragment extends Fragment implements UIFooter {
 
 	void setText(TextView text, final String string) {
 		setText(text, string, null);
-	}
-	
-	
-	@Override
-	/**
-	 * don't use the given packets in this scope
-	 */
-	public void updateFooter(Integer nextItemDistance, boolean hasRangeBooster,
-			boolean itemInCollectionRange, String hint,
-			HashMap<Long, Packet> packages) {
-		updateFooter(nextItemDistance, hasRangeBooster, itemInCollectionRange, hint);
-		
 	}
 }

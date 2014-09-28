@@ -9,4 +9,6 @@ public interface NeighbourDrawer {
 	public void removeInvisible(Map<Integer, Neighbour> neighbours);
 
 	public void draw(Map<Integer, Neighbour> neighbours);
+
+	public void highlightNeighbours(Map<Long, Neighbour> neighbours);
 }

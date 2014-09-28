@@ -1,5 +1,6 @@
 package de.unipotsdam.nexplorer.client.android;
 
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -16,26 +17,21 @@ public class StatusHeaderFragment extends Fragment implements UIHeader {
 	private TextView remainingPlayingTime;
 	private TextView battery;
 	private ImageView level;
-
+	
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		View result = inflater.inflate(R.layout.fragment_status_header,
-				container, false);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		View result = inflater.inflate(R.layout.fragment_status_header, container, false);
 		level = (ImageView) result.findViewById(R.id.level);
-		//set level
 		score = (TextView) result.findViewById(R.id.points);
 		neighbourCount = (TextView) result.findViewById(R.id.neighbours);
 		remainingPlayingTime = (TextView) result.findViewById(R.id.time);
 		battery = (TextView) result.findViewById(R.id.battery);
-
+		
 		return result;
 	}
 
 	@Override
-	public void updateHeader(Integer score, Integer neighbourCount,
-			Long remainingPlayingTime, Double battery, Long level) {
-		//set level icon (maybe onCreate method)
+	public void updateHeader(Integer score, Integer neighbourCount, Long remainingPlayingTime, Double battery, Long level) {
 		if (level == 1) {
 			this.level.setImageResource(R.drawable.lvlone);
 		} else if (level == 2) {

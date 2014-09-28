@@ -29,12 +29,8 @@ public class CollectItem implements Collectable, Loginable {
 	public void collectRequested(Integer itemId) {
 		if (!isCollectingItem && playerId != null) {
 			isCollectingItem = true;
-			try{
+
 			ui.disableButtonForItemCollection();
-			//TODO handle exception
-			} catch(Exception e){
-				
-			}
 			rest.collectItem(playerId, new AjaxResult<Object>() {
 
 				@Override

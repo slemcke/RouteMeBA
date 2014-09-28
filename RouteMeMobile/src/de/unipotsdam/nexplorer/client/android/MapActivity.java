@@ -1,7 +1,5 @@
 package de.unipotsdam.nexplorer.client.android;
 
-import java.util.HashMap;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
@@ -22,7 +20,6 @@ import de.unipotsdam.nexplorer.client.android.js.AppWrapper;
 import de.unipotsdam.nexplorer.client.android.js.FunctionsMobile;
 import de.unipotsdam.nexplorer.client.android.js.RadiusBlinker;
 import de.unipotsdam.nexplorer.client.android.net.RestMobile;
-import de.unipotsdam.nexplorer.client.android.rest.Packet;
 import de.unipotsdam.nexplorer.client.android.sensors.GpsReceiver;
 import de.unipotsdam.nexplorer.client.android.sensors.MapRotator;
 import de.unipotsdam.nexplorer.client.android.sensors.ShakeDetector;
@@ -38,25 +35,20 @@ public class MapActivity extends FragmentActivity {
 	private boolean firstStart;
 	private LoginDialog loginDialog;
 	private ShakeDetector shaker;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_map);
-
+		
 		NexplorerMap mapFragment = (NexplorerMap) getSupportFragmentManager().findFragmentById(R.id.map);
 		GoogleMap googleMap = mapFragment.getGoogleMap();
 		MapRotator map = mapFragment.getMapRotator();
 
 		UIHeader header = (StatusHeaderFragment) getSupportFragmentManager().findFragmentById(R.id.statusHeader);
-//		ItemFooterFragment footer = addItemFooter();
-		int level = 1;
-//		if(level == 3) TODO cases for level (send level here)
-		UIFooter footer = null;
-		if(level == 3){
-			footer = addPacketFooter();
-		} else if (level ==1){
-			footer = (ItemFooterFragment) getSupportFragmentManager().findFragmentById(R.id.itemFooter);
-		}
+		ItemFooterFragment footer = addItemFooter();
+		PacketFooterFragment packetFooter = addPacketFooter();
+
 		loginDialog = new LoginDialog(this);
 		loginDialog.setOnLoginListener(new LoginDialog.LoginCallback() {
 
@@ -78,13 +70,35 @@ public class MapActivity extends FragmentActivity {
 
 		RadiusBlinker blinker = new RadiusBlinker(googleMap, this);
 
-		UI ui = createInstance(login, waitingTextText, this, beginText, loginDialog, waitingForGameDialog, noPositionDialog, googleMap, map, header, footer);
+		UI ui = createInstance(login, waitingTextText, this, beginText, loginDialog, waitingForGameDialog, noPositionDialog, googleMap, map, header, footer, packetFooter);
 
 		js = new FunctionsMobile(ui, new AppWrapper(this), new Handler(), mapFragment, new RestMobile(new Settings().getHostAddress()), blinker, new TouchVibrator(this), new GpsReceiver(this, new Settings().isDebugModeOn()));
 
 		shaker = new ShakeDetector(this, 1, 750);
 		shaker.addShakeListener(js);
 	}
+
+	private PacketFooterFragment addPacketFooter() {
+		FragmentManager manager = getSupportFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+
+		PacketFooterFragment footer = new PacketFooterFragment();
+		transaction.replace(R.id.packetFooter, footer);
+		transaction.commit();
+		return footer;
+	}
+	
+	public void sendPacket(View v){
+		js.sendPacket(v);
+	}
+	
+	public void abortSending(View v){
+		js.abortSending(v);
+	}
+	
+//	public void routePacket(View v){
+//		js.routePacket(v);
+//	}
 
 	/**
 	 * Based on <a href="http://stackoverflow.com/questions/7431516/how-to-change-fragments-class-dynamically">stackoverflow</a>
@@ -96,16 +110,6 @@ public class MapActivity extends FragmentActivity {
 		FragmentTransaction transaction = manager.beginTransaction();
 
 		ItemFooterFragment footer = new ItemFooterFragment();
-		transaction.replace(R.id.itemFooter, footer);
-		transaction.commit();
-		return footer;
-	}
-	
-	private PacketFooterFragment addPacketFooter() {
-		FragmentManager manager = getSupportFragmentManager();
-		FragmentTransaction transaction = manager.beginTransaction();
-
-		PacketFooterFragment footer = new PacketFooterFragment();
 		transaction.replace(R.id.itemFooter, footer);
 		transaction.commit();
 		return footer;
@@ -140,14 +144,14 @@ public class MapActivity extends FragmentActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
+		System.out.println("Created menu...");
 		getMenuInflater().inflate(R.menu.activity_map, menu);
 		return true;
 	}
 
-	public static UI createInstance(android.widget.Button login, android.widget.TextView waitingTextText, Activity host, android.widget.TextView beginText, android.app.Dialog loginDialog, android.app.Dialog waitingForGameDialog, android.app.Dialog noPositionDialog, GoogleMap map, MapRotator rotator, UIHeader header, UIFooter footer) {
+	public static UI createInstance(android.widget.Button login, android.widget.TextView waitingTextText, Activity host, android.widget.TextView beginText, android.app.Dialog loginDialog, android.app.Dialog waitingForGameDialog, android.app.Dialog noPositionDialog, GoogleMap map, MapRotator rotator, UIHeader header, UIFooter footer, PacketFooterFragment packetFooter) {
 		de.unipotsdam.nexplorer.client.android.ui.Button loginButton = new de.unipotsdam.nexplorer.client.android.ui.Button(login, host);
-
+		
 		Text waitingText = new Text(waitingTextText, host);
 		Text beginDialog = new Text(beginText, host);
 
@@ -156,6 +160,6 @@ public class MapActivity extends FragmentActivity {
 		Overlay waitingForGameOverlay = new Overlay(waitingForGameDialog, host);
 		Overlay noPositionOverlay = new Overlay(noPositionDialog, host);
 
-		return new UI(host, loginButton, waitingText, beginDialog, footer, loginOverlay, waitingForGameOverlay, noPositionOverlay, header);
+		return new UI(host, loginButton, waitingText, beginDialog, footer, packetFooter, loginOverlay, waitingForGameOverlay, noPositionOverlay, header);
 	}
 }

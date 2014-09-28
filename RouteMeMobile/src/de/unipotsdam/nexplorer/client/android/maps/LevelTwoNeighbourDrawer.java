@@ -39,14 +39,15 @@ public class LevelTwoNeighbourDrawer extends LevelOneNeighbourDrawer implements 
 			ping.update(neighbour.getLatitude(), neighbour.getLongitude());
 		}
 	}
+
 	public void finishedPing(int playerId) {
 		neighbourPings.remove(playerId);
 	}
 
 	@Override
-	protected void remove(int playerId, Marker neighbour) {
-		super.remove(playerId, neighbour);
-		NeighbourPing ping = neighbourPings.get(playerId);
+	protected void remove(Long long1, Marker neighbour) {
+		super.remove(long1, neighbour);
+		NeighbourPing ping = neighbourPings.get(long1);
 		if (ping != null) {
 			ping.kill();
 		}
