@@ -10,6 +10,8 @@ public class Node {
 	private Integer range;
 	private Long difficulty;
 	private Map<Integer, Neighbour> neighbours;
+	private Map<Integer, Neighbour> neighboursWithRoutes;
+	private Map<Integer, Neighbour> neighbourhood;
 	private Integer nearbyItemsCount;
 	private NearbyItems nearbyItems;
 	private Integer nextItemDistance;
@@ -57,6 +59,14 @@ public class Node {
 
 	public void setNeighbours(Map<Integer, Neighbour> neighbours) {
 		this.neighbours = neighbours;
+	}
+
+	public Map<Integer, Neighbour> getNeighboursWithRoutes() {
+		return neighboursWithRoutes;
+	}
+
+	public void setNeighboursWithRoutes(Map<Integer, Neighbour> neighboursWithRoutes) {
+		this.neighboursWithRoutes = neighboursWithRoutes;
 	}
 
 	public Integer getNearbyItemsCount() {
@@ -146,5 +156,13 @@ public class Node {
 	public void setPacketVariables(boolean sendPacketActive, int currentPacketId){
 		this.currentPacketId = currentPacketId;
 		this.sendPacketActive = sendPacketActive;
+	}
+
+	public Map<Integer, Neighbour> getNeighbourhood() {
+		return neighbourhood;
+	}
+
+	public void setNeighbourhood(Map<Integer, Neighbour> neighbourhood) {
+		this.neighbourhood = neighbourhood;
 	}
 }

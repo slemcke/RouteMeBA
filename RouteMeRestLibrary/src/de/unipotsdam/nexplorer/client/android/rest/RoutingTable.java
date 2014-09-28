@@ -1,18 +1,11 @@
 package de.unipotsdam.nexplorer.client.android.rest;
 
 public class RoutingTable {
-	private Long id;
 	private Long nodeId;
 	private Long destinationId;
 	private Long nextHopId;
 	private Long hopCount;
 	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
 	public Long getNodeId() {
 		return nodeId;
 	}

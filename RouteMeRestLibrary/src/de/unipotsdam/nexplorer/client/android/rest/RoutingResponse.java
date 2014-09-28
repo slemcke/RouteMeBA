@@ -2,15 +2,15 @@ package de.unipotsdam.nexplorer.client.android.rest;
 
 public class RoutingResponse {
 	
-	private String feedback;
+	private long score;
 
 
-	public String getFeedback() {
-		return feedback;
+	public long getScore() {
+		return score;
 	}
 
-	public void setFeedback(String feedback) {
-		this.feedback = feedback;
+	public void setScore(long score) {
+		this.score = score;
 	}
 
 

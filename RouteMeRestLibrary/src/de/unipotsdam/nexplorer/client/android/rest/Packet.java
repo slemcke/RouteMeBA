@@ -1,5 +1,6 @@
 package de.unipotsdam.nexplorer.client.android.rest;
 
+
 public class Packet {
 	private Long id;
 	private Byte type;

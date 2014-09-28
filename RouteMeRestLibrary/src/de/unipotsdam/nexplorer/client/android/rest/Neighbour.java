@@ -7,6 +7,7 @@ public class Neighbour {
 	private boolean pingActive;
 	private long id;
 	private long pingDuration;
+	private boolean hasRoute;
 
 	public double getLatitude() {
 		return latitude;
@@ -46,5 +47,13 @@ public class Neighbour {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	public boolean hasRoute() {
+		return hasRoute;
+	}
+
+	public void setHasRoute(boolean hasRoute) {
+		this.hasRoute = hasRoute;
 	}
 }
